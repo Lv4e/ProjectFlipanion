@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello World</title>
+</head>
+<body>
+  <h1 id="greeting">Loading...</h1>
+  <script>
+    fetch('http://localhost:3000/hello')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('greeting').innerText = data.message;
+      })
+      .catch(err => {
+        document.getElementById('greeting').innerText = 'Error loading message';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
