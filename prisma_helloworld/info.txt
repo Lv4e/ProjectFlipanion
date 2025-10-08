@@ -1,0 +1,4 @@
+deno run -A .\app.ts
+
+deno task prisma:generate
+
