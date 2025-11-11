@@ -1,7 +1,0 @@
-deno run -A .\app.ts
-
-deno task prisma:generate
-
-deno task prisma migrate dev
-
-supa db LInk : https://likzwhkltystzmzmykse.supabase.co
