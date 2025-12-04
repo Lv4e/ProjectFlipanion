@@ -8,3 +8,8 @@ generator client {
     output   = "client"
     runtime  = "deno"
 }
+
+model test {
+    id   String @id @default(uuid())
+    text String
+}

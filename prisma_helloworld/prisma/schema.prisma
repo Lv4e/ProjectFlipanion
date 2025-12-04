@@ -8,3 +8,7 @@ generator client {
     runtime  = "deno"
 }
 
+model hello {
+    id   String @id @default(cuid())
+    text String
+}

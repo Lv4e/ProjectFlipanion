@@ -19,7 +19,7 @@ export type * from '../models.ts'
 export type * from './prismaNamespace.ts'
 export const Decimal = runtime.Decimal
 export const ModelName = {
-
+  test: 'test'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -35,4 +35,28 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const TestScalarFieldEnum = {
+  id: 'id',
+  text: 'text'
+} as const
+
+export type TestScalarFieldEnum = (typeof TestScalarFieldEnum)[keyof typeof TestScalarFieldEnum]
+
+
+export const SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+} as const
+
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
