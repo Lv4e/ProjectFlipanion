@@ -1,11 +1,15 @@
 import { PrismaClient } from "./client/client.ts";
+import { load } from "jsr:@std/dotenv";
+
+// Load environment variables from .env file
+await load({ export: true });
 
 const prisma = new PrismaClient();
 
 async function main() {
     console.log("🌱 Starting database seed...");
 
-    // Create Subjects
+    // Create Math Subject
     const mathSubject = await prisma.subject.create({
         data: {
             name: "Mathematik",
@@ -13,109 +17,155 @@ async function main() {
         },
     });
 
-    const englishSubject = await prisma.subject.create({
+    console.log("✅ Created Math subject");
+
+    // Create Math Quiz
+    const mathQuiz = await prisma.quiz.create({
         data: {
-            name: "Englisch",
-            description: "Englische Vokabeln und Grammatik",
+            title: "Grundrechenarten Quiz",
+            description: "Ein Quiz über Addition, Subtraktion, Multiplikation und Division",
+            subjectId: mathSubject.id,
         },
     });
 
-    console.log("✅ Created subjects");
+    console.log("✅ Created Math quiz");
 
-    // Create Questions for Math
+    // Create Math Questions
     await prisma.question.createMany({
         data: [
             {
-                questionText: "Was ist 5 + 3?",
+                questionText: "Was ist 15 + 27?",
+                answerText1: "42",
+                answerText2: "41",
+                answerText3: "43",
+                answerText4: "40",
+                correctAnswer: "42",
+                quizId: mathQuiz.id,
+            },
+            {
+                questionText: "Was ist 8 × 7?",
+                answerText1: "54",
+                answerText2: "56",
+                answerText3: "58",
+                answerText4: "52",
+                correctAnswer: "56",
+                quizId: mathQuiz.id,
+            },
+            {
+                questionText: "Was ist 144 ÷ 12?",
+                answerText1: "10",
+                answerText2: "11",
+                answerText3: "12",
+                answerText4: "13",
+                correctAnswer: "12",
+                quizId: mathQuiz.id,
+            },
+            {
+                questionText: "Was ist 50 - 23?",
+                answerText1: "25",
+                answerText2: "26",
+                answerText3: "27",
+                answerText4: "28",
+                correctAnswer: "27",
+                quizId: mathQuiz.id,
+            },
+            {
+                questionText: "Was ist 9²?",
+                answerText1: "18",
+                answerText2: "72",
+                answerText3: "81",
+                answerText4: "90",
+                correctAnswer: "81",
+                quizId: mathQuiz.id,
+            },
+            {
+                questionText: "Was ist die Quadratwurzel aus 64?",
                 answerText1: "6",
-                answerText2: "8",
-                answerText3: "7",
+                answerText2: "7",
+                answerText3: "8",
                 answerText4: "9",
                 correctAnswer: "8",
-                subjectId: mathSubject.id,
+                quizId: mathQuiz.id,
             },
             {
-                questionText: "Was ist 12 × 4?",
-                answerText1: "42",
-                answerText2: "48",
-                answerText3: "52",
-                answerText4: "44",
-                correctAnswer: "48",
-                subjectId: mathSubject.id,
+                questionText: "Was ist 15% von 200?",
+                answerText1: "25",
+                answerText2: "30",
+                answerText3: "35",
+                answerText4: "40",
+                correctAnswer: "30",
+                quizId: mathQuiz.id,
+            },
+            {
+                questionText: "Was ist 3/4 + 1/4?",
+                answerText1: "1/2",
+                answerText2: "3/4",
+                answerText3: "1",
+                answerText4: "4/8",
+                correctAnswer: "1",
+                quizId: mathQuiz.id,
+            },
+            {
+                questionText: "Was ist 2³?",
+                answerText1: "6",
+                answerText2: "8",
+                answerText3: "9",
+                answerText4: "12",
+                correctAnswer: "8",
+                quizId: mathQuiz.id,
+            },
+            {
+                questionText: "Was ist der Umfang eines Rechtecks mit Länge 10 und Breite 5?",
+                answerText1: "25",
+                answerText2: "30",
+                answerText3: "35",
+                answerText4: "50",
+                correctAnswer: "30",
+                quizId: mathQuiz.id,
             },
         ],
     });
 
-    // Create Questions for English
-    await prisma.question.createMany({
-        data: [
-            {
-                questionText: "What is 'Haus' in English?",
-                answerText1: "Home",
-                answerText2: "House",
-                answerText3: "Building",
-                answerText4: "Room",
-                correctAnswer: "House",
-                subjectId: englishSubject.id,
-            },
-            {
-                questionText: "What is the past tense of 'go'?",
-                answerText1: "goed",
-                answerText2: "went",
-                answerText3: "gone",
-                answerText4: "going",
-                correctAnswer: "went",
-                subjectId: englishSubject.id,
-            },
-        ],
-    });
+    console.log("✅ Created 10 Math questions");
 
-    console.log("✅ Created questions");
-
-    // Create a test user
-    const user = await prisma.user.create({
+    // Create a demo user
+    const demoUser = await prisma.user.create({
         data: {
-            email: "test@example.com",
+            email: "demo@example.com",
             passwordHash: "hashed_password_here",
-            name: "Test User",
+            name: "Demo User",
         },
     });
 
-    console.log("✅ Created test user");
+    console.log("✅ Created demo user");
+
+    // Create points entry for demo user
+    await prisma.points.create({
+        data: {
+            userId: demoUser.id,
+            subjectId: mathSubject.id,
+            points: 0,
+        },
+    });
 
     // Create user statistics
     await prisma.userStatistics.create({
         data: {
-            userId: user.id,
+            userId: demoUser.id,
             answeredQuestions: 0,
             correctAnswers: 0,
         },
     });
 
-    // Create points for user
-    await prisma.points.createMany({
-        data: [
-            {
-                userId: user.id,
-                subjectId: mathSubject.id,
-                points: 0,
-            },
-            {
-                userId: user.id,
-                subjectId: englishSubject.id,
-                points: 0,
-            },
-        ],
-    });
-
     console.log("✅ Created user statistics and points");
-    console.log("🎉 Seed completed successfully!");
+
+    console.log("🎉 Database seeded successfully!");
 }
 
 main()
     .catch((e) => {
         console.error("❌ Error during seed:", e);
-        process.exit(1);
+        Deno.exit(1);
     })
     .finally(async () => {
         await prisma.$disconnect();
