@@ -15,7 +15,7 @@ model User {
   id           Int      @id @default(autoincrement()) // User-ID (PS)
   email        String   @unique                       // Email
   passwordHash String                                 // PasswortHash
-  name         String?                                // Name
+  name         String                                // Name
   createdAt    DateTime @default(now())               // CreatedAt
 
   // Relations
@@ -32,7 +32,7 @@ model Subject {
 
   // Relations
   points    Points[]
-  questions Question[]
+  quizzes  Quiz[]
 }
 
 // 3. Points (Linking User and Fach)
@@ -59,10 +59,10 @@ model Question {
   answerText3   String                               // Antworttext 3
   answerText4   String                               // Antworttext 4
   correctAnswer String                               // RichtigeAntwort (Storing the text or index)
-  subjectId     Int                                  // Fach-ID (FS)
+  quizId     Int                                  // Quiz-ID (FS)
 
   // Relations
-  subject     Subject      @relation(fields: [subjectId], references: [id])
+  quiz     Quiz      @relation(fields: [quizId], references: [id])
   userAnswers UserAnswer[]
 }
 
@@ -89,3 +89,14 @@ model UserStatistics {
   // Relations
   user User @relation(fields: [userId], references: [id])
 }
+
+  model Quiz {
+    id          Int      @id @default(autoincrement()) // Quiz-ID (PS)
+    title       String                                 // Titel
+    description String?                                // Beschreibung
+    createdAt   DateTime @default(now())                // Erstellungsdatum
+
+    subjectId   Int
+    subject     Subject      @relation(fields: [subjectId], references: [id])
+    questions   Question[]
+  }
