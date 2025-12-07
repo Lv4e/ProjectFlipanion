@@ -4,36 +4,77 @@ import React from 'react';
 import { supabase } from '../supabase-client';
 import Link from 'next/link';
 
+// Define the Quiz type based on your database structure
+interface Quiz {
+  id: number;
+  title: string;
+  description?: string;
+  subjectId: number;
+  subject?: string;
+  Subject?: {
+    id: number;
+    name: string;
+  };
+  questionCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Define the Subject type
+interface Subject {
+  id: number;
+  name: string;
+}
+
 export default function BrowseQuizzes() {
-  const [quizzes, setQuizzes] = React.useState([]);
+  const [quizzes, setQuizzes] = React.useState<Quiz[]>([]);
+  const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedSubject, setSelectedSubject] = React.useState('all');
 
-  // Fetch quizzes from Supabase
+  // Fetch quizzes and subjects from Supabase
   React.useEffect(() => {
-    async function fetchQuizzes() {
+    async function fetchData() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('Quiz')
-        .select('*');
       
-      if (error) {
-        console.error('Error fetching quizzes:', error);
+      // Fetch quizzes with subject information
+      const { data: quizzesData, error: quizzesError } = await supabase
+        .from('Quiz')
+        .select('*, Subject(id, name)');
+      
+      if (quizzesError) {
+        console.error('Error fetching quizzes:', quizzesError);
       } else {
-        setQuizzes(data || []);
+        console.log('Quizzes with subjects:', quizzesData);
+        setQuizzes(quizzesData || []);
       }
+
+      // Fetch subjects
+      const { data: subjectsData, error: subjectsError } = await supabase
+        .from('Subject')
+        .select('*')
+        .order('name', { ascending: true });
+      
+      if (subjectsError) {
+        console.error('Error fetching subjects:', subjectsError);
+      } else {
+        console.log('Subjects fetched:', subjectsData);
+        setSubjects(subjectsData || []);
+      }
+
       setLoading(false);
     }
 
-    fetchQuizzes();
+    fetchData();
   }, []);
 
   // Filter quizzes based on search and subject
   const filteredQuizzes = quizzes.filter(quiz => {
     const matchesSearch = quiz.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          quiz.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSubject = selectedSubject === 'all' || quiz.subject === selectedSubject;
+    const subjectName = quiz.Subject?.name || quiz.subject;
+    const matchesSubject = selectedSubject === 'all' || subjectName === selectedSubject;
     return matchesSearch && matchesSubject;
   });
 
@@ -101,17 +142,17 @@ export default function BrowseQuizzes() {
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="all">All Subjects</option>
-                <option value="math">Mathematics</option>
-                <option value="science">Science</option>
-                <option value="history">History</option>
-                <option value="english">English</option>
-                <option value="programming">Programming</option>
-                <option value="other">Other</option>
+                {subjects.map((subject) => (
+                  <option key={subject.id} value={subject.name}>
+                    {subject.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
         </div>
 
+        {/* ...existing code... */}
         {/* Quiz Grid */}
         <div>
           <div className="flex justify-between items-center mb-6">
@@ -155,7 +196,7 @@ export default function BrowseQuizzes() {
                   {/* Quiz Meta */}
                   <div className="flex items-center justify-between mb-4">
                     <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
-                      {quiz.subject || 'General'}
+                      {quiz.Subject?.name || quiz.subject || 'General'}
                     </span>
                     <span className="text-xs text-gray-500 dark:text-gray-500">
                       {quiz.questionCount || 0} Questions
