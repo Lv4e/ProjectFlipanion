@@ -3,30 +3,35 @@
 import React from 'react';
 import { supabase } from './supabase-client';
 import Link from 'next/link';
+import Header from '../components/Header';
+
+
+interface User {
+  id: string;
+  email: string;
+  user_metadata: {
+    name?: string;
+  };
+}
 
 export default function Home() {
   const [quizzes, setQuizzes] = React.useState([]);
+  const [user, setUser] = React.useState<User | null>(null);
+
+
+  React.useEffect(() => {
+  supabase.auth.getUser().then(({ data: { user } }) => {
+       setUser(user as User | null);
+     });
+
+  }, []);
 
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
 
       {/* Header with Login/Signup */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Flipanion</h1>
-          
-          {/* Login/Signup Container */}
-          <div className="flex gap-3">
-            <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-              Login
-            </button>
-            <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -35,7 +40,7 @@ export default function Home() {
         {/* Username Display */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Welcome back, <span className="text-blue-600">JohnDoe</span>!
+            Welcome back, <span className="text-blue-600">{user?.user_metadata?.name}</span>!
           </h2>
           <p className="text-gray-600 dark:text-gray-400">Ready to continue your learning journey?</p>
         </div>

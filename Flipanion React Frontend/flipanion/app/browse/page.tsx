@@ -3,6 +3,7 @@
 import React from 'react';
 import { supabase } from '../supabase-client';
 import Link from 'next/link';
+import Header from '../../components/Header';
 
 // Define the Quiz type based on your database structure
 interface Quiz {
@@ -81,22 +82,7 @@ export default function BrowseQuizzes() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white hover:text-blue-600 transition-colors">
-            Flipanion
-          </Link>
-          
-          <div className="flex gap-3">
-            <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-              Login
-            </button>
-            <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
