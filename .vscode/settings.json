@@ -1,0 +1,7 @@
+{
+  "deno.enable": true,
+  "deno.unstable": true,
+  "deno.importMap": "./deno.json",
+  "deno.lint": true,
+  "prisma.pinToPrisma6": true
+}

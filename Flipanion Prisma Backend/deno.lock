@@ -4,8 +4,9 @@
     "jsr:@std/assert@1": "1.0.16",
     "jsr:@std/dotenv@*": "0.225.5",
     "jsr:@std/internal@^1.0.12": "1.0.12",
-    "npm:@prisma/client@^6.16.2": "6.19.0",
+    "npm:@prisma/client@^6.16.2": "6.19.0_prisma@6.19.0",
     "npm:@prisma/migrate@^6.16.2": "6.19.0_@prisma+internals@6.19.0",
+    "npm:bcryptjs@*": "3.0.3",
     "npm:he@^1.2.0": "1.2.0",
     "npm:prisma@6": "6.19.0",
     "npm:prisma@7.1.0": "7.1.0",
@@ -191,8 +192,14 @@
         "ts-pattern"
       ]
     },
-    "@prisma/client@6.19.0": {
+    "@prisma/client@6.19.0_prisma@6.19.0": {
       "integrity": "sha512-QXFT+N/bva/QI2qoXmjBzL7D6aliPffIwP+81AdTGq0FXDoLxLkWivGMawG8iM5B9BKfxLIXxfWWAF6wbuJU6g==",
+      "dependencies": [
+        "prisma@6.19.0"
+      ],
+      "optionalPeers": [
+        "prisma@6.19.0"
+      ],
       "scripts": true
     },
     "@prisma/config@6.19.0": {
@@ -401,6 +408,10 @@
     },
     "aws-ssl-profiles@1.1.2": {
       "integrity": "sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g=="
+    },
+    "bcryptjs@3.0.3": {
+      "integrity": "sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==",
+      "bin": true
     },
     "braces@3.0.3": {
       "integrity": "sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==",

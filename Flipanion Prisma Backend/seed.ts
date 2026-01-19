@@ -1,170 +1,185 @@
 import { PrismaClient } from "./client/client.ts";
 import { load } from "jsr:@std/dotenv";
 
-// Load environment variables from .env file
 await load({ export: true });
 
 const prisma = new PrismaClient();
 
+// Punkte-Logik (kannst du ändern)
+const POINTS_PER_CORRECT = 10;
+
+// Hilfsfunktionen
+function pickTwoDistinct<T>(arr: T[]): [T, T] {
+    if (arr.length < 2) throw new Error("Need at least 2 items to pick two distinct.");
+    const i = Math.floor(Math.random() * arr.length);
+    let j = Math.floor(Math.random() * arr.length);
+    while (j === i) j = Math.floor(Math.random() * arr.length);
+    return [arr[i], arr[j]];
+}
+
+function pickWrongAnswer(question: any): string {
+    const options = [question.answerText1, question.answerText2, question.answerText3, question.answerText4].filter(Boolean);
+    const wrong = options.filter((o) => o !== question.correctAnswer);
+    if (wrong.length === 0) return question.correctAnswer; // fallback
+    return wrong[Math.floor(Math.random() * wrong.length)];
+}
+
 async function main() {
-    console.log("🌱 Starting database seed...");
+    console.log("🌱 Seeding user answers, points, and statistics...");
 
-    // Create Math Subject
-    const mathSubject = await prisma.subject.create({
-        data: {
-            name: "Mathematik",
-            description: "Mathematische Fragen und Aufgaben",
+    // 1) Daten holen
+    const users = await prisma.user.findMany();
+    if (users.length === 0) {
+        console.log("ℹ️ No users found. Create users first.");
+        return;
+    }
+
+    const quizzes = await prisma.quiz.findMany({
+        include: {
+            subject: true,
+            questions: true, // falls Relation in Prisma so heißt
         },
     });
 
-    console.log("✅ Created Math subject");
+    if (quizzes.length < 2) {
+        console.log("ℹ️ Need at least 2 quizzes to assign per user.");
+        return;
+    }
 
-    // Create Math Quiz
-    const mathQuiz = await prisma.quiz.create({
-        data: {
-            title: "Grundrechenarten Quiz",
-            description: "Ein Quiz über Addition, Subtraktion, Multiplikation und Division",
-            subjectId: mathSubject.id,
-        },
-    });
+    // 2) Für jeden User: 2 Quizzes machen
+    for (const user of users) {
+        const [qz1, qz2] = pickTwoDistinct(quizzes);
 
-    console.log("✅ Created Math quiz");
+        // Optional: vorhandene UserAnswers für diese zwei Quizzes löschen,
+        // damit du das Seed wiederholt ausführen kannst, ohne Duplikate.
+        // (Wenn du NICHT löschen willst, kommentiere den Block aus.)
+        await prisma.userAnswer.deleteMany({
+            where: {
+                userId: user.id,
+                question: {
+                    quizId: { in: [qz1.id, qz2.id] },
+                },
+            },
+        });
 
-    // Create Math Questions
-    await prisma.question.createMany({
-        data: [
-            {
-                questionText: "Was ist 15 + 27?",
-                answerText1: "42",
-                answerText2: "41",
-                answerText3: "43",
-                answerText4: "40",
-                correctAnswer: "42",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist 8 × 7?",
-                answerText1: "54",
-                answerText2: "56",
-                answerText3: "58",
-                answerText4: "52",
-                correctAnswer: "56",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist 144 ÷ 12?",
-                answerText1: "10",
-                answerText2: "11",
-                answerText3: "12",
-                answerText4: "13",
-                correctAnswer: "12",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist 50 - 23?",
-                answerText1: "25",
-                answerText2: "26",
-                answerText3: "27",
-                answerText4: "28",
-                correctAnswer: "27",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist 9²?",
-                answerText1: "18",
-                answerText2: "72",
-                answerText3: "81",
-                answerText4: "90",
-                correctAnswer: "81",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist die Quadratwurzel aus 64?",
-                answerText1: "6",
-                answerText2: "7",
-                answerText3: "8",
-                answerText4: "9",
-                correctAnswer: "8",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist 15% von 200?",
-                answerText1: "25",
-                answerText2: "30",
-                answerText3: "35",
-                answerText4: "40",
-                correctAnswer: "30",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist 3/4 + 1/4?",
-                answerText1: "1/2",
-                answerText2: "3/4",
-                answerText3: "1",
-                answerText4: "4/8",
-                correctAnswer: "1",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist 2³?",
-                answerText1: "6",
-                answerText2: "8",
-                answerText3: "9",
-                answerText4: "12",
-                correctAnswer: "8",
-                quizId: mathQuiz.id,
-            },
-            {
-                questionText: "Was ist der Umfang eines Rechtecks mit Länge 10 und Breite 5?",
-                answerText1: "25",
-                answerText2: "30",
-                answerText3: "35",
-                answerText4: "50",
-                correctAnswer: "30",
-                quizId: mathQuiz.id,
-            },
-        ],
-    });
+        // Statistik-Zähler für diesen Seed-Lauf
+        let answeredTotal = 0;
+        let correctTotal = 0;
 
-    console.log("✅ Created 10 Math questions");
+        // Punkte pro Subject aufsummieren (weil 2 Quizzes evtl. unterschiedliche Subjects haben)
+        const pointsBySubjectId = new Map<number, number>();
 
-    // Create a demo user
-    const demoUser = await prisma.user.create({
-        data: {
-            email: "demo@example.com",
-            passwordHash: "hashed_password_here",
-            name: "Demo User",
-        },
-    });
+        const selectedQuizzes = [qz1, qz2];
 
-    console.log("✅ Created demo user");
+        for (const quiz of selectedQuizzes) {
+            const questions = quiz.questions ?? [];
+            if (questions.length === 0) continue;
 
-    // Create points entry for demo user
-    await prisma.points.create({
-        data: {
-            userId: demoUser.id,
-            subjectId: mathSubject.id,
-            points: 0,
-        },
-    });
+            // Entscheide „wie viele richtig“ (du wolltest, dass ich entscheide)
+            // Beispiel: 40%–90% richtig, abhängig von Quiz-Größe
+            const minCorrect = Math.max(1, Math.floor(questions.length * 0.4));
+            const maxCorrect = Math.max(minCorrect, Math.floor(questions.length * 0.9));
+            const correctCountTarget = minCorrect + Math.floor(Math.random() * (maxCorrect - minCorrect + 1));
 
-    // Create user statistics
-    await prisma.userStatistics.create({
-        data: {
-            userId: demoUser.id,
-            answeredQuestions: 0,
-            correctAnswers: 0,
-        },
-    });
+            // Welche Fragen sind korrekt?
+            const indices = questions.map((_, idx) => idx);
+            // shuffle
+            for (let k = indices.length - 1; k > 0; k--) {
+                const r = Math.floor(Math.random() * (k + 1));
+                [indices[k], indices[r]] = [indices[r], indices[k]];
+            }
+            const correctSet = new Set(indices.slice(0, correctCountTarget));
 
-    console.log("✅ Created user statistics and points");
+            // UserAnswers erzeugen
+            for (let idx = 0; idx < questions.length; idx++) {
+                const question = questions[idx];
+                const isCorrect = correctSet.has(idx);
 
-    console.log("🎉 Database seeded successfully!");
+                const selectedAnswer = isCorrect ? question.correctAnswer : pickWrongAnswer(question);
+
+                // HIER: Annahme über dein Prisma Model "UserAnswer"
+                await prisma.userAnswer.create({
+                    data: {
+                        userId: user.id,
+                        questionId: question.id,
+                        selectedAnswer, // falls bei dir anders heißt: z.B. answerText / chosenAnswer
+                        isCorrect,      // falls bei dir anders heißt: correct / wasCorrect
+                    },
+                });
+
+                answeredTotal += 1;
+                if (isCorrect) correctTotal += 1;
+            }
+
+            // Punkte auf Subject buchen
+            const subjectId = quiz.subjectId;
+            const earned = correctCountTarget * POINTS_PER_CORRECT;
+            pointsBySubjectId.set(subjectId, (pointsBySubjectId.get(subjectId) ?? 0) + earned);
+        }
+
+        // 3) Points updaten/anlegen (pro Subject)
+        for (const [subjectId, earnedPoints] of pointsBySubjectId.entries()) {
+            // Falls (userId, subjectId) unique ist, wäre upsert ideal.
+            // Ohne Schema-Änderung machen wir findFirst + create/update.
+            const existing = await prisma.points.findFirst({
+                where: {
+                    userId: user.id,
+                    subjectId,
+                },
+            });
+
+            if (!existing) {
+                await prisma.points.create({
+                    data: {
+                        userId: user.id,
+                        subjectId,
+                        points: earnedPoints,
+                    },
+                });
+            } else {
+                await prisma.points.update({
+                    where: { id: existing.id },
+                    data: {
+                        points: existing.points + earnedPoints,
+                    },
+                });
+            }
+        }
+
+        // 4) UserStatistics updaten/anlegen
+        const existingStats = await prisma.userStatistics.findFirst({
+            where: { userId: user.id },
+        });
+
+        if (!existingStats) {
+            await prisma.userStatistics.create({
+                data: {
+                    userId: user.id,
+                    answeredQuestions: answeredTotal,
+                    correctAnswers: correctTotal,
+                },
+            });
+        } else {
+            await prisma.userStatistics.update({
+                where: { id: existingStats.id },
+                data: {
+                    answeredQuestions: existingStats.answeredQuestions + answeredTotal,
+                    correctAnswers: existingStats.correctAnswers + correctTotal,
+                },
+            });
+        }
+
+        console.log(
+            `✅ User ${user.email ?? user.id}: answered=${answeredTotal}, correct=${correctTotal}, quizzes=[${qz1.title}, ${qz2.title}]`,
+        );
+    }
+
+    console.log("🎉 Finished seeding user answers, points, and statistics!");
 }
 
 main()
     .catch((e) => {
-        console.error("❌ Error during seed:", e);
+        console.error("❌ Seed error:", e);
         Deno.exit(1);
     })
     .finally(async () => {
