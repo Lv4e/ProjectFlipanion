@@ -13,8 +13,9 @@ generator client {
 // 1. User (Benutzer)
 model User {
   id           Int      @id @default(autoincrement()) // User-ID (PS)
+  supabaseId   String   @unique                       // Supabase Auth UUID
   email        String   @unique                       // Email
-  passwordHash String                                 // PasswortHash
+  passwordHash String                                 // PasswortHash (empty, Supabase handles auth)
   name         String                                // Name
   createdAt    DateTime @default(now())               // CreatedAt
 

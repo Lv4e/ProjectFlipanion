@@ -8,7 +8,9 @@
     "npm:@prisma/migrate@^6.16.2": "6.19.0_@prisma+internals@6.19.0",
     "npm:bcryptjs@*": "3.0.3",
     "npm:he@^1.2.0": "1.2.0",
+    "npm:prisma@*": "6.19.0",
     "npm:prisma@6": "6.19.0",
+    "npm:prisma@6.19.0": "6.19.0",
     "npm:prisma@7.1.0": "7.1.0",
     "npm:prisma@^7.1.0": "7.1.0",
     "npm:prisma@latest": "7.1.0"
@@ -921,6 +923,11 @@
       "npm:@prisma/client@^6.16.2",
       "npm:@prisma/migrate@^6.16.2",
       "npm:he@^1.2.0"
-    ]
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:prisma@^6.19.0"
+      ]
+    }
   }
 }
