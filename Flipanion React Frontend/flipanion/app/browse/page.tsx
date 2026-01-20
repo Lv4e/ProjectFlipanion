@@ -190,9 +190,13 @@ export default function BrowseQuizzes() {
                   </div>
 
                   {/* Action Button */}
-                  <button className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                  <Link
+                    href={`/quizes/${quiz.id}`}
+                    className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors block text-center"
+                  >
                     Start Quiz →
-                  </button>
+                  </Link>
+
                 </div>
               ))}
             </div>
