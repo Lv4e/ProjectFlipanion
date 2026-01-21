@@ -1,7 +1,0 @@
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=https://likzwhkltystzmzmykse.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpa3p3aGtsdHlzdHptem15a3NlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0Njc3MTQsImV4cCI6MjA3NjA0MzcxNH0.EvEPyEABuN77Bf1Td6G5kHAIE5XYlmWUfbxVMDl2qE8
-
-# Database URLs for Prisma (if using)
-DATABASE_URL="postgresql://postgres.likzwhkltystzmzmykse:FlipanionPasswordLukasMateo@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.likzwhkltystzmzmykse:FlipanionPasswordLukasMateo@aws-1-eu-west-1.pooler.supabase.com:5432/postgres?pgbouncer=true"
