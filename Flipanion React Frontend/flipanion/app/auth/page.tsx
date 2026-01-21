@@ -82,7 +82,7 @@ export default function AuthPage() {
     if (error) {
       setError(error.message);
     } else {
-      setMessage('Login successful!');
+      setMessage('Login erfolgreich!');
       // Redirect to home page after successful login
       setTimeout(() => router.push('/'), 1000);
     }
@@ -98,19 +98,19 @@ export default function AuthPage() {
 
     // Validation
     if (password !== confirmPassword) {
-      setError('Passwords do not match!');
+      setError('Passwoerter stimmen nicht ueberein!');
       setLoading(false);
       return;
     }
 
     if (passwordStrength === 'weak') {
-      setError('Password is too weak. Please choose a stronger password.');
+      setError('Passwort ist zu schwach. Bitte waehle ein staerkeres Passwort.');
       setLoading(false);
       return;
     }
 
     if (!usernameAvailable) {
-      setError('Username is not available or too short (min 3 characters).');
+      setError('Benutzername ist nicht verfuegbar oder zu kurz (mindestens 3 Zeichen).');
       setLoading(false);
       return;
     }
@@ -128,7 +128,7 @@ export default function AuthPage() {
     if (error) {
       setError(error.message);
     } else {
-      setMessage('Account created! Check your email to verify your account.');
+      setMessage('Konto erstellt! Bitte pruefe deine E-Mails zur Bestaetigung.');
     }
 
     setLoading(false);
@@ -143,10 +143,10 @@ export default function AuthPage() {
             Flipanion
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
-            {isLogin ? 'Welcome back' : 'Create an account'}
+            {isLogin ? 'Willkommen zurueck' : 'Konto erstellen'}
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {isLogin ? "Don't have an account? " : 'Already have an account? '}
+            {isLogin ? 'Noch kein Konto? ' : 'Bereits ein Konto? '}
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
@@ -155,7 +155,7 @@ export default function AuthPage() {
               }}
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              {isLogin ? 'Sign up' : 'Log in'}
+              {isLogin ? 'Registrieren' : 'Anmelden'}
             </button>
           </p>
         </div>
@@ -167,7 +167,7 @@ export default function AuthPage() {
             {!isLogin && (
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Username
+                  Benutzername
                 </label>
                 <div className="relative">
                   <input
@@ -177,7 +177,7 @@ export default function AuthPage() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    placeholder="johndoe"
+                    placeholder="maxmustermann"
                     minLength={3}
                   />
                   {checkingUsername && (
@@ -194,12 +194,12 @@ export default function AuthPage() {
                 </div>
                 {usernameAvailable === false && (
                   <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                    Username already taken
+                    Benutzername bereits vergeben
                   </p>
                 )}
                 {usernameAvailable === true && (
                   <p className="mt-1 text-xs text-green-600 dark:text-green-400">
-                    Username available
+                    Benutzername verfuegbar
                   </p>
                 )}
               </div>
@@ -208,7 +208,7 @@ export default function AuthPage() {
             {/* Email field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email
+                E-Mail
               </label>
               <input
                 id="email"
@@ -217,14 +217,14 @@ export default function AuthPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                placeholder="you@example.com"
+                placeholder="du@example.com"
               />
             </div>
 
             {/* Password field */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Password
+                Passwort
               </label>
               <input
                 id="password"
@@ -244,11 +244,11 @@ export default function AuthPage() {
                     <div className={`h-1 flex-1 rounded ${passwordStrength === 'strong' ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
                   </div>
                   <p className={`mt-1 text-xs ${passwordStrength === 'weak' ? 'text-red-600 dark:text-red-400' : passwordStrength === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
-                    Password strength: {passwordStrength === 'weak' ? 'Weak' : passwordStrength === 'medium' ? 'Medium' : 'Strong'}
+                    Passwortstaerke: {passwordStrength === 'weak' ? 'Schwach' : passwordStrength === 'medium' ? 'Mittel' : 'Stark'}
                   </p>
                   {passwordStrength === 'weak' && (
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      Use at least 8 characters with numbers and letters. Avoid common patterns.
+                      Verwende mindestens 8 Zeichen mit Zahlen und Buchstaben. Vermeide einfache Muster.
                     </p>
                   )}
                 </div>
@@ -259,7 +259,7 @@ export default function AuthPage() {
             {!isLogin && (
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Confirm Password
+                  Passwort bestaetigen
                 </label>
                 <input
                   id="confirmPassword"
@@ -272,12 +272,12 @@ export default function AuthPage() {
                 />
                 {confirmPassword && password !== confirmPassword && (
                   <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                    Passwords do not match
+                    Passwoerter stimmen nicht ueberein
                   </p>
                 )}
                 {confirmPassword && password === confirmPassword && (
                   <p className="mt-1 text-xs text-green-600 dark:text-green-400">
-                    Passwords match ✓
+                    Passwoerter stimmen ueberein ✓
                   </p>
                 )}
               </div>
@@ -306,10 +306,10 @@ export default function AuthPage() {
               {loading ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  {isLogin ? 'Logging in...' : 'Creating account...'}
+                  {isLogin ? 'Anmeldung ...' : 'Konto wird erstellt ...'}
                 </>
               ) : (
-                isLogin ? 'Log in' : 'Sign up'
+                isLogin ? 'Anmelden' : 'Registrieren'
               )}
             </button>
           </form>
@@ -318,7 +318,7 @@ export default function AuthPage() {
         {/* Back to home link */}
         <div className="mt-6 text-center">
           <Link href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-            ← Back to home
+            ← Zurueck zur Startseite
           </Link>
         </div>
       </div>

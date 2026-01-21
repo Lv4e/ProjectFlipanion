@@ -62,14 +62,14 @@ export default function Header() {
                   </span>
                 </div>
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {user.user_metadata?.name || user.email?.split('@')[0] || 'User'}
+                  {user.user_metadata?.name || user.email?.split('@')[0] || 'Nutzer'}
                 </span>
               </Link>
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
               >
-                Logout
+                Abmelden
               </button>
             </div>
           ) : (
@@ -77,12 +77,12 @@ export default function Header() {
             <>
               <Link href="/auth?mode=login">
                 <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                  Login
+                  Anmelden
                 </button>
               </Link>
               <Link href="/auth?mode=signup">
                 <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                  Sign Up
+                  Registrieren
                 </button>
               </Link>
             </>

@@ -50,7 +50,7 @@ function normalizeQuestion(q: AnyRow): NormalizedQuestion {
     q.text ??
     q.prompt ??
     q.question ??
-    'Untitled question';
+    'Frage ohne Titel';
 
   const options = [
     q.answerText1,
@@ -67,7 +67,7 @@ function normalizeQuestion(q: AnyRow): NormalizedQuestion {
   return {
     id: q.id,
     text,
-    options: options.length ? options : ['(no answers found)'],
+    options: options.length ? options : ['(keine Antworten gefunden)'],
     correctIndex,
   };
 }
@@ -89,7 +89,7 @@ export default function QuizPage() {
 
   React.useEffect(() => {
     if (!Number.isFinite(quizId)) {
-      setError('Invalid quiz id.');
+      setError('Ungueltige Quiz-ID.');
       setLoading(false);
       return;
     }
@@ -108,7 +108,7 @@ export default function QuizPage() {
         .single();
 
       if (quizErr) {
-        setError(`Quiz load failed: ${quizErr.message}`);
+        setError(`Quiz konnte nicht geladen werden: ${quizErr.message}`);
         setLoading(false);
         return;
       }
@@ -122,7 +122,7 @@ export default function QuizPage() {
         .order('id', { ascending: true });
 
       if (qErr) {
-        setError(`Question load failed: ${qErr.message}`);
+        setError(`Fragen konnten nicht geladen werden: ${qErr.message}`);
         setLoading(false);
         return;
       }
@@ -188,18 +188,18 @@ export default function QuizPage() {
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Link href="/browse" className="text-blue-600 hover:text-blue-700 mb-6 inline-block">
-          ← Back to Browse
+          ← Zurueck zur Uebersicht
         </Link>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading quiz...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Quiz wird geladen ...</p>
           </div>
         ) : error ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-red-200 dark:border-red-900">
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              Could not open quiz
+              Quiz konnte nicht geoeffnet werden
             </h1>
             <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
           </div>
@@ -215,14 +215,14 @@ export default function QuizPage() {
 
               <div className="flex items-center justify-between mt-4 text-sm text-gray-600 dark:text-gray-400">
                 <span>
-                  Subject:{' '}
+                  Fach:{' '}
                   <span className="font-medium">
-                    {quiz?.Subject?.name ?? quiz?.subject ?? 'General'}
+                    {quiz?.Subject?.name ?? quiz?.subject ?? 'Allgemein'}
                   </span>
                 </span>
                 <span>
-                  {questions.length} Question{questions.length === 1 ? '' : 's'}
-                  {canScore ? ` • Score: ${score}` : ''}
+                  {questions.length} {questions.length === 1 ? 'Frage' : 'Fragen'}
+                  {canScore ? ` • Punkte: ${score}` : ''}
                 </span>
               </div>
 
@@ -241,9 +241,9 @@ export default function QuizPage() {
               </div>
             ) : finished ? (
               <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Finished</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Fertig</h2>
                 <p className="text-gray-600 dark:text-gray-400 mt-2">
-                  {canScore ? `Dein Score: ${score} / ${questions.length}` : 'Fertig.'}
+                  {canScore ? `Dein Ergebnis: ${score} / ${questions.length}` : 'Abgeschlossen.'}
                 </p>
 
                 <div className="flex gap-3 mt-6">
@@ -256,13 +256,13 @@ export default function QuizPage() {
                     }}
                     className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white"
                   >
-                    Retry
+                    Erneut versuchen
                   </button>
                   <Link
                     href="/browse"
                     className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Back to Browse
+                    Zurueck zur Uebersicht
                   </Link>
                 </div>
               </div>
@@ -270,7 +270,7 @@ export default function QuizPage() {
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Question {current + 1} of {questions.length}
+                    Frage {current + 1} von {questions.length}
                   </span>
                 </div>
 
@@ -312,7 +312,7 @@ export default function QuizPage() {
                     disabled={current === 0}
                     className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 disabled:opacity-50 text-gray-900 dark:text-white"
                   >
-                    Back
+                    Zurueck
                   </button>
 
                   {current < questions.length - 1 ? (
@@ -321,7 +321,7 @@ export default function QuizPage() {
                       onClick={() => setCurrent((c) => Math.min(questions.length - 1, c + 1))}
                       className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      Next
+                      Weiter
                     </button>
                   ) : (
                     <button
@@ -329,7 +329,7 @@ export default function QuizPage() {
                       onClick={() => setFinished(true)}
                       className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      Finish
+                      Abschliessen
                     </button>
                   )}
                 </div>
