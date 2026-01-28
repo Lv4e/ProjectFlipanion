@@ -1,102 +1,82 @@
-datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-}
-
 generator client {
-    provider = "prisma-client"
-    output   = "../client"
-    runtime  = "deno"
+  provider = "prisma-client"
+  output   = "../client"
+  runtime  = "deno"
 }
 
-// 1. User (Benutzer)
-model User {
-  id           Int      @id @default(autoincrement()) // User-ID (PS)
-  supabaseId   String   @unique                       // Supabase Auth UUID
-  email        String   @unique                       // Email
-  passwordHash String                                 // PasswortHash (empty, Supabase handles auth)
-  name         String                                // Name
-  createdAt    DateTime @default(now())               // CreatedAt
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
-  // Relations
+model User {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  passwordHash   String
+  name           String
+  createdAt      DateTime        @default(now())
+  supabaseId     String?         @unique
   points         Points[]
   userAnswers    UserAnswer[]
   userStatistics UserStatistics?
 }
 
-// 2. Fach (Subject)
 model Subject {
-  id          Int     @id @default(autoincrement()) // Fach-ID (PS)
-  name        String   @unique                       // Name
-  description String?                               // Description
-
-  // Relations
-  points    Points[]
-  quizzes  Quiz[]
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  points      Points[]
+  quizzes     Quiz[]
 }
 
-// 3. Points (Linking User and Fach)
 model Points {
-  id        Int @id @default(autoincrement()) // User-Fach-ID (PS)
-  userId    Int                               // User-ID (FS)
-  subjectId Int                               // Fach-ID (FS)
-  points    Int                               // Points
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  subjectId Int
+  points    Int
+  subject   Subject @relation(fields: [subjectId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 
-  // Relations
-  user    User    @relation(fields: [userId], references: [id])
-  subject Subject @relation(fields: [subjectId], references: [id])
-
-  // Ensures a user has only one points entry per subject
   @@unique([userId, subjectId])
 }
 
-// 4. Fragen-Antworten (Questions & Answers)
 model Question {
-  id            Int    @id @default(autoincrement()) // FrageAntwort-ID (PS)
-  questionText  String                               // Fragetext
-  answerText1   String                               // Antworttext 1
-  answerText2   String                               // Antworttext 2
-  answerText3   String                               // Antworttext 3
-  answerText4   String                               // Antworttext 4
-  correctAnswer String                               // RichtigeAntwort (Storing the text or index)
-  quizId     Int                                  // Quiz-ID (FS)
-
-  // Relations
-  quiz     Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  userAnswers UserAnswer[]
+  id            Int          @id @default(autoincrement())
+  questionText  String
+  answerText1   String
+  answerText2   String
+  answerText3   String
+  answerText4   String
+  correctAnswer String
+  quizId        Int
+  quiz          Quiz         @relation(fields: [quizId], references: [id])
+  userAnswers   UserAnswer[]
 }
 
-// 5. Benutzer-Antwort (User Answers)
 model UserAnswer {
-  id             Int     @id @default(autoincrement()) // UserAntort-ID (PS)
-  userId         Int                                   // User-ID (FS)
-  questionId     Int                                   // FrageAntwort-ID (FS)
-  isCorrect      Boolean                               // RichtigFalsch
-  selectedAnswer String                                // Gewählte Antwort
-
-  // Relations
-  user     User     @relation(fields: [userId], references: [id])
-  question Question @relation(fields: [questionId], references: [id])
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  questionId     Int
+  isCorrect      Boolean
+  selectedAnswer String
+  question       Question @relation(fields: [questionId], references: [id])
+  user           User     @relation(fields: [userId], references: [id])
 }
 
-// 6. Benutzer-Statistik (User Statistics)
 model UserStatistics {
-  id                Int @id @default(autoincrement()) // BenutzerStatistik-ID (PS)
-  userId            Int @unique                       // Benutzer-ID (FS) - Unique ensures 1:1 relation
-  answeredQuestions Int                               // Beantwortete Fragen
-  correctAnswers    Int                               // Richtige Antworten
-
-  // Relations
-  user User @relation(fields: [userId], references: [id])
+  id                Int  @id @default(autoincrement())
+  userId            Int  @unique
+  answeredQuestions Int
+  correctAnswers    Int
+  user              User @relation(fields: [userId], references: [id])
 }
 
-  model Quiz {
-    id          Int      @id @default(autoincrement()) // Quiz-ID (PS)
-    title       String                                 // Titel
-    description String?                                // Beschreibung
-    createdAt   DateTime @default(now())                // Erstellungsdatum
-
-    subjectId   Int
-    subject     Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-    questions   Question[]
-  }
+model Quiz {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  createdAt   DateTime   @default(now())
+  subjectId   Int
+  questions   Question[]
+  subject     Subject    @relation(fields: [subjectId], references: [id])
+}
