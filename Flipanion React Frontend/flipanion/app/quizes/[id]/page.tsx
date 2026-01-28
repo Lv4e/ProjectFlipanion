@@ -89,7 +89,7 @@ export default function QuizPage() {
 
   React.useEffect(() => {
     if (!Number.isFinite(quizId)) {
-      setError('Ungueltige Quiz-ID.');
+      setError('Ungültige Quiz-ID.');
       setLoading(false);
       return;
     }
@@ -188,7 +188,7 @@ export default function QuizPage() {
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Link href="/browse" className="text-blue-600 hover:text-blue-700 mb-6 inline-block">
-          ← Zurueck zur Uebersicht
+          ← Zurück zur Übersicht
         </Link>
 
         {loading ? (
@@ -199,7 +199,7 @@ export default function QuizPage() {
         ) : error ? (
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-red-200 dark:border-red-900">
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              Quiz konnte nicht geoeffnet werden
+              Quiz konnte nicht geöffnet werden
             </h1>
             <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
           </div>
@@ -262,7 +262,7 @@ export default function QuizPage() {
                     href="/browse"
                     className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Zurueck zur Uebersicht
+                    Zurück zur Übersicht
                   </Link>
                 </div>
               </div>
@@ -312,7 +312,7 @@ export default function QuizPage() {
                     disabled={current === 0}
                     className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 disabled:opacity-50 text-gray-900 dark:text-white"
                   >
-                    Zurueck
+                    Zurück
                   </button>
 
                   {current < questions.length - 1 ? (
@@ -329,7 +329,7 @@ export default function QuizPage() {
                       onClick={() => setFinished(true)}
                       className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      Abschliessen
+                      Abschließen
                     </button>
                   )}
                 </div>

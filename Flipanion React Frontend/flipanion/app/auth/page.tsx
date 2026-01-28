@@ -98,19 +98,19 @@ export default function AuthPage() {
 
     // Validation
     if (password !== confirmPassword) {
-      setError('Passwoerter stimmen nicht ueberein!');
+      setError('Passwörter stimmen nicht überein!');
       setLoading(false);
       return;
     }
 
     if (passwordStrength === 'weak') {
-      setError('Passwort ist zu schwach. Bitte waehle ein staerkeres Passwort.');
+      setError('Passwort ist zu schwach. Bitte wähle ein stärkeres Passwort.');
       setLoading(false);
       return;
     }
 
     if (!usernameAvailable) {
-      setError('Benutzername ist nicht verfuegbar oder zu kurz (mindestens 3 Zeichen).');
+      setError('Benutzername ist nicht verfügbar oder zu kurz (mindestens 3 Zeichen).');
       setLoading(false);
       return;
     }
@@ -128,7 +128,7 @@ export default function AuthPage() {
     if (error) {
       setError(error.message);
     } else {
-      setMessage('Konto erstellt! Bitte pruefe deine E-Mails zur Bestaetigung.');
+      setMessage('Konto erstellt! Bitte prüfe deine E-Mails zur Bestätigung.');
     }
 
     setLoading(false);
@@ -143,7 +143,7 @@ export default function AuthPage() {
             Flipanion
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
-            {isLogin ? 'Willkommen zurueck' : 'Konto erstellen'}
+            {isLogin ? 'Willkommen zurück' : 'Konto erstellen'}
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             {isLogin ? 'Noch kein Konto? ' : 'Bereits ein Konto? '}
@@ -199,7 +199,7 @@ export default function AuthPage() {
                 )}
                 {usernameAvailable === true && (
                   <p className="mt-1 text-xs text-green-600 dark:text-green-400">
-                    Benutzername verfuegbar
+                    Benutzername verfügbar
                   </p>
                 )}
               </div>
@@ -244,7 +244,7 @@ export default function AuthPage() {
                     <div className={`h-1 flex-1 rounded ${passwordStrength === 'strong' ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
                   </div>
                   <p className={`mt-1 text-xs ${passwordStrength === 'weak' ? 'text-red-600 dark:text-red-400' : passwordStrength === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
-                    Passwortstaerke: {passwordStrength === 'weak' ? 'Schwach' : passwordStrength === 'medium' ? 'Mittel' : 'Stark'}
+                    Passwortstärke: {passwordStrength === 'weak' ? 'Schwach' : passwordStrength === 'medium' ? 'Mittel' : 'Stark'}
                   </p>
                   {passwordStrength === 'weak' && (
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -259,7 +259,7 @@ export default function AuthPage() {
             {!isLogin && (
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Passwort bestaetigen
+                  Passwort bestätigen
                 </label>
                 <input
                   id="confirmPassword"
@@ -272,12 +272,12 @@ export default function AuthPage() {
                 />
                 {confirmPassword && password !== confirmPassword && (
                   <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                    Passwoerter stimmen nicht ueberein
+                    Passwörter stimmen nicht überein
                   </p>
                 )}
                 {confirmPassword && password === confirmPassword && (
                   <p className="mt-1 text-xs text-green-600 dark:text-green-400">
-                    Passwoerter stimmen ueberein ✓
+                    Passwörter stimmen überein ✓
                   </p>
                 )}
               </div>
@@ -318,7 +318,7 @@ export default function AuthPage() {
         {/* Back to home link */}
         <div className="mt-6 text-center">
           <Link href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-            ← Zurueck zur Startseite
+            ← Zurück zur Startseite
           </Link>
         </div>
       </div>

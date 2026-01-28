@@ -58,11 +58,6 @@ export default function Home() {
                   Jetzt kostenlos starten
                 </button>
               </Link>
-              <Link href="/browse">
-                <button className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-lg font-semibold rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-md border border-gray-200 dark:border-gray-700">
-                  Quizze durchstöbern
-                </button>
-              </Link>
             </div>
           </div>
 
