@@ -36,39 +36,62 @@ export default function BrowseQuizzes() {
 
   // Fetch quizzes and subjects from Supabase
   React.useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      
-      // Fetch quizzes with subject information
-      const { data: quizzesData, error: quizzesError } = await supabase
-        .from('Quiz')
-        .select('*, Subject(id, name)');
-      
-      if (quizzesError) {
-        console.error('Error fetching quizzes:', quizzesError);
-      } else {
-        console.log('Quizzes with subjects:', quizzesData);
-        setQuizzes(quizzesData || []);
-      }
+  async function fetchData() {
+    setLoading(true);
 
-      // Fetch subjects
-      const { data: subjectsData, error: subjectsError } = await supabase
-        .from('Subject')
-        .select('*')
-        .order('name', { ascending: true });
-      
-      if (subjectsError) {
-        console.error('Error fetching subjects:', subjectsError);
-      } else {
-        console.log('Subjects fetched:', subjectsData);
-        setSubjects(subjectsData || []);
-      }
+    // 1) Quizzes holen
+    const { data: quizzesData, error: quizzesError } = await supabase
+      .from('Quiz')
+      .select('*, Subject(id, name)');
 
+    if (quizzesError) {
+      console.error('Error fetching quizzes:', quizzesError);
       setLoading(false);
+      return;
     }
 
-    fetchData();
-  }, []);
+    // 2) Alle Questions holen (nur quizId reicht) und zählen
+    const { data: questionRows, error: questionsError } = await supabase
+      .from('Question')
+      .select('quizId'); // <- wichtig: so heißt es in deiner DB
+
+    if (questionsError) {
+      console.error('Error fetching questions:', questionsError);
+      // Quizzes trotzdem anzeigen, counts bleiben 0
+      setQuizzes(quizzesData || []);
+    } else {
+      const counts: Record<number, number> = {};
+
+      (questionRows || []).forEach((row: { quizId: number }) => {
+        const qid = row.quizId;
+        if (typeof qid === 'number') counts[qid] = (counts[qid] || 0) + 1;
+      });
+
+      const quizzesWithCount = (quizzesData || []).map((q: Quiz) => ({
+        ...q,
+        questionCount: counts[q.id] ?? 0,
+      }));
+
+      setQuizzes(quizzesWithCount);
+    }
+
+    // 3) Subjects holen (für Filter)
+    const { data: subjectsData, error: subjectsError } = await supabase
+      .from('Subject')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (subjectsError) {
+      console.error('Error fetching subjects:', subjectsError);
+    } else {
+      setSubjects(subjectsData || []);
+    }
+
+    setLoading(false);
+  }
+
+  fetchData();
+}, []);
 
   // Filter quizzes based on search and subject
   const filteredQuizzes = quizzes.filter(quiz => {
