@@ -55,7 +55,7 @@ export default function Header() {
           ) : user ? (
             // Logged in - Show username and profile icon
             <div className="flex items-center gap-3">
-              <Link href="/" className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+              <Link href="/profile" className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">
                     {(user.user_metadata?.name || user.email || 'U').charAt(0).toUpperCase()}
