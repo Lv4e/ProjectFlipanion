@@ -83,6 +83,7 @@ export default function QuizPage() {
   const [answers, setAnswers] = React.useState<Record<string, number>>({});
   const [finished, setFinished] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [user, setUser] = React.useState<any>(null);
 
   // Hinweistext, wenn quizId in Question fehlt oder nicht gesetzt ist
   const [hint, setHint] = React.useState<string | null>(null);
@@ -99,6 +100,10 @@ export default function QuizPage() {
       setError(null);
       setHint(null);
       setFinished(false);
+
+      // Get current user
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      setUser(currentUser);
 
       // 1) Quiz laden
       const { data: quizData, error: quizErr } = await supabase
@@ -149,9 +154,14 @@ export default function QuizPage() {
       }
 
       if (!hasQuizIdColumn) {
-        setHint(
-          'In der Question-Tabelle scheint keine Spalte "quizId" vorhanden zu sein (oder sie kommt nicht im Select zurück). Ich zeige daher alle Fragen an.'
-        );
+        // Wenn nicht angemeldet, zeige "Du musst dich anmelden"
+        if (!currentUser) {
+          setHint('Du musst dich anmelden um die Quizzes zu verwenden.');
+        } else {
+          setHint(
+            'In der Question-Tabelle scheint keine Spalte "quizId" vorhanden zu sein (oder sie kommt nicht im Select zurück). Ich zeige daher alle Fragen an.'
+          );
+        }
       }
 
       const normalized = filtered.map(normalizeQuestion);
@@ -227,7 +237,7 @@ export default function QuizPage() {
               </div>
 
               {hint ? (
-                <div className="mt-4 text-sm text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 rounded-lg p-3">
+                <div className="mt-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg p-3">
                   {hint}
                 </div>
               ) : null}
