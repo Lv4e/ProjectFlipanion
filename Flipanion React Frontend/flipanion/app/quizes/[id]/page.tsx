@@ -3,10 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { User } from '@supabase/supabase-js';
 import Header from '../../../components/Header';
 import { supabase } from '../../supabase-client';
 
-type AnyRow = Record<string, any>;
+type AnyRow = Record<string, unknown>;
 
 type NormalizedQuestion = {
   id: number | string;
@@ -24,7 +25,7 @@ function letterToIndex(v: string) {
   return undefined;
 }
 
-function toCorrectIndex(correctAnswer: any, options: string[]): number | undefined {
+function toCorrectIndex(correctAnswer: unknown, options: string[]): number | undefined {
   if (correctAnswer === null || correctAnswer === undefined) return undefined;
 
   const raw = String(correctAnswer).trim();
@@ -45,11 +46,11 @@ function toCorrectIndex(correctAnswer: any, options: string[]): number | undefin
 }
 
 function normalizeQuestion(q: AnyRow): NormalizedQuestion {
-  const text =
-    q.questionText ??
-    q.text ??
-    q.prompt ??
-    q.question ??
+  const text: string =
+    (q.questionText as string | null | undefined) ??
+    (q.text as string | null | undefined) ??
+    (q.prompt as string | null | undefined) ??
+    (q.question as string | null | undefined) ??
     'Frage ohne Titel';
 
   const options = [
@@ -65,7 +66,7 @@ function normalizeQuestion(q: AnyRow): NormalizedQuestion {
   const correctIndex = toCorrectIndex(q.correctAnswer, options);
 
   return {
-    id: q.id,
+    id: q.id as number | string,
     text,
     options: options.length ? options : ['(keine Antworten gefunden)'],
     correctIndex,
@@ -83,7 +84,7 @@ export default function QuizPage() {
   const [answers, setAnswers] = React.useState<Record<string, number>>({});
   const [finished, setFinished] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [user, setUser] = React.useState<any>(null);
+  const [user, setUser] = React.useState<User | null>(null);
 
   // Hinweistext, wenn quizId in Question fehlt oder nicht gesetzt ist
   const [hint, setHint] = React.useState<string | null>(null);
@@ -217,10 +218,10 @@ export default function QuizPage() {
           <>
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6 border border-gray-200 dark:border-gray-700">
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {quiz?.title ?? 'Quiz'}
+                {typeof quiz?.title === 'string' && quiz.title.trim().length > 0 ? quiz.title : 'Quiz'}
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                {quiz?.description ?? ''}
+                {typeof quiz?.description === 'string' ? quiz.description : ''}
               </p>
 
               <div className="flex items-center justify-between mt-4 text-sm text-gray-600 dark:text-gray-400">

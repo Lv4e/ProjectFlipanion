@@ -33,7 +33,7 @@ export default function BrowseQuizzes() {
   const [loading, setLoading] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedSubject, setSelectedSubject] = React.useState('all');
-  const [user, setUser] = React.useState<any>(null);
+  const [user, setUser] = React.useState<import('@supabase/supabase-js').User | null>(null);
   const [questionsError, setQuestionsError] = React.useState<boolean>(false);
 
   // Fetch quizzes and subjects from Supabase
