@@ -33,11 +33,18 @@ export default function BrowseQuizzes() {
   const [loading, setLoading] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedSubject, setSelectedSubject] = React.useState('all');
+  const [user, setUser] = React.useState<any>(null);
+  const [questionsError, setQuestionsError] = React.useState<boolean>(false);
 
   // Fetch quizzes and subjects from Supabase
   React.useEffect(() => {
   async function fetchData() {
     setLoading(true);
+    setQuestionsError(false);
+
+    // Get current user
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    setUser(currentUser);
 
     // 1) Quizzes holen
     const { data: quizzesData, error: quizzesError } = await supabase
@@ -51,12 +58,16 @@ export default function BrowseQuizzes() {
     }
 
     // 2) Alle Questions holen (nur quizId reicht) und zählen
-    const { data: questionRows, error: questionsError } = await supabase
+    const { data: questionRows, error: questionsErrorResult } = await supabase
       .from('Question')
       .select('quizId'); // <- wichtig: so heißt es in deiner DB
 
-    if (questionsError) {
-      console.error('Error fetching questions:', questionsError);
+    if (questionsErrorResult) {
+      console.error('Error fetching questions:', questionsErrorResult);
+      // Wenn nicht angemeldet, setze den Error-Flag
+      if (!currentUser) {
+        setQuestionsError(true);
+      }
       // Quizzes trotzdem anzeigen, counts bleiben 0
       setQuizzes(quizzesData || []);
     } else {
@@ -120,6 +131,15 @@ export default function BrowseQuizzes() {
             Entdecke Quizze, um dein Wissen zu testen
           </p>
         </div>
+
+        {/* Error Message for Unauthenticated Users */}
+        {questionsError && !user && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-8">
+            <p className="text-red-800 dark:text-red-200">
+              Du musst dich anmelden, um die Anzahl der Fragen zu sehen.
+            </p>
+          </div>
+        )}
 
         {/* Search and Filter Bar */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
@@ -208,7 +228,7 @@ export default function BrowseQuizzes() {
                       {quiz.Subject?.name || quiz.subject || 'Allgemein'}
                     </span>
                     <span className="text-xs text-gray-500 dark:text-gray-500">
-                      {quiz.questionCount || 0} Fragen
+                      {!user ? '?' : quiz.questionCount || 0} Fragen
                     </span>
                   </div>
 
