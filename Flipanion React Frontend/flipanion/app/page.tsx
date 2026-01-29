@@ -109,9 +109,9 @@ export default function Home() {
               <p className="text-xl text-blue-50 mb-8">
                 Schließe dich tausenden Lernenden an, die Flipanion bereits nutzen
               </p>
-              <Link href="/auth">
+              <Link href="/browse">
                 <button className="px-10 py-4 bg-white text-blue-600 text-lg font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
-                  Jetzt registrieren – kostenlos!
+                  Durchstöbere unsere Quizzes
                 </button>
               </Link>
             </div>
