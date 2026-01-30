@@ -108,13 +108,22 @@ export default function ProfilePage() {
 
     try {
       // Update in custom User table first
-      const { error: dbError } = await supabase
+      const { data: updateData, error: dbError, count } = await supabase
         .from('User')
         .update({ name: username })
-        .eq('supabaseId', user.id);
+        .eq('supabaseId', user.id)
+        .select();
+
+      console.log('Update result:', { updateData, dbError, count, supabaseId: user.id });
 
       if (dbError) {
         setMessage({ type: 'error', text: `Fehler beim Speichern: ${dbError.message}` });
+        setSaving(false);
+        return;
+      }
+
+      if (!updateData || updateData.length === 0) {
+        setMessage({ type: 'error', text: 'Benutzer konnte nicht aktualisiert werden. Möglicherweise fehlen Berechtigungen.' });
         setSaving(false);
         return;
       }
