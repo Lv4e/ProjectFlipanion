@@ -25,7 +25,7 @@ model User {
 
 model Subject {
   id          Int      @id @default(autoincrement())
-  name        String
+  name        String   @unique      
   description String?
   points      Points[]
   quizzes     Quiz[]
@@ -81,4 +81,6 @@ model Quiz {
   subjectId   Int
   questions   Question[]
   subject     Subject    @relation(fields: [subjectId], references: [id])
+
+  @@unique([title, subjectId])      
 }
