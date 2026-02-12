@@ -236,6 +236,7 @@ export type QuizOrderByWithRelationInput = {
 
 export type QuizWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  title_subjectId?: Prisma.QuizTitleSubjectIdCompoundUniqueInput
   AND?: Prisma.QuizWhereInput | Prisma.QuizWhereInput[]
   OR?: Prisma.QuizWhereInput[]
   NOT?: Prisma.QuizWhereInput | Prisma.QuizWhereInput[]
@@ -245,7 +246,7 @@ export type QuizWhereUniqueInput = Prisma.AtLeast<{
   subjectId?: Prisma.IntFilter<"Quiz"> | number
   questions?: Prisma.QuestionListRelationFilter
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
-}, "id">
+}, "id" | "title_subjectId">
 
 export type QuizOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -340,6 +341,11 @@ export type QuizOrderByRelationAggregateInput = {
 export type QuizScalarRelationFilter = {
   is?: Prisma.QuizWhereInput
   isNot?: Prisma.QuizWhereInput
+}
+
+export type QuizTitleSubjectIdCompoundUniqueInput = {
+  title: string
+  subjectId: number
 }
 
 export type QuizCountOrderByAggregateInput = {

@@ -214,14 +214,14 @@ export type SubjectOrderByWithRelationInput = {
 
 export type SubjectWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  name?: string
   AND?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
   OR?: Prisma.SubjectWhereInput[]
   NOT?: Prisma.SubjectWhereInput | Prisma.SubjectWhereInput[]
-  name?: Prisma.StringFilter<"Subject"> | string
   description?: Prisma.StringNullableFilter<"Subject"> | string | null
   points?: Prisma.PointsListRelationFilter
   quizzes?: Prisma.QuizListRelationFilter
-}, "id">
+}, "id" | "name">
 
 export type SubjectOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
