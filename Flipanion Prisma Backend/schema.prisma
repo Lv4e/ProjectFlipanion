@@ -14,7 +14,7 @@ model User {
   id             Int             @id @default(autoincrement())
   email          String          @unique
   passwordHash   String
-  name           String
+  name           String          @unique 
   createdAt      DateTime        @default(now())
   supabaseId     String?         @unique
   avatarUrl      String?
