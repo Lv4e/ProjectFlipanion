@@ -1,24 +1,28 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { supabase } from '../supabase-client';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React from "react";
+import { supabase } from "../supabase-client";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AuthPage() {
   const searchParams = useSearchParams();
-  const mode = searchParams.get('mode');
-  const [isLogin, setIsLogin] = React.useState(mode !== 'signup');
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [confirmPassword, setConfirmPassword] = React.useState('');
-  const [username, setUsername] = React.useState('');
-  const [usernameAvailable, setUsernameAvailable] = React.useState<boolean | null>(null);
+  const mode = searchParams.get("mode");
+  const [isLogin, setIsLogin] = React.useState(mode !== "signup");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [usernameAvailable, setUsernameAvailable] = React.useState<
+    boolean | null
+  >(null);
   const [checkingUsername, setCheckingUsername] = React.useState(false);
-  const [passwordStrength, setPasswordStrength] = React.useState<'weak' | 'medium' | 'strong' | null>(null);
+  const [passwordStrength, setPasswordStrength] = React.useState<
+    "weak" | "medium" | "strong" | null
+  >(null);
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState('');
-  const [message, setMessage] = React.useState('');
+  const [error, setError] = React.useState("");
+  const [message, setMessage] = React.useState("");
   const router = useRouter();
 
   // Check username availability
@@ -26,15 +30,18 @@ export default function AuthPage() {
     if (!isLogin && username.length >= 3) {
       const timeoutId = setTimeout(async () => {
         setCheckingUsername(true);
-        
-        // Check if username exists in User table
-        const { data, error } = await supabase
-          .from('User')
-          .select('name')
-          .eq('name', username)
-          .single();
-        
-        setUsernameAvailable(error?.code === 'PGRST116'); // PGRST116 = no rows found
+        const candidate = username.trim();
+        // Use a count-based check to avoid single() ambiguity (0 or many)
+        const { count, error } = await supabase
+          .from("User")
+          .select("name", { count: "exact", head: true })
+          .eq("name", candidate);
+
+        if (error) {
+          setUsernameAvailable(false);
+        } else {
+          setUsernameAvailable((count ?? 0) === 0);
+        }
         setCheckingUsername(false);
       }, 500); // Debounce for 500ms
 
@@ -50,18 +57,28 @@ export default function AuthPage() {
       const hasNumber = /\d/.test(password);
       const hasLetter = /[a-zA-Z]/.test(password);
       const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-      const isSequential = /^(012|123|234|345|456|567|678|789|890|abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)/i.test(password);
+      const isSequential =
+        /^(012|123|234|345|456|567|678|789|890|abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)/i.test(
+          password,
+        );
       const isRepeating = /(.)\1{2,}/.test(password);
-      const isCommon = ['password', '12345678', 'qwertz', 'asdfgh', '1234567'].some(common => 
-        password.toLowerCase().includes(common)
-      );
+      const isCommon = [
+        "password",
+        "12345678",
+        "qwertz",
+        "asdfgh",
+        "1234567",
+      ].some((common) => password.toLowerCase().includes(common));
 
       if (password.length < 8 || isSequential || isRepeating || isCommon) {
-        setPasswordStrength('weak');
-      } else if (password.length >= 8 && hasNumber && hasLetter || hasSpecial && hasLetter) {
-        setPasswordStrength(hasSpecial && hasNumber ? 'strong' : 'medium');
+        setPasswordStrength("weak");
+      } else if (
+        (password.length >= 8 && hasNumber && hasLetter) ||
+        (hasSpecial && hasLetter)
+      ) {
+        setPasswordStrength(hasSpecial && hasNumber ? "strong" : "medium");
       } else {
-        setPasswordStrength('weak');
+        setPasswordStrength("weak");
       }
     } else {
       setPasswordStrength(null);
@@ -71,8 +88,8 @@ export default function AuthPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -82,9 +99,9 @@ export default function AuthPage() {
     if (error) {
       setError(error.message);
     } else {
-      setMessage('Login erfolgreich!');
+      setMessage("Login erfolgreich!");
       // Redirect to home page after successful login
-      setTimeout(() => router.push('/'), 1000);
+      setTimeout(() => router.push("/"), 1000);
     }
 
     setLoading(false);
@@ -93,24 +110,26 @@ export default function AuthPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     // Validation
     if (password !== confirmPassword) {
-      setError('Passwörter stimmen nicht überein!');
+      setError("Passwörter stimmen nicht überein!");
       setLoading(false);
       return;
     }
 
-    if (passwordStrength === 'weak') {
-      setError('Passwort ist zu schwach. Bitte wähle ein stärkeres Passwort.');
+    if (passwordStrength === "weak") {
+      setError("Passwort ist zu schwach. Bitte wähle ein stärkeres Passwort.");
       setLoading(false);
       return;
     }
 
     if (!usernameAvailable) {
-      setError('Benutzername ist nicht verfügbar oder zu kurz (mindestens 3 Zeichen).');
+      setError(
+        "Benutzername ist nicht verfügbar oder zu kurz (mindestens 3 Zeichen).",
+      );
       setLoading(false);
       return;
     }
@@ -120,15 +139,15 @@ export default function AuthPage() {
       password,
       options: {
         data: {
-          name: username,
-        }
-      }
+          name: username.trim(),
+        },
+      },
     });
 
     if (error) {
       setError(error.message);
     } else {
-      setMessage('Konto erstellt! Bitte prüfe deine E-Mails zur Bestätigung.');
+      setMessage("Konto erstellt! Bitte prüfe deine E-Mails zur Bestätigung.");
     }
 
     setLoading(false);
@@ -139,34 +158,43 @@ export default function AuthPage() {
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-bold text-blue-600 hover:text-blue-700">
+          <Link
+            href="/"
+            className="text-3xl font-bold text-blue-600 hover:text-blue-700"
+          >
             Flipanion
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
-            {isLogin ? 'Willkommen zurück' : 'Konto erstellen'}
+            {isLogin ? "Willkommen zurück" : "Konto erstellen"}
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {isLogin ? 'Noch kein Konto? ' : 'Bereits ein Konto? '}
+            {isLogin ? "Noch kein Konto? " : "Bereits ein Konto? "}
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
-                setError('');
-                setMessage('');
+                setError("");
+                setMessage("");
               }}
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              {isLogin ? 'Registrieren' : 'Anmelden'}
+              {isLogin ? "Registrieren" : "Anmelden"}
             </button>
           </p>
         </div>
 
         {/* Form Card */}
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8">
-          <form onSubmit={isLogin ? handleLogin : handleSignup} className="space-y-6">
+          <form
+            onSubmit={isLogin ? handleLogin : handleSignup}
+            className="space-y-6"
+          >
             {/* Username field (only for signup) */}
             {!isLogin && (
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Benutzername
                 </label>
                 <div className="relative">
@@ -186,10 +214,14 @@ export default function AuthPage() {
                     </div>
                   )}
                   {!checkingUsername && usernameAvailable === true && (
-                    <div className="absolute right-3 top-3 text-green-600 text-xl">✓</div>
+                    <div className="absolute right-3 top-3 text-green-600 text-xl">
+                      ✓
+                    </div>
                   )}
                   {!checkingUsername && usernameAvailable === false && (
-                    <div className="absolute right-3 top-3 text-red-600 text-xl">✗</div>
+                    <div className="absolute right-3 top-3 text-red-600 text-xl">
+                      ✗
+                    </div>
                   )}
                 </div>
                 {usernameAvailable === false && (
@@ -207,7 +239,10 @@ export default function AuthPage() {
 
             {/* Email field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 E-Mail
               </label>
               <input
@@ -223,7 +258,10 @@ export default function AuthPage() {
 
             {/* Password field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Passwort
               </label>
               <input
@@ -239,16 +277,30 @@ export default function AuthPage() {
               {!isLogin && passwordStrength && (
                 <div className="mt-2">
                   <div className="flex gap-1">
-                    <div className={`h-1 flex-1 rounded ${passwordStrength === 'weak' ? 'bg-red-500' : passwordStrength === 'medium' ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
-                    <div className={`h-1 flex-1 rounded ${passwordStrength === 'medium' || passwordStrength === 'strong' ? passwordStrength === 'medium' ? 'bg-yellow-500' : 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
-                    <div className={`h-1 flex-1 rounded ${passwordStrength === 'strong' ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
+                    <div
+                      className={`h-1 flex-1 rounded ${passwordStrength === "weak" ? "bg-red-500" : passwordStrength === "medium" ? "bg-yellow-500" : "bg-green-500"}`}
+                    ></div>
+                    <div
+                      className={`h-1 flex-1 rounded ${passwordStrength === "medium" || passwordStrength === "strong" ? (passwordStrength === "medium" ? "bg-yellow-500" : "bg-green-500") : "bg-gray-300 dark:bg-gray-600"}`}
+                    ></div>
+                    <div
+                      className={`h-1 flex-1 rounded ${passwordStrength === "strong" ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}
+                    ></div>
                   </div>
-                  <p className={`mt-1 text-xs ${passwordStrength === 'weak' ? 'text-red-600 dark:text-red-400' : passwordStrength === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'}`}>
-                    Passwortstärke: {passwordStrength === 'weak' ? 'Schwach' : passwordStrength === 'medium' ? 'Mittel' : 'Stark'}
+                  <p
+                    className={`mt-1 text-xs ${passwordStrength === "weak" ? "text-red-600 dark:text-red-400" : passwordStrength === "medium" ? "text-yellow-600 dark:text-yellow-400" : "text-green-600 dark:text-green-400"}`}
+                  >
+                    Passwortstärke:{" "}
+                    {passwordStrength === "weak"
+                      ? "Schwach"
+                      : passwordStrength === "medium"
+                        ? "Mittel"
+                        : "Stark"}
                   </p>
-                  {passwordStrength === 'weak' && (
+                  {passwordStrength === "weak" && (
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      Verwende mindestens 8 Zeichen mit Zahlen und Buchstaben. Vermeide einfache Muster.
+                      Verwende mindestens 8 Zeichen mit Zahlen und Buchstaben.
+                      Vermeide einfache Muster.
                     </p>
                   )}
                 </div>
@@ -258,7 +310,10 @@ export default function AuthPage() {
             {/* Confirm Password field (only for signup) */}
             {!isLogin && (
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Passwort bestätigen
                 </label>
                 <input
@@ -286,14 +341,18 @@ export default function AuthPage() {
             {/* Error message */}
             {error && (
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {error}
+                </p>
               </div>
             )}
 
             {/* Success message */}
             {message && (
               <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
-                <p className="text-sm text-green-600 dark:text-green-400">{message}</p>
+                <p className="text-sm text-green-600 dark:text-green-400">
+                  {message}
+                </p>
               </div>
             )}
 
@@ -306,10 +365,12 @@ export default function AuthPage() {
               {loading ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  {isLogin ? 'Anmeldung ...' : 'Konto wird erstellt ...'}
+                  {isLogin ? "Anmeldung ..." : "Konto wird erstellt ..."}
                 </>
+              ) : isLogin ? (
+                "Anmelden"
               ) : (
-                isLogin ? 'Anmelden' : 'Registrieren'
+                "Registrieren"
               )}
             </button>
           </form>
@@ -317,7 +378,10 @@ export default function AuthPage() {
 
         {/* Back to home link */}
         <div className="mt-6 text-center">
-          <Link href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+          <Link
+            href="/"
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          >
             ← Zurück zur Startseite
           </Link>
         </div>
