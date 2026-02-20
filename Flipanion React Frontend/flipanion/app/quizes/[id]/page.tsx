@@ -194,70 +194,92 @@ export default function QuizPage() {
   const selectedForCurrent = q ? answers[String(q.id)] : undefined;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Link href="/browse" className="text-blue-600 hover:text-blue-700 mb-6 inline-block">
-          ← Zurück zur Übersicht
+      <main className="max-w-3xl mx-auto px-6 pt-28 pb-12">
+        <Link href="/browse" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-6 transition-colors">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+          Zurück zur Übersicht
         </Link>
 
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Quiz wird geladen ...</p>
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+            <p className="mt-4 text-sm text-[var(--text-muted)]">Quiz wird geladen ...</p>
           </div>
         ) : error ? (
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-red-200 dark:border-red-900">
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <div className="glass-card rounded-2xl p-6 border-red-200 dark:border-red-500/20">
+            <h1 className="text-lg font-semibold text-[var(--foreground)] mb-2">
               Quiz konnte nicht geöffnet werden
             </h1>
-            <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+            <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>
           </div>
         ) : (
           <>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6 border border-gray-200 dark:border-gray-700">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {typeof quiz?.title === 'string' && quiz.title.trim().length > 0 ? quiz.title : 'Quiz'}
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
-                {typeof quiz?.description === 'string' ? quiz.description : ''}
-              </p>
+            {/* Quiz Header Card */}
+            <div className="glass-card rounded-2xl p-6 mb-6 animate-fade-in-up relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-gradient-to-br from-indigo-500/8 to-violet-500/8 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+              <div className="relative">
+                <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
+                  {typeof quiz?.title === 'string' && quiz.title.trim().length > 0 ? quiz.title : 'Quiz'}
+                </h1>
+                <p className="text-[var(--text-muted)] mt-1 text-sm">
+                  {typeof quiz?.description === 'string' ? quiz.description : ''}
+                </p>
 
-              <div className="flex items-center justify-between mt-4 text-sm text-gray-600 dark:text-gray-400">
-                <span>
-                  Fach:{' '}
-                  <span className="font-medium">
-                    {quiz?.Subject?.name ?? quiz?.subject ?? 'Allgemein'}
+                <div className="flex items-center justify-between mt-4 text-sm text-[var(--text-muted)]">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                      {(quiz as AnyRow)?.Subject?.name ?? (quiz as AnyRow)?.subject ?? 'Allgemein'}
+                    </span>
                   </span>
-                </span>
-                <span>
-                  {questions.length} {questions.length === 1 ? 'Frage' : 'Fragen'}
-                  {canScore ? ` • Punkte: ${score}` : ''}
-                </span>
-              </div>
-
-              {hint ? (
-                <div className="mt-4 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg p-3">
-                  {hint}
+                  <span className="text-sm">
+                    {questions.length} {questions.length === 1 ? 'Frage' : 'Fragen'}
+                    {canScore ? ` · ${score} Punkte` : ''}
+                  </span>
                 </div>
-              ) : null}
+
+                {hint ? (
+                  <div className="mt-4 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl p-3">
+                    {hint}
+                  </div>
+                ) : null}
+              </div>
             </div>
 
             {questions.length === 0 ? (
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                <p className="text-gray-700 dark:text-gray-300">
-                  Keine Fragen gefunden.
-                </p>
+              <div className="glass-card rounded-2xl p-8 flex flex-col items-center justify-center text-center">
+                <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
+                  <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <p className="text-[var(--foreground)] font-medium mb-1">Keine Fragen gefunden</p>
+                <p className="text-sm text-[var(--text-muted)]">Dieses Quiz hat noch keine Fragen.</p>
               </div>
             ) : finished ? (
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Fertig</h2>
-                <p className="text-gray-600 dark:text-gray-400 mt-2">
-                  {canScore ? `Dein Ergebnis: ${score} / ${questions.length}` : 'Abgeschlossen.'}
+              /* Results Card */
+              <div className="glass-card rounded-2xl p-8 text-center animate-fade-in-up">
+                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-500/20">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">Geschafft!</h2>
+                <p className="text-[var(--text-muted)] mb-6">
+                  {canScore
+                    ? <>Du hast <span className="font-bold text-indigo-500">{score}</span> von <span className="font-bold">{questions.length}</span> Fragen richtig beantwortet.</>
+                    : 'Quiz abgeschlossen.'}
                 </p>
 
-                <div className="flex gap-3 mt-6">
+                {/* Progress Bar */}
+                {canScore && (
+                  <div className="w-full max-w-xs mx-auto bg-[var(--border)] rounded-full h-2.5 mb-8 overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-indigo-500 to-violet-500 h-2.5 rounded-full transition-all duration-500"
+                      style={{ width: `${(score / questions.length) * 100}%` }}
+                    />
+                  </div>
+                )}
+
+                <div className="flex gap-3 justify-center">
                   <button
                     type="button"
                     onClick={() => {
@@ -265,31 +287,42 @@ export default function QuizPage() {
                       setCurrent(0);
                       setAnswers({});
                     }}
-                    className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white"
+                    className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[var(--foreground)] font-medium hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
                   >
                     Erneut versuchen
                   </button>
                   <Link
                     href="/browse"
-                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-medium shadow-md shadow-indigo-500/15 transition-all active:scale-[0.98]"
                   >
-                    Zurück zur Übersicht
+                    Zur Übersicht
                   </Link>
                 </div>
               </div>
             ) : (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+              /* Question Card */
+              <div className="glass-card rounded-2xl p-6 animate-fade-in-up">
+                {/* Progress */}
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-[var(--text-muted)]">
                     Frage {current + 1} von {questions.length}
                   </span>
+                  <span className="text-xs text-[var(--text-muted)]">
+                    {Math.round(((current + 1) / questions.length) * 100)}%
+                  </span>
+                </div>
+                <div className="w-full bg-[var(--border)] rounded-full h-1.5 mb-6 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-indigo-500 to-violet-500 h-1.5 rounded-full transition-all duration-300"
+                    style={{ width: `${((current + 1) / questions.length) * 100}%` }}
+                  />
                 </div>
 
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <h2 className="text-lg font-semibold text-[var(--foreground)] mb-5 leading-relaxed">
                   {q.text}
                 </h2>
 
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {q.options.map((opt, idx) => {
                     const selected = selectedForCurrent === idx;
                     return (
@@ -300,15 +333,19 @@ export default function QuizPage() {
                           setAnswers((prev) => ({ ...prev, [String(q.id)]: idx }))
                         }
                         className={[
-                          'w-full text-left px-4 py-3 rounded-lg border transition-colors',
+                          'w-full text-left px-4 py-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer group',
                           selected
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
-                            : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700',
-                          'text-gray-900 dark:text-white',
+                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 shadow-sm shadow-indigo-500/10'
+                            : 'border-[var(--border)] hover:border-indigo-300 dark:hover:border-indigo-500/30 hover:bg-[var(--surface-hover)]',
+                          'text-[var(--foreground)]',
                         ].join(' ')}
                       >
-                        <span className="font-medium mr-2">
-                          {String.fromCharCode(65 + idx)}.
+                        <span className={`inline-flex items-center justify-center w-7 h-7 rounded-lg text-sm font-semibold mr-3 transition-colors ${
+                          selected
+                            ? 'bg-indigo-500 text-white'
+                            : 'bg-[var(--background)] text-[var(--text-muted)] group-hover:text-indigo-500'
+                        }`}>
+                          {String.fromCharCode(65 + idx)}
                         </span>
                         {opt}
                       </button>
@@ -316,12 +353,12 @@ export default function QuizPage() {
                   })}
                 </div>
 
-                <div className="flex justify-between mt-6">
+                <div className="flex justify-between mt-7">
                   <button
                     type="button"
                     onClick={() => setCurrent((c) => Math.max(0, c - 1))}
                     disabled={current === 0}
-                    className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 disabled:opacity-50 text-gray-900 dark:text-white"
+                    className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[var(--foreground)] font-medium hover:bg-[var(--surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
                   >
                     Zurück
                   </button>
@@ -330,7 +367,7 @@ export default function QuizPage() {
                     <button
                       type="button"
                       onClick={() => setCurrent((c) => Math.min(questions.length - 1, c + 1))}
-                      className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-medium shadow-md shadow-indigo-500/15 transition-all active:scale-[0.98] cursor-pointer"
                     >
                       Weiter
                     </button>
@@ -338,7 +375,7 @@ export default function QuizPage() {
                     <button
                       type="button"
                       onClick={() => setFinished(true)}
-                      className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-medium shadow-md shadow-indigo-500/15 transition-all active:scale-[0.98] cursor-pointer"
                     >
                       Abschließen
                     </button>

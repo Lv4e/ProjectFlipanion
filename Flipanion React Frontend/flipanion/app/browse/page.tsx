@@ -114,61 +114,64 @@ export default function BrowseQuizzes() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
+    <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-6 pt-28 pb-12">
         {/* Page Header */}
-        <div className="mb-8">
-          <Link href="/" className="text-blue-600 hover:text-blue-700 mb-2 inline-block">
-            ← Zurück zur Startseite
+        <div className="mb-10 animate-fade-in-up">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+            Zurück zur Startseite
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Quizze durchstöbern
+          <h1 className="text-3xl md:text-4xl font-bold text-[var(--foreground)] tracking-tight mb-1">
+            Quizze entdecken
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Entdecke Quizze, um dein Wissen zu testen
+          <p className="text-[var(--text-muted)]">
+            Finde Quizze, um dein Wissen zu testen
           </p>
         </div>
 
         {/* Error Message for Unauthenticated Users */}
         {questionsError && !user && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-8">
-            <p className="text-red-800 dark:text-red-200">
+          <div className="glass-card border-red-200 dark:border-red-500/20 rounded-2xl p-4 mb-8 animate-fade-in-up">
+            <p className="text-red-600 dark:text-red-400 text-sm font-medium">
               Du musst dich anmelden, um die Anzahl der Fragen zu sehen.
             </p>
           </div>
         )}
 
         {/* Search and Filter Bar */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
+        <div className="glass-card rounded-2xl p-6 mb-8 animate-fade-in-up-delay-1">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Search Input */}
             <div>
-              <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="search" className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Quizze suchen
               </label>
-              <input
-                type="text"
-                id="search"
-                placeholder="Suche nach Titel oder Beschreibung ..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              />
+              <div className="relative">
+                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <input
+                  type="text"
+                  id="search"
+                  placeholder="Suche nach Titel oder Beschreibung ..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                />
+              </div>
             </div>
 
             {/* Subject Filter */}
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="subject" className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Nach Fach filtern
               </label>
               <select
                 id="subject"
                 value={selectedSubject}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] transition-all outline-none appearance-none cursor-pointer"
               >
                 <option value="all">Alle Fächer</option>
                 {subjects.map((subject) => (
@@ -181,65 +184,69 @@ export default function BrowseQuizzes() {
           </div>
         </div>
 
-        {/* ...existing code... */}
         {/* Quiz Grid */}
-        <div>
+        <div className="animate-fade-in-up-delay-2">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-lg font-semibold text-[var(--foreground)]">
               {filteredQuizzes.length} {filteredQuizzes.length === 1 ? 'Quiz gefunden' : 'Quizze gefunden'}
             </h2>
           </div>
 
           {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-gray-600 dark:text-gray-400">Quizze werden geladen ...</p>
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+              <p className="mt-4 text-sm text-[var(--text-muted)]">Quizze werden geladen ...</p>
             </div>
           ) : filteredQuizzes.length === 0 ? (
-            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg">
-              <p className="text-gray-600 dark:text-gray-400 text-lg">Keine Quizze gefunden</p>
-              <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">Passe deine Suche oder Filter an</p>
+            <div className="glass-card rounded-2xl py-16 flex flex-col items-center justify-center text-center">
+              <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
+                <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              </div>
+              <p className="text-[var(--foreground)] font-medium mb-1">Keine Quizze gefunden</p>
+              <p className="text-sm text-[var(--text-muted)]">Passe deine Suche oder Filter an</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredQuizzes.map((quiz) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredQuizzes.map((quiz, index) => (
                 <div
                   key={quiz.id}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
+                  className="glass-card rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group"
                 >
                   {/* Quiz Image/Icon */}
-                  <div className="h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-md mb-4 flex items-center justify-center">
-                    <span className="text-white text-4xl font-bold">
+                  <div className="h-28 bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 flex items-center justify-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
+                    <span className="text-white/90 text-4xl font-bold relative">
                       {quiz.title ? quiz.title.charAt(0).toUpperCase() : 'Q'}
                     </span>
                   </div>
 
-                  {/* Quiz Info */}
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-2">
-                    {quiz.title || 'Ohne Titel'}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-                    {quiz.description || 'Keine Beschreibung vorhanden'}
-                  </p>
+                  {/* Quiz Content */}
+                  <div className="p-5">
+                    <h3 className="font-semibold text-[var(--foreground)] mb-1.5 group-hover:text-indigo-500 transition-colors">
+                      {quiz.title || 'Ohne Titel'}
+                    </h3>
+                    <p className="text-sm text-[var(--text-muted)] mb-4 line-clamp-2 leading-relaxed">
+                      {quiz.description || 'Keine Beschreibung vorhanden'}
+                    </p>
 
-                  {/* Quiz Meta */}
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="inline-block px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
-                      {quiz.Subject?.name || quiz.subject || 'Allgemein'}
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-500">
-                      {!user ? '?' : quiz.questionCount || 0} Fragen
-                    </span>
+                    {/* Quiz Meta */}
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                        {quiz.Subject?.name || quiz.subject || 'Allgemein'}
+                      </span>
+                      <span className="text-xs text-[var(--text-muted)]">
+                        {!user ? '?' : quiz.questionCount || 0} Fragen
+                      </span>
+                    </div>
+
+                    {/* Action Button */}
+                    <Link
+                      href={`/quizes/${quiz.id}`}
+                      className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/15 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] block text-center"
+                    >
+                      Quiz starten
+                    </Link>
                   </div>
-
-                  {/* Action Button */}
-                  <Link
-                    href={`/quizes/${quiz.id}`}
-                    className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors block text-center"
-                  >
-                    Quiz starten →
-                  </Link>
-
                 </div>
               ))}
             </div>
