@@ -16,22 +16,27 @@ interface User {
 export default function Header() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [scrolled, setScrolled] = React.useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   React.useEffect(() => {
-    // Get current user
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user as User | null);
       setLoading(false);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user as User | null);
     });
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  React.useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleLogout = async () => {
@@ -40,54 +45,76 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white hover:text-blue-600 transition-colors">
-          Flipanion
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled 
+        ? 'bg-white/80 dark:bg-[#0f0f1a]/80 backdrop-blur-xl shadow-sm border-b border-[var(--border)]' 
+        : 'bg-transparent'
+    }`}>
+      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-indigo-500/25 transition-shadow">
+            <span className="text-white font-bold text-lg">F</span>
+          </div>
+          <span className="text-xl font-bold text-[var(--foreground)] tracking-tight">
+            Flipanion
+          </span>
         </Link>
         
-        <div className="flex items-center gap-3">
+        {/* Navigation */}
+        <nav className="flex items-center gap-2">
           {loading ? (
-            <div className="animate-pulse flex gap-3">
-              <div className="h-10 w-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
-              <div className="h-10 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="flex gap-2">
+              <div className="h-9 w-20 bg-[var(--border)] rounded-lg animate-pulse" />
+              <div className="h-9 w-24 bg-[var(--border)] rounded-lg animate-pulse" />
             </div>
           ) : user ? (
-            // Logged in - Show username and profile icon
-            <div className="flex items-center gap-3">
-              <Link href="/profile" className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">
+            <div className="flex items-center gap-2">
+              <Link 
+                href="/browse" 
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  pathname === '/browse' 
+                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10' 
+                    : 'text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
+                }`}
+              >
+                Entdecken
+              </Link>
+              <Link 
+                href="/profile" 
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
+              >
+                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-[#1a1a2e] shadow-sm">
+                  <span className="text-white font-semibold text-xs">
                     {(user.user_metadata?.name || user.email || 'U').charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                <span className="text-sm font-medium text-[var(--foreground)] hidden sm:block">
                   {user.user_metadata?.name || user.email?.split('@')[0] || 'Nutzer'}
                 </span>
               </Link>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                className="px-3 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
               >
                 Abmelden
               </button>
             </div>
           ) : (
-            // Not logged in - Show login/signup buttons
             <>
               <Link href="/auth?mode=login">
-                <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <button className="px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] rounded-lg hover:bg-[var(--surface-hover)] transition-colors">
                   Anmelden
                 </button>
               </Link>
               <Link href="/auth?mode=signup">
-                <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                <button className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-violet-600 rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all shadow-md hover:shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98]">
                   Registrieren
                 </button>
               </Link>
             </>
           )}
-        </div>
+        </nav>
       </div>
     </header>
   );
