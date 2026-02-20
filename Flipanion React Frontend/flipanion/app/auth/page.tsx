@@ -25,13 +25,11 @@ export default function AuthPage() {
   const [message, setMessage] = React.useState("");
   const router = useRouter();
 
-  // Check username availability
   React.useEffect(() => {
     if (!isLogin && username.length >= 3) {
       const timeoutId = setTimeout(async () => {
         setCheckingUsername(true);
         const candidate = username.trim();
-        // Use a count-based check to avoid single() ambiguity (0 or many)
         const { count, error } = await supabase
           .from("User")
           .select("name", { count: "exact", head: true })
@@ -43,7 +41,7 @@ export default function AuthPage() {
           setUsernameAvailable((count ?? 0) === 0);
         }
         setCheckingUsername(false);
-      }, 500); // Debounce for 500ms
+      }, 500);
 
       return () => clearTimeout(timeoutId);
     } else {
@@ -51,7 +49,6 @@ export default function AuthPage() {
     }
   }, [username, isLogin]);
 
-  // Check password strength
   React.useEffect(() => {
     if (!isLogin && password.length > 0) {
       const hasNumber = /\d/.test(password);
@@ -100,7 +97,6 @@ export default function AuthPage() {
       setError(error.message);
     } else {
       setMessage("Login erfolgreich!");
-      // Redirect to home page after successful login
       setTimeout(() => router.push("/"), 1000);
     }
 
@@ -113,7 +109,6 @@ export default function AuthPage() {
     setError("");
     setMessage("");
 
-    // Validation
     if (password !== confirmPassword) {
       setError("Passwörter stimmen nicht überein!");
       setLoading(false);
@@ -154,20 +149,31 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-8 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-indigo-400/10 dark:bg-indigo-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-violet-400/10 dark:bg-violet-500/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-md w-full relative">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 animate-fade-in-up">
           <Link
             href="/"
-            className="text-3xl font-bold text-blue-600 hover:text-blue-700"
+            className="inline-flex items-center gap-2 justify-center group"
           >
-            Flipanion
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-indigo-500/25 transition-shadow">
+              <span className="text-white font-bold text-lg">F</span>
+            </div>
+            <span className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
+              Flipanion
+            </span>
           </Link>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
+          <h2 className="mt-8 text-3xl font-bold text-[var(--foreground)] tracking-tight">
             {isLogin ? "Willkommen zurück" : "Konto erstellen"}
           </h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-sm text-[var(--text-muted)]">
             {isLogin ? "Noch kein Konto? " : "Bereits ein Konto? "}
             <button
               onClick={() => {
@@ -175,7 +181,7 @@ export default function AuthPage() {
                 setError("");
                 setMessage("");
               }}
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
             >
               {isLogin ? "Registrieren" : "Anmelden"}
             </button>
@@ -183,17 +189,17 @@ export default function AuthPage() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8">
+        <div className="glass-card rounded-2xl p-7 animate-fade-in-up-delay-1 shadow-xl shadow-indigo-500/5">
           <form
             onSubmit={isLogin ? handleLogin : handleSignup}
-            className="space-y-6"
+            className="space-y-5"
           >
             {/* Username field (only for signup) */}
             {!isLogin && (
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  className="block text-sm font-semibold text-[var(--foreground)] mb-2"
                 >
                   Benutzername
                 </label>
@@ -204,34 +210,34 @@ export default function AuthPage() {
                     required={!isLogin}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                     placeholder="maxmustermann"
                     minLength={3}
                   />
                   {checkingUsername && (
-                    <div className="absolute right-3 top-3">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
                     </div>
                   )}
                   {!checkingUsername && usernameAvailable === true && (
-                    <div className="absolute right-3 top-3 text-green-600 text-xl">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-lg">
                       ✓
                     </div>
                   )}
                   {!checkingUsername && usernameAvailable === false && (
-                    <div className="absolute right-3 top-3 text-red-600 text-xl">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 text-lg">
                       ✗
                     </div>
                   )}
                 </div>
                 {usernameAvailable === false && (
-                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                  <p className="mt-1.5 text-xs text-red-500 font-medium">
                     Benutzername bereits vergeben
                   </p>
                 )}
                 {usernameAvailable === true && (
-                  <p className="mt-1 text-xs text-green-600 dark:text-green-400">
-                    Benutzername verfügbar
+                  <p className="mt-1.5 text-xs text-green-500 font-medium">
+                    Benutzername verfügbar ✓
                   </p>
                 )}
               </div>
@@ -241,7 +247,7 @@ export default function AuthPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                className="block text-sm font-semibold text-[var(--foreground)] mb-2"
               >
                 E-Mail
               </label>
@@ -251,7 +257,7 @@ export default function AuthPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                 placeholder="du@example.com"
               />
             </div>
@@ -260,7 +266,7 @@ export default function AuthPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                className="block text-sm font-semibold text-[var(--foreground)] mb-2"
               >
                 Passwort
               </label>
@@ -270,25 +276,46 @@ export default function AuthPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                 placeholder="••••••••"
                 minLength={8}
               />
               {!isLogin && passwordStrength && (
-                <div className="mt-2">
-                  <div className="flex gap-1">
+                <div className="mt-2.5">
+                  {/* Password Strength Bar */}
+                  <div className="flex gap-1.5">
                     <div
-                      className={`h-1 flex-1 rounded ${passwordStrength === "weak" ? "bg-red-500" : passwordStrength === "medium" ? "bg-yellow-500" : "bg-green-500"}`}
-                    ></div>
+                      className={`h-1.5 flex-1 rounded-full transition-all ${
+                        passwordStrength === "weak"
+                          ? "bg-red-500"
+                          : passwordStrength === "medium"
+                            ? "bg-amber-500"
+                            : "bg-green-500"
+                      }`}
+                    />
                     <div
-                      className={`h-1 flex-1 rounded ${passwordStrength === "medium" || passwordStrength === "strong" ? (passwordStrength === "medium" ? "bg-yellow-500" : "bg-green-500") : "bg-gray-300 dark:bg-gray-600"}`}
-                    ></div>
+                      className={`h-1.5 flex-1 rounded-full transition-all ${
+                        passwordStrength === "strong" || passwordStrength === "medium"
+                          ? passwordStrength === "medium"
+                            ? "bg-amber-500"
+                            : "bg-green-500"
+                          : "bg-[var(--border)]"
+                      }`}
+                    />
                     <div
-                      className={`h-1 flex-1 rounded ${passwordStrength === "strong" ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}`}
-                    ></div>
+                      className={`h-1.5 flex-1 rounded-full transition-all ${
+                        passwordStrength === "strong" ? "bg-green-500" : "bg-[var(--border)]"
+                      }`}
+                    />
                   </div>
                   <p
-                    className={`mt-1 text-xs ${passwordStrength === "weak" ? "text-red-600 dark:text-red-400" : passwordStrength === "medium" ? "text-yellow-600 dark:text-yellow-400" : "text-green-600 dark:text-green-400"}`}
+                    className={`mt-1.5 text-xs font-medium ${
+                      passwordStrength === "weak"
+                        ? "text-red-500"
+                        : passwordStrength === "medium"
+                          ? "text-amber-500"
+                          : "text-green-500"
+                    }`}
                   >
                     Passwortstärke:{" "}
                     {passwordStrength === "weak"
@@ -298,9 +325,8 @@ export default function AuthPage() {
                         : "Stark"}
                   </p>
                   {passwordStrength === "weak" && (
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      Verwende mindestens 8 Zeichen mit Zahlen und Buchstaben.
-                      Vermeide einfache Muster.
+                    <p className="mt-1 text-xs text-[var(--text-muted)]">
+                      Verwende min. 8 Zeichen mit Zahlen & Buchstaben. Vermeide einfache Muster.
                     </p>
                   )}
                 </div>
@@ -312,7 +338,7 @@ export default function AuthPage() {
               <div>
                 <label
                   htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  className="block text-sm font-semibold text-[var(--foreground)] mb-2"
                 >
                   Passwort bestätigen
                 </label>
@@ -322,16 +348,16 @@ export default function AuthPage() {
                   required={!isLogin}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                   placeholder="••••••••"
                 />
                 {confirmPassword && password !== confirmPassword && (
-                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                  <p className="mt-1.5 text-xs text-red-500 font-medium">
                     Passwörter stimmen nicht überein
                   </p>
                 )}
                 {confirmPassword && password === confirmPassword && (
-                  <p className="mt-1 text-xs text-green-600 dark:text-green-400">
+                  <p className="mt-1.5 text-xs text-green-500 font-medium">
                     Passwörter stimmen überein ✓
                   </p>
                 )}
@@ -340,8 +366,8 @@ export default function AuthPage() {
 
             {/* Error message */}
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                <p className="text-sm text-red-600 dark:text-red-400">
+              <div className="glass-card border border-red-200 dark:border-red-500/20 rounded-xl p-3.5 bg-red-50/50 dark:bg-red-500/8">
+                <p className="text-sm text-red-600 dark:text-red-400 font-medium">
                   {error}
                 </p>
               </div>
@@ -349,8 +375,8 @@ export default function AuthPage() {
 
             {/* Success message */}
             {message && (
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
-                <p className="text-sm text-green-600 dark:text-green-400">
+              <div className="glass-card border border-green-200 dark:border-green-500/20 rounded-xl p-3.5 bg-green-50/50 dark:bg-green-500/8">
+                <p className="text-sm text-green-600 dark:text-green-400 font-medium">
                   {message}
                 </p>
               </div>
@@ -360,11 +386,11 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-lg transition-colors flex items-center justify-center"
+              className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center cursor-pointer mt-6"
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
                   {isLogin ? "Anmeldung ..." : "Konto wird erstellt ..."}
                 </>
               ) : isLogin ? (
@@ -377,12 +403,15 @@ export default function AuthPage() {
         </div>
 
         {/* Back to home link */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center animate-fade-in-up-delay-2">
           <Link
             href="/"
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
           >
-            ← Zurück zur Startseite
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Zurück zur Startseite
           </Link>
         </div>
       </div>
