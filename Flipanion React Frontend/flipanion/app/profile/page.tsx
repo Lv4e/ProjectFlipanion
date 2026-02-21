@@ -21,9 +21,7 @@ export default function ProfilePage() {
   const [editingUsername, setEditingUsername] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [originalUsername, setOriginalUsername] = React.useState("");
-  const [usernameAvailable, setUsernameAvailable] = React.useState<
-    boolean | null
-  >(null);
+  const [usernameAvailable, setUsernameAvailable] = React.useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState<{
@@ -33,15 +31,13 @@ export default function ProfilePage() {
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
   const router = useRouter();
 
-  // Initialize theme from localStorage and system preference
   React.useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    
+
     if (savedTheme) {
       setTheme(savedTheme);
       applyTheme(savedTheme);
     } else {
-      // Check system preference
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const initialTheme = prefersDark ? "dark" : "light";
       setTheme(initialTheme);
@@ -86,7 +82,6 @@ export default function ProfilePage() {
 
     fetchUser();
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -100,9 +95,7 @@ export default function ProfilePage() {
     return () => subscription.unsubscribe();
   }, [router]);
 
-  // Check username availability with debounce
   React.useEffect(() => {
-    // Skip check if username hasn't changed or is the same as original
     if (username === originalUsername) {
       setUsernameAvailable(null);
       return;
@@ -112,13 +105,11 @@ export default function ProfilePage() {
       const timeoutId = setTimeout(async () => {
         setCheckingUsername(true);
         const candidate = username.trim();
-        // Check availability using count to avoid single() ambiguity
         let query = supabase
           .from("User")
           .select("name", { count: "exact", head: true })
           .eq("name", candidate);
 
-        // Exclude current user from the count
         if (user?.id) {
           query = query.neq("supabaseId", user.id);
         }
@@ -126,13 +117,12 @@ export default function ProfilePage() {
         const { count, error } = await query;
 
         if (error) {
-          // Any error while checking should be treated as not available
           setUsernameAvailable(false);
         } else {
           setUsernameAvailable((count ?? 0) === 0);
         }
         setCheckingUsername(false);
-      }, 500); // Debounce for 500ms
+      }, 500);
 
       return () => clearTimeout(timeoutId);
     } else if (username.length > 0) {
@@ -145,7 +135,6 @@ export default function ProfilePage() {
   const handleSaveUsername = async () => {
     if (!user) return;
 
-    // Validate username
     const candidate = username.trim();
     if (candidate.length < 3) {
       setMessage({
@@ -164,26 +153,16 @@ export default function ProfilePage() {
     setMessage(null);
 
     try {
-      // Update in custom User table first
       const {
         data: updateData,
         error: dbError,
-        count,
       } = await supabase
         .from("User")
         .update({ name: candidate })
         .eq("supabaseId", user.id)
         .select();
 
-      console.log("Update result:", {
-        updateData,
-        dbError,
-        count,
-        supabaseId: user.id,
-      });
-
       if (dbError) {
-        // 23505 = unique_violation in Postgres
         const errText =
           dbError.code === "23505"
             ? "Benutzername bereits vergeben."
@@ -196,19 +175,17 @@ export default function ProfilePage() {
       if (!updateData || updateData.length === 0) {
         setMessage({
           type: "error",
-          text: "Benutzer konnte nicht aktualisiert werden. Möglicherweise fehlen Berechtigungen.",
+          text: "Benutzer konnte nicht aktualisiert werden.",
         });
         setSaving(false);
         return;
       }
 
-      // Update in Supabase Auth (user_metadata)
       const { error: authError } = await supabase.auth.updateUser({
         data: { name: candidate },
       });
 
       if (authError) {
-        // Rollback the custom User table change
         await supabase
           .from("User")
           .update({ name: originalUsername })
@@ -261,14 +238,12 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600" />
-            <p className="mt-6 text-lg text-gray-600 dark:text-gray-400">
-              Profil wird geladen ...
-            </p>
+        <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+            <p className="mt-4 text-sm text-[var(--text-muted)]">Profil wird geladen ...</p>
           </div>
         </main>
       </div>
@@ -277,13 +252,13 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center py-20">
-            <div className="w-20 h-20 mx-auto bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+        <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
+          <div className="glass-card rounded-2xl py-16 px-8 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
               <svg
-                className="w-10 h-10 text-gray-400"
+                className="w-8 h-8 text-indigo-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -291,24 +266,24 @@ export default function ProfilePage() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={1.5}
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-lg font-bold text-[var(--foreground)] mb-1">
               Nicht angemeldet
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-sm text-[var(--text-muted)] mb-6">
               Bitte melde dich an, um auf dein Profil zuzugreifen.
             </p>
             <Link
               href="/auth?mode=login"
-              className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 active:scale-[0.98]"
             >
               Zur Anmeldung
               <svg
-                className="w-5 h-5 ml-2"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -328,17 +303,17 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
         {/* Back link */}
         <Link
           href="/"
-          className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 mb-8 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-8 transition-colors animate-fade-in-up"
         >
           <svg
-            className="w-5 h-5 mr-2"
+            className="w-4 h-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -347,7 +322,7 @@ export default function ProfilePage() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              d="M15 19l-7-7 7-7"
             />
           </svg>
           Zurück zur Startseite
@@ -356,15 +331,15 @@ export default function ProfilePage() {
         {/* Success/Error Message */}
         {message && (
           <div
-            className={`mb-6 p-4 rounded-xl flex items-center gap-3 ${
+            className={`mb-6 p-4 rounded-2xl flex items-center gap-3 animate-fade-in-up glass-card border ${
               message.type === "success"
-                ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
-                : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
+                ? "border-green-200 dark:border-green-500/20 bg-green-50/50 dark:bg-green-500/8"
+                : "border-red-200 dark:border-red-500/20 bg-red-50/50 dark:bg-red-500/8"
             }`}
           >
             {message.type === "success" ? (
               <svg
-                className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0"
+                className="w-5 h-5 text-green-500 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -378,7 +353,7 @@ export default function ProfilePage() {
               </svg>
             ) : (
               <svg
-                className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0"
+                className="w-5 h-5 text-red-500 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -394,8 +369,8 @@ export default function ProfilePage() {
             <p
               className={
                 message.type === "success"
-                  ? "text-green-800 dark:text-green-200"
-                  : "text-red-800 dark:text-red-200"
+                  ? "text-green-600 dark:text-green-400 font-medium text-sm"
+                  : "text-red-600 dark:text-red-400 font-medium text-sm"
               }
             >
               {message.text}
@@ -404,15 +379,15 @@ export default function ProfilePage() {
         )}
 
         {/* Profile Header Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+        <div className="glass-card rounded-2xl overflow-hidden mb-8 animate-fade-in-up">
           {/* Cover gradient */}
-          <div className="h-32 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+          <div className="h-32 bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-600" />
 
           {/* Profile info */}
           <div className="px-8 pb-8">
             {/* Avatar */}
             <div className="relative -mt-16 mb-4">
-              <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-lg">
+              <div className="w-32 h-32 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center border-4 border-[var(--surface)] dark:border-[var(--background)] shadow-lg shadow-indigo-500/20">
                 <span className="text-white font-bold text-5xl">
                   {(user.user_metadata?.name || user.email || "U")
                     .charAt(0)
@@ -421,12 +396,12 @@ export default function ProfilePage() {
               </div>
               {/* Future: Profile picture upload button */}
               <button
-                className="absolute bottom-2 right-2 w-10 h-10 bg-white dark:bg-gray-700 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border border-gray-200 dark:border-gray-600 cursor-not-allowed opacity-50"
+                className="absolute bottom-2 right-2 w-10 h-10 bg-[var(--surface)] dark:bg-[var(--surface)] rounded-full shadow-md flex items-center justify-center hover:shadow-lg transition-all border border-[var(--border)] cursor-not-allowed opacity-50"
                 disabled
                 title="Profilbild ändern (bald verfügbar)"
               >
                 <svg
-                  className="w-5 h-5 text-gray-600 dark:text-gray-300"
+                  className="w-5 h-5 text-[var(--text-muted)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -448,15 +423,15 @@ export default function ProfilePage() {
             </div>
 
             {/* Name and email */}
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-[var(--foreground)] tracking-tight">
               {user.user_metadata?.name || "Kein Name festgelegt"}
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-[var(--text-muted)] mt-1 text-sm">
               {user.email}
             </p>
 
             {/* Member since */}
-            <div className="mt-4 flex items-center text-sm text-gray-500 dark:text-gray-400">
+            <div className="mt-4 flex items-center text-sm text-[var(--text-muted)]">
               <svg
                 className="w-4 h-4 mr-2"
                 fill="none"
@@ -476,14 +451,14 @@ export default function ProfilePage() {
         </div>
 
         {/* Settings Cards */}
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Username Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-1">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                    className="w-5 h-5 text-indigo-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -497,10 +472,10 @@ export default function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h2 className="text-sm font-bold text-[var(--foreground)]">
                     Benutzername
                   </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-[var(--text-muted)]">
                     So wirst du in der App angezeigt
                   </p>
                 </div>
@@ -508,7 +483,7 @@ export default function ProfilePage() {
               {!editingUsername && (
                 <button
                   onClick={() => setEditingUsername(true)}
-                  className="px-4 py-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors font-medium"
+                  className="px-4 py-2 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
                 >
                   Bearbeiten
                 </button>
@@ -516,7 +491,7 @@ export default function ProfilePage() {
             </div>
 
             {editingUsername ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="relative">
                   <input
                     type="text"
@@ -524,79 +499,45 @@ export default function ProfilePage() {
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Benutzername eingeben"
                     minLength={3}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white pr-12"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
                   />
-                  {/* Status indicators */}
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                     {checkingUsername && (
-                      <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-200 border-t-blue-600"></div>
+                      <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
                     )}
                     {!checkingUsername && usernameAvailable === true && (
-                      <div className="text-green-600 text-xl">✓</div>
+                      <div className="text-green-500 text-lg">✓</div>
                     )}
                     {!checkingUsername && usernameAvailable === false && (
-                      <div className="text-red-600 text-xl">✗</div>
+                      <div className="text-red-500 text-lg">✗</div>
                     )}
                   </div>
                 </div>
 
-                {/* Availability feedback */}
                 {username !== originalUsername && (
                   <>
                     {usernameAvailable === false && username.length >= 3 && (
-                      <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
+                      <p className="text-xs text-red-500 font-medium flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         Benutzername bereits vergeben
                       </p>
                     )}
-                    {usernameAvailable === false &&
-                      username.length > 0 &&
-                      username.length < 3 && (
-                        <p className="text-sm text-amber-600 dark:text-amber-400 flex items-center gap-2">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                            />
-                          </svg>
-                          Mindestens 3 Zeichen erforderlich
-                        </p>
-                      )}
-                    {usernameAvailable === true && (
-                      <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
+                    {usernameAvailable === false && username.length > 0 && username.length < 3 && (
+                      <p className="text-xs text-amber-500 font-medium flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
-                        Benutzername verfügbar
+                        Mindestens 3 Zeichen erforderlich
+                      </p>
+                    )}
+                    {usernameAvailable === true && (
+                      <p className="text-xs text-green-500 font-medium flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Benutzername verfügbar ✓
                       </p>
                     )}
                   </>
@@ -611,17 +552,17 @@ export default function ProfilePage() {
                       username.length < 3 ||
                       username === originalUsername
                     }
-                    className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 text-sm"
                   >
                     {saving ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
-                        Wird gespeichert ...
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Wird gespeichert
                       </>
                     ) : (
                       <>
                         <svg
-                          className="w-5 h-5"
+                          className="w-4 h-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -640,17 +581,17 @@ export default function ProfilePage() {
                   <button
                     onClick={handleCancelUsername}
                     disabled={saving}
-                    className="px-4 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors"
+                    className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--foreground)] font-medium rounded-xl transition-colors text-sm"
                   >
                     Abbrechen
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                <p className="text-gray-900 dark:text-white font-medium">
+              <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)]">
+                <p className="text-[var(--foreground)] font-semibold text-sm">
                   {user.user_metadata?.name || (
-                    <span className="text-gray-400 italic">
+                    <span className="text-[var(--text-muted)] italic">
                       Kein Benutzername
                     </span>
                   )}
@@ -660,11 +601,11 @@ export default function ProfilePage() {
           </div>
 
           {/* Email Card (Read-only) */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-violet-100 dark:bg-violet-500/10 rounded-xl flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-purple-600 dark:text-purple-400"
+                  className="w-5 h-5 text-violet-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -678,51 +619,43 @@ export default function ProfilePage() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-sm font-bold text-[var(--foreground)]">
                   E-Mail-Adresse
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-[var(--text-muted)]">
                   Deine Anmelde-E-Mail
                 </p>
               </div>
             </div>
-            <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl flex items-center justify-between">
-              <p className="text-gray-900 dark:text-white font-medium">
+            <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)] flex items-center justify-between">
+              <p className="text-[var(--foreground)] font-semibold text-sm">
                 {user.email}
               </p>
-              <span className="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full">
+              <span className="text-xs px-2 py-1 bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg font-medium">
                 Schreibgeschützt
               </span>
             </div>
           </div>
 
           {/* Theme Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-indigo-600 dark:text-indigo-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20.354 15.354A9 9 0 015.646 5.646 9.001 9.001 0 0115.354 15.354z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Design
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Zwischen Hell- und Dunkelmodus wechseln
-                  </p>
-                </div>
+          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-3">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/10 rounded-xl flex items-center justify-center">
+                <svg
+                  className="w-5 h-5 text-amber-500"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-[var(--foreground)]">
+                  Design-Modus
+                </h2>
+                <p className="text-xs text-[var(--text-muted)]">
+                  Hell- oder Dunkelmodusdesign
+                </p>
               </div>
             </div>
 
@@ -732,13 +665,13 @@ export default function ProfilePage() {
                 onClick={() => {
                   if (theme !== "light") toggleTheme();
                 }}
-                className={`flex-1 py-4 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm ${
                   theme === "light"
                     ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/20"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)]"
                 }`}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
                 Hell
@@ -749,13 +682,13 @@ export default function ProfilePage() {
                 onClick={() => {
                   if (theme !== "dark") toggleTheme();
                 }}
-                className={`flex-1 py-4 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm ${
                   theme === "dark"
                     ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/20"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)]"
                 }`}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20.354 15.354A9 9 0 015.646 5.646 9.001 9.001 0 0115.354 15.354z" />
                 </svg>
                 Dunkel
@@ -764,11 +697,11 @@ export default function ProfilePage() {
           </div>
 
           {/* User ID Card (Read-only) */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-4">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/10 rounded-xl flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-gray-600 dark:text-gray-400"
+                  className="w-5 h-5 text-blue-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -777,57 +710,23 @@ export default function ProfilePage() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                   />
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-sm font-bold text-[var(--foreground)]">
                   Benutzer-ID
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-[var(--text-muted)]">
                   Deine eindeutige Kennung
                 </p>
               </div>
             </div>
-            <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-              <p className="text-gray-600 dark:text-gray-400 font-mono text-sm break-all">
+            <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)]">
+              <p className="text-[var(--text-muted)] font-mono text-xs break-all">
                 {user.id}
               </p>
-            </div>
-          </div>
-
-          {/* Future: Profile Picture Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 opacity-60">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-pink-600 dark:text-pink-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Profilbild
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Dein personalisiertes Avatar
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full font-medium">
-                Bald verfügbar
-              </span>
             </div>
           </div>
         </div>
