@@ -29,9 +29,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark Theme */
+/* Dark Theme (OS preference when no explicit class is set) */
 @media (prefers-color-scheme: dark) {
-  :root {
+  html:not(.light):not(.dark) {
     --background: #0f172a;
     --foreground: #f1f5f9;
     --primary: #818cf8;
@@ -60,6 +60,20 @@ html.dark {
 }
 
 /* Light Theme via HTML class (explicit override) */
+html.light {
+  --background: #f9fafb;
+  --foreground: #111827;
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  --accent: #8b5cf6;
+  --surface: #ffffff;
+  --surface-hover: #f3f4f6;
+  --border: #e5e7eb;
+  --text-muted: #6b7280;
+}
+
+/* Light Theme (default) */
 html {
   --background: #f9fafb;
   --foreground: #111827;
@@ -162,13 +176,13 @@ html.dark .glass-card:hover {
 }
 
 @media (prefers-color-scheme: dark) {
-  .glass-card {
+  html:not(.light):not(.dark) .glass-card {
     background: rgba(30, 41, 59, 0.8);
     border: 1px solid rgba(148, 163, 184, 0.1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
 
-  .glass-card:hover {
+  html:not(.light):not(.dark) .glass-card:hover {
     border-color: rgba(148, 163, 184, 0.2);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }

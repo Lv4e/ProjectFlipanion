@@ -49,9 +49,11 @@ export default function ProfilePage() {
     const html = document.documentElement;
     if (newTheme === "dark") {
       html.classList.add("dark");
+      html.classList.remove("light");
       html.style.colorScheme = "dark";
     } else {
       html.classList.remove("dark");
+      html.classList.add("light");
       html.style.colorScheme = "light";
     }
     localStorage.setItem("theme", newTheme);
