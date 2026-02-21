@@ -14,7 +14,6 @@ interface User {
 }
 
 export default function Home() {
-  const [quizzes, setQuizzes] = React.useState([]);
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
 
@@ -215,7 +214,6 @@ export default function Home() {
         <div className="animate-fade-in-up-delay-2">
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-6">Deine Quizze</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* Empty state */}
             <div className="glass-card rounded-2xl p-8 col-span-full flex flex-col items-center justify-center text-center">
               <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
                 <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

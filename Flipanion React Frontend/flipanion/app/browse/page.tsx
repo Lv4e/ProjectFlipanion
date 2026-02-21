@@ -207,47 +207,47 @@ export default function BrowseQuizzes() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredQuizzes.map((quiz, index) => (
-                <div
-                  key={quiz.id}
-                  className="glass-card rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group"
-                >
-                  {/* Quiz Image/Icon */}
-                  <div className="h-28 bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
-                    <span className="text-white/90 text-4xl font-bold relative">
-                      {quiz.title ? quiz.title.charAt(0).toUpperCase() : 'Q'}
-                    </span>
-                  </div>
-
-                  {/* Quiz Content */}
-                  <div className="p-5">
-                    <h3 className="font-semibold text-[var(--foreground)] mb-1.5 group-hover:text-indigo-500 transition-colors">
-                      {quiz.title || 'Ohne Titel'}
-                    </h3>
-                    <p className="text-sm text-[var(--text-muted)] mb-4 line-clamp-2 leading-relaxed">
-                      {quiz.description || 'Keine Beschreibung vorhanden'}
-                    </p>
-
-                    {/* Quiz Meta */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
-                        {quiz.Subject?.name || quiz.subject || 'Allgemein'}
-                      </span>
-                      <span className="text-xs text-[var(--text-muted)]">
-                        {!user ? '?' : quiz.questionCount || 0} Fragen
+              {filteredQuizzes.map((quiz) => (
+                  <div
+                    key={quiz.id}
+                    className="glass-card rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group"
+                  >
+                    {/* Quiz Image/Icon */}
+                    <div className="h-28 bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
+                      <span className="text-white/90 text-4xl font-bold relative">
+                        {quiz.title ? quiz.title.charAt(0).toUpperCase() : 'Q'}
                       </span>
                     </div>
 
-                    {/* Action Button */}
-                    <Link
-                      href={`/quizes/${quiz.id}`}
-                      className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/15 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] block text-center"
-                    >
-                      Quiz starten
-                    </Link>
+                    {/* Quiz Content */}
+                    <div className="p-5">
+                      <h3 className="font-semibold text-[var(--foreground)] mb-1.5 group-hover:text-indigo-500 transition-colors">
+                        {quiz.title || 'Ohne Titel'}
+                      </h3>
+                      <p className="text-sm text-[var(--text-muted)] mb-4 line-clamp-2 leading-relaxed">
+                        {quiz.description || 'Keine Beschreibung vorhanden'}
+                      </p>
+
+                      {/* Quiz Meta */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                          {quiz.Subject?.name || quiz.subject || 'Allgemein'}
+                        </span>
+                        <span className="text-xs text-[var(--text-muted)]">
+                          {!user ? '?' : quiz.questionCount || 0} Fragen
+                        </span>
+                      </div>
+
+                      {/* Action Button */}
+                      <Link
+                        href={`/quizes/${quiz.id}`}
+                        className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/15 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] block text-center"
+                      >
+                        Quiz starten
+                      </Link>
+                    </div>
                   </div>
-                </div>
               ))}
             </div>
           )}
