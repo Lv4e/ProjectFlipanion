@@ -49,11 +49,12 @@ export default function ProfilePage() {
     const html = document.documentElement;
     if (newTheme === "dark") {
       html.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      html.style.colorScheme = "dark";
     } else {
       html.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      html.style.colorScheme = "light";
     }
+    localStorage.setItem("theme", newTheme);
   };
 
   const toggleTheme = () => {

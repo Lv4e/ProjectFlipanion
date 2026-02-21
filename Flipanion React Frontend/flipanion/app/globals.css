@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
+/* Light Theme (Default) */
 :root {
-  --background: #fafbff;
-  --foreground: #1a1a2e;
+  /* Modern Light Premium Palette */
+  --background: #f9fafb;
+  --foreground: #111827;
   --primary: #6366f1;
   --primary-dark: #4f46e5;
-  --primary-light: #a5b4fc;
+  --primary-light: #818cf8;
   --accent: #8b5cf6;
   --surface: #ffffff;
-  --surface-hover: #f8f9ff;
-  --border: #e2e4f0;
-  --text-muted: #64748b;
+  --surface-hover: #f3f4f6;
+  --border: #e5e7eb;
+  --text-muted: #6b7280;
 }
 
 @theme inline {
@@ -27,19 +29,48 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark Theme */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0f0f1a;
-    --foreground: #e8e8f0;
+    --background: #0f172a;
+    --foreground: #f1f5f9;
     --primary: #818cf8;
     --primary-dark: #6366f1;
     --primary-light: #4f46e5;
     --accent: #a78bfa;
-    --surface: #1a1a2e;
-    --surface-hover: #22223a;
-    --border: #2a2a45;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
     --text-muted: #94a3b8;
   }
+}
+
+/* Dark Theme via HTML class (explicit override) */
+html.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --primary-light: #4f46e5;
+  --accent: #a78bfa;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --border: #334155;
+  --text-muted: #94a3b8;
+}
+
+/* Light Theme via HTML class (explicit override) */
+html {
+  --background: #f9fafb;
+  --foreground: #111827;
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  --accent: #8b5cf6;
+  --surface: #ffffff;
+  --surface-hover: #f3f4f6;
+  --border: #e5e7eb;
+  --text-muted: #6b7280;
 }
 
 * {
@@ -94,21 +125,51 @@ body {
   opacity: 0;
 }
 
+.animate-fade-in-up-delay-4 {
+  animation: fadeInUp 0.6s ease-out 0.6s forwards;
+  opacity: 0;
+}
+
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
 
-/* Glass card effect */
+/* Glass card effect - Light Mode */
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(99, 102, 241, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(99, 102, 241, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Glass card effect - Dark Mode */
+html.dark .glass-card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+html.dark .glass-card:hover {
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
   .glass-card {
-    background: rgba(26, 26, 46, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .glass-card:hover {
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }
 }
