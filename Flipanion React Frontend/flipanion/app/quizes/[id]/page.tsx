@@ -154,15 +154,10 @@ export default function QuizPage() {
         filtered = all;
       }
 
-      if (!hasQuizIdColumn) {
-        // Wenn nicht angemeldet, zeige "Du musst dich anmelden"
-        if (!currentUser) {
-          setHint('Du musst dich anmelden um die Quizzes zu verwenden.');
-        } else {
-          setHint(
-            'In der Question-Tabelle scheint keine Spalte "quizId" vorhanden zu sein (oder sie kommt nicht im Select zurück). Ich zeige daher alle Fragen an.'
-          );
-        }
+      if (!hasQuizIdColumn && currentUser) {
+        setHint(
+          'In der Question-Tabelle scheint keine Spalte "quizId" vorhanden zu sein (oder sie kommt nicht im Select zurück). Ich zeige daher alle Fragen an.'
+        );
       }
 
       const normalized = filtered.map(normalizeQuestion);
@@ -218,6 +213,7 @@ export default function QuizPage() {
         ) : (
           <>
             {/* Quiz Header Card */}
+            {user && (
             <div className="glass-card rounded-2xl p-6 mb-6 animate-fade-in-up relative overflow-hidden">
               <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-gradient-to-br from-indigo-500/8 to-violet-500/8 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
               <div className="relative">
@@ -247,8 +243,25 @@ export default function QuizPage() {
                 ) : null}
               </div>
             </div>
+            )}
 
-            {questions.length === 0 ? (
+            {!user ? (
+              <div className="glass-card rounded-2xl p-10 flex flex-col items-center justify-center text-center animate-fade-in-up">
+                <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                </div>
+                <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">Bereit zum Lernen?</h2>
+                <p className="text-[var(--text-muted)] mb-6 max-w-sm leading-relaxed">
+                  Melde dich an oder erstelle ein Konto, um dieses Quiz zu starten und deinen Lernfortschritt zu verfolgen.
+                </p>
+                <Link
+                  href="/auth"
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-medium shadow-md shadow-indigo-500/15 transition-all active:scale-[0.98]"
+                >
+                  Jetzt anmelden
+                </Link>
+              </div>
+            ) : questions.length === 0 ? (
               <div className="glass-card rounded-2xl p-8 flex flex-col items-center justify-center text-center">
                 <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
                   <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
