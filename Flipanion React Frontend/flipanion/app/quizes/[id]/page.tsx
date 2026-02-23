@@ -45,6 +45,20 @@ function toCorrectIndex(correctAnswer: unknown, options: string[]): number | und
   return undefined;
 }
 
+function shuffleWithCorrectIndex(options: string[], correctIndex?: number): { options: string[]; correctIndex?: number } {
+  const indices = options.map((_, i) => i);
+  // Fisher-Yates shuffle
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const shuffled = indices.map((i) => options[i]);
+  const newCorrect = typeof correctIndex === 'number'
+    ? indices.indexOf(correctIndex)
+    : undefined;
+  return { options: shuffled, correctIndex: newCorrect };
+}
+
 function normalizeQuestion(q: AnyRow): NormalizedQuestion {
   const text: string =
     (q.questionText as string | null | undefined) ??
@@ -65,11 +79,17 @@ function normalizeQuestion(q: AnyRow): NormalizedQuestion {
 
   const correctIndex = toCorrectIndex(q.correctAnswer, options);
 
+  if (options.length <= 1) {
+    return { id: q.id as number | string, text, options: options.length ? options : ['(keine Antworten gefunden)'], correctIndex };
+  }
+
+  const shuffled = shuffleWithCorrectIndex(options, correctIndex);
+
   return {
     id: q.id as number | string,
     text,
-    options: options.length ? options : ['(keine Antworten gefunden)'],
-    correctIndex,
+    options: shuffled.options,
+    correctIndex: shuffled.correctIndex,
   };
 }
 
@@ -82,6 +102,7 @@ export default function QuizPage() {
   const [questions, setQuestions] = React.useState<NormalizedQuestion[]>([]);
   const [current, setCurrent] = React.useState(0);
   const [answers, setAnswers] = React.useState<Record<string, number>>({});
+  const [revealed, setRevealed] = React.useState<Record<string, boolean>>({});
   const [finished, setFinished] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
@@ -165,6 +186,7 @@ export default function QuizPage() {
       setQuestions(normalized);
       setCurrent(0);
       setAnswers({});
+      setRevealed({});
       setLoading(false);
     })();
   }, [quizId]);
@@ -187,6 +209,7 @@ export default function QuizPage() {
   }, [answers, questions, canScore]);
 
   const selectedForCurrent = q ? answers[String(q.id)] : undefined;
+  const isRevealed = q ? !!revealed[String(q.id)] : false;
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
@@ -299,6 +322,7 @@ export default function QuizPage() {
                       setFinished(false);
                       setCurrent(0);
                       setAnswers({});
+                      setRevealed({});
                     }}
                     className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[var(--foreground)] font-medium hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
                   >
@@ -338,33 +362,77 @@ export default function QuizPage() {
                 <div className="space-y-2.5">
                   {q.options.map((opt, idx) => {
                     const selected = selectedForCurrent === idx;
+                    const isCorrectOption = typeof q.correctIndex === 'number' && idx === q.correctIndex;
+                    const isWrongSelection = isRevealed && selected && !isCorrectOption;
+                    const showCorrect = isRevealed && isCorrectOption;
+
+                    let optionClasses = 'w-full text-left px-4 py-3.5 rounded-xl border-2 transition-all duration-200 group text-[var(--foreground)]';
+                    let badgeClasses = 'inline-flex items-center justify-center w-7 h-7 rounded-lg text-sm font-semibold mr-3 transition-colors';
+
+                    if (isRevealed) {
+                      optionClasses += ' cursor-default';
+                      if (showCorrect) {
+                        optionClasses += ' border-green-500 bg-green-50 dark:bg-green-500/10 shadow-sm shadow-green-500/10';
+                        badgeClasses += ' bg-green-500 text-white';
+                      } else if (isWrongSelection) {
+                        optionClasses += ' border-red-500 bg-red-50 dark:bg-red-500/10 shadow-sm shadow-red-500/10';
+                        badgeClasses += ' bg-red-500 text-white';
+                      } else {
+                        optionClasses += ' border-[var(--border)] opacity-50';
+                        badgeClasses += ' bg-[var(--background)] text-[var(--text-muted)]';
+                      }
+                    } else {
+                      optionClasses += ' cursor-pointer';
+                      if (selected) {
+                        optionClasses += ' border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 shadow-sm shadow-indigo-500/10';
+                        badgeClasses += ' bg-indigo-500 text-white';
+                      } else {
+                        optionClasses += ' border-[var(--border)] hover:border-indigo-300 dark:hover:border-indigo-500/30 hover:bg-[var(--surface-hover)]';
+                        badgeClasses += ' bg-[var(--background)] text-[var(--text-muted)] group-hover:text-indigo-500';
+                      }
+                    }
+
                     return (
                       <button
                         key={idx}
                         type="button"
-                        onClick={() =>
-                          setAnswers((prev) => ({ ...prev, [String(q.id)]: idx }))
-                        }
-                        className={[
-                          'w-full text-left px-4 py-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer group',
-                          selected
-                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 shadow-sm shadow-indigo-500/10'
-                            : 'border-[var(--border)] hover:border-indigo-300 dark:hover:border-indigo-500/30 hover:bg-[var(--surface-hover)]',
-                          'text-[var(--foreground)]',
-                        ].join(' ')}
+                        disabled={isRevealed}
+                        onClick={() => {
+                          if (isRevealed) return;
+                          setAnswers((prev) => ({ ...prev, [String(q.id)]: idx }));
+                          setRevealed((prev) => ({ ...prev, [String(q.id)]: true }));
+                        }}
+                        className={optionClasses}
                       >
-                        <span className={`inline-flex items-center justify-center w-7 h-7 rounded-lg text-sm font-semibold mr-3 transition-colors ${
-                          selected
-                            ? 'bg-indigo-500 text-white'
-                            : 'bg-[var(--background)] text-[var(--text-muted)] group-hover:text-indigo-500'
-                        }`}>
-                          {String.fromCharCode(65 + idx)}
+                        <span className={badgeClasses}>
+                          {isRevealed && showCorrect ? (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                          ) : isRevealed && isWrongSelection ? (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                          ) : (
+                            String.fromCharCode(65 + idx)
+                          )}
                         </span>
                         {opt}
                       </button>
                     );
                   })}
                 </div>
+
+                {/* Feedback message */}
+                {isRevealed && typeof q.correctIndex === 'number' && (
+                  <div className={`mt-4 flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium ${
+                    selectedForCurrent === q.correctIndex
+                      ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-500/20'
+                      : 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/20'
+                  }`}>
+                    {selectedForCurrent === q.correctIndex ? (
+                      <><svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Richtig!</>
+                    ) : (
+                      <><svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Falsch – die richtige Antwort ist {String.fromCharCode(65 + q.correctIndex)}: {q.options[q.correctIndex]}</>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex justify-between mt-7">
                   <button

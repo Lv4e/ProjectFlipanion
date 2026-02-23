@@ -242,7 +242,7 @@ export default function ProfilePage() {
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
       setMessage({ type: "error", text: "Nur JPEG, PNG, WebP oder GIF sind erlaubt." });
-      return;-
+      return;
     }
     if (file.size > 5 * 1024 * 1024) {
       setMessage({ type: "error", text: "Bild darf maximal 5 MB groß sein." });

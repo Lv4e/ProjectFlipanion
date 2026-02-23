@@ -20,14 +20,18 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
+
   React.useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user as User | null);
+      setAvatarUrl((user?.user_metadata as Record<string, string>)?.avatar_url ?? null);
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user as User | null);
+      setAvatarUrl((session?.user?.user_metadata as Record<string, string>)?.avatar_url ?? null);
     });
 
     return () => subscription.unsubscribe();
@@ -84,10 +88,15 @@ export default function Header() {
                 href="/profile" 
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-[#1a1a2e] shadow-sm">
-                  <span className="text-white font-semibold text-xs">
-                    {(user.user_metadata?.name || user.email || 'U').charAt(0).toUpperCase()}
-                  </span>
+                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-[#1a1a2e] shadow-sm overflow-hidden">
+                  {avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-white font-semibold text-xs">
+                      {(user.user_metadata?.name || user.email || 'U').charAt(0).toUpperCase()}
+                    </span>
+                  )}
                 </div>
                 <span className="text-sm font-medium text-[var(--foreground)] hidden sm:block">
                   {user.user_metadata?.name || user.email?.split('@')[0] || 'Nutzer'}
