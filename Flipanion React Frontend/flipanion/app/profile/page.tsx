@@ -29,6 +29,9 @@ export default function ProfilePage() {
     text: string;
   } | null>(null);
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
+  const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   React.useEffect(() => {
@@ -80,6 +83,8 @@ export default function ProfilePage() {
       const currentName = currentUser.user_metadata?.name || "";
       setUsername(currentName);
       setOriginalUsername(currentName);
+      const existingAvatar = (currentUser.user_metadata as Record<string, string>)?.avatar_url ?? null;
+      setAvatarUrl(existingAvatar);
       setLoading(false);
     };
 
@@ -228,6 +233,58 @@ export default function ProfilePage() {
     setEditingUsername(false);
     setMessage(null);
     setUsernameAvailable(null);
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      setMessage({ type: "error", text: "Nur JPEG, PNG, WebP oder GIF sind erlaubt." });
+      return;-
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: "error", text: "Bild darf maximal 5 MB groß sein." });
+      return;
+    }
+
+    setUploadingAvatar(true);
+    setMessage(null);
+
+    try {
+      const ext = file.name.split(".").pop();
+      const filePath = `${user.id}/avatar.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true, contentType: file.type });
+
+      if (uploadError) {
+        setMessage({ type: "error", text: `Upload fehlgeschlagen: ${uploadError.message}` });
+        return;
+      }
+
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
+      const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+      const { error: authError } = await supabase.auth.updateUser({
+        data: { avatar_url: urlData.publicUrl },
+      });
+
+      if (authError) {
+        setMessage({ type: "error", text: `Metadaten konnten nicht gespeichert werden: ${authError.message}` });
+        return;
+      }
+
+      setAvatarUrl(publicUrl);
+      setMessage({ type: "success", text: "Profilbild erfolgreich aktualisiert!" });
+    } catch {
+      setMessage({ type: "error", text: "Ein unerwarteter Fehler ist aufgetreten." });
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   const formatDate = (dateString?: string) => {
@@ -390,38 +447,54 @@ export default function ProfilePage() {
           <div className="px-8 pb-8">
             {/* Avatar */}
             <div className="relative -mt-16 mb-4">
-              <div className="w-32 h-32 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center border-4 border-[var(--surface)] dark:border-[var(--background)] shadow-lg shadow-indigo-500/20">
-                <span className="text-white font-bold text-5xl">
-                  {(user.user_metadata?.name || user.email || "U")
-                    .charAt(0)
-                    .toUpperCase()}
-                </span>
+              <div className="w-32 h-32 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center border-4 border-[var(--surface)] dark:border-[var(--background)] shadow-lg shadow-indigo-500/20 overflow-hidden">
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={avatarUrl} alt="Profilbild" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-white font-bold text-5xl">
+                    {(user.user_metadata?.name || user.email || "U")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </span>
+                )}
               </div>
-              {/* Future: Profile picture upload button */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={handleAvatarUpload}
+              />
               <button
-                className="absolute bottom-2 right-2 w-10 h-10 bg-[var(--surface)] dark:bg-[var(--surface)] rounded-full shadow-md flex items-center justify-center hover:shadow-lg transition-all border border-[var(--border)] cursor-not-allowed opacity-50"
-                disabled
-                title="Profilbild ändern (bald verfügbar)"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingAvatar}
+                title="Profilbild ändern"
+                className="absolute bottom-2 right-2 w-10 h-10 bg-[var(--surface)] dark:bg-[var(--surface)] rounded-full shadow-md flex items-center justify-center hover:shadow-lg transition-all border border-[var(--border)] cursor-pointer hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <svg
-                  className="w-5 h-5 text-[var(--text-muted)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+                {uploadingAvatar ? (
+                  <div className="w-5 h-5 border-2 border-indigo-300 border-t-indigo-500 rounded-full animate-spin" />
+                ) : (
+                  <svg
+                    className="w-5 h-5 text-[var(--text-muted)]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                )}
               </button>
             </div>
 
