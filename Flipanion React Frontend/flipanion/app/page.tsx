@@ -13,14 +13,85 @@ interface User {
   };
 }
 
+interface CompletedQuiz {
+  quizId: number;
+  title: string;
+  score: number;
+  total: number;
+  date: string;
+}
+
 export default function Home() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [activeTab, setActiveTab] = React.useState<'mine' | 'completed'>('mine');
+  const [completedQuizzes, setCompletedQuizzes] = React.useState<CompletedQuiz[]>([]);
+  const [loadingCompleted, setLoadingCompleted] = React.useState(false);
 
   React.useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user as User | null);
+    supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
+      setUser(currentUser as User | null);
       setLoading(false);
+
+      if (currentUser) {
+        // Fetch completed quizzes from the database
+        (async () => {
+          setLoadingCompleted(true);
+          try {
+            // Get DB user id
+            const { data: dbUser } = await supabase
+              .from('User')
+              .select('id')
+              .eq('supabaseId', currentUser.id)
+              .single();
+
+            if (!dbUser) { setLoadingCompleted(false); return; }
+
+            // Get all user answers with their question→quiz info
+            const { data: userAnswers } = await supabase
+              .from('UserAnswer')
+              .select('isCorrect, question:Question(id, quizId, quiz:Quiz(id, title, createdAt))')
+              .eq('userId', dbUser.id);
+
+            if (!userAnswers || userAnswers.length === 0) {
+              setLoadingCompleted(false);
+              return;
+            }
+
+            // Group answers by quiz
+            const quizMap = new Map<number, { title: string; correct: number; total: number; date: string }>();
+
+            for (const ua of userAnswers as Array<Record<string, unknown>>) {
+              const q = ua.question as Record<string, unknown> | undefined;
+              if (!q) continue;
+              const quizData = q.quiz as Record<string, unknown> | Array<Record<string, unknown>> | undefined;
+              if (!quizData) continue;
+              const quiz = Array.isArray(quizData) ? quizData[0] : quizData;
+              if (!quiz) continue;
+              const qId = quiz.id as number;
+              if (!quizMap.has(qId)) {
+                quizMap.set(qId, { title: quiz.title as string, correct: 0, total: 0, date: quiz.createdAt as string });
+              }
+              const entry = quizMap.get(qId)!;
+              entry.total++;
+              if (ua.isCorrect) entry.correct++;
+            }
+
+            const results: CompletedQuiz[] = [];
+            quizMap.forEach((v, quizId) => {
+              results.push({ quizId, title: v.title, score: v.correct, total: v.total, date: v.date });
+            });
+
+            // Sort by most recently created quiz
+            results.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+            setCompletedQuizzes(results);
+          } catch {
+            // ignore
+          } finally {
+            setLoadingCompleted(false);
+          }
+        })();
+      }
     });
   }, []);
 
@@ -210,19 +281,108 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Quizzes Section */}
+        {/* Quizzes Section with Tabs */}
         <div className="animate-fade-in-up-delay-2">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-6">Deine Quizze</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <div className="glass-card rounded-2xl p-8 col-span-full flex flex-col items-center justify-center text-center">
+          {/* Tab bar */}
+          <div className="flex gap-1 mb-6 bg-[var(--surface)] rounded-xl p-1 border border-[var(--border)] w-fit">
+            <button
+              type="button"
+              onClick={() => setActiveTab('mine')}
+              className={`px-5 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer ${
+                activeTab === 'mine'
+                  ? 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/15'
+                  : 'text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
+              }`}
+            >
+              Deine Quizze
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('completed')}
+              className={`px-5 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer flex items-center ${
+                activeTab === 'completed'
+                  ? 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/15'
+                  : 'text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
+              }`}
+            >
+              Abgeschlossene Quizze
+              {completedQuizzes.length > 0 && (
+                <span className={`ml-2 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full ${
+                  activeTab === 'completed'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400'
+                }`}>
+                  {completedQuizzes.length}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Tab content */}
+          {activeTab === 'mine' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="glass-card rounded-2xl p-8 col-span-full flex flex-col items-center justify-center text-center">
+                <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
+                  <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                </div>
+                <p className="text-[var(--text-muted)] text-sm">Noch keine Quizze vorhanden. Erstelle dein erstes!</p>
+              </div>
+            </div>
+          ) : loadingCompleted ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="w-8 h-8 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+              <p className="mt-3 text-sm text-[var(--text-muted)]">Wird geladen ...</p>
+            </div>
+          ) : completedQuizzes.length === 0 ? (
+            <div className="glass-card rounded-2xl p-8 flex flex-col items-center justify-center text-center">
               <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
                 <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <p className="text-[var(--text-muted)] text-sm">Noch keine Quizze vorhanden. Erstelle dein erstes!</p>
+              <p className="text-[var(--foreground)] font-medium mb-1">Noch keine Quizze abgeschlossen</p>
+              <p className="text-sm text-[var(--text-muted)]">Starte ein Quiz und komm zurück, um deinen Fortschritt zu sehen.</p>
             </div>
-          </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {completedQuizzes.map((cq) => {
+                const pct = cq.total > 0 ? Math.round((cq.score / cq.total) * 100) : 0;
+                return (
+                  <Link key={cq.quizId} href={`/quizes/${cq.quizId}`} className="glass-card rounded-2xl p-6 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group block">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
+                        pct >= 80 ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400' :
+                        pct >= 50 ? 'bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400' :
+                        'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400'
+                      }`}>
+                        {pct}%
+                      </span>
+                    </div>
+                    <h4 className="text-base font-bold text-[var(--foreground)] mb-1 group-hover:text-indigo-500 transition-colors">{cq.title}</h4>
+                    <p className="text-sm text-[var(--text-muted)] mb-3">
+                      {cq.score} von {cq.total} richtig
+                    </p>
+                    {/* Mini progress bar */}
+                    <div className="w-full bg-[var(--border)] rounded-full h-1.5 overflow-hidden">
+                      <div
+                        className={`h-1.5 rounded-full transition-all ${
+                          pct >= 80 ? 'bg-green-500' : pct >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
       </main>
     </div>

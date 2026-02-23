@@ -211,6 +211,81 @@ export default function QuizPage() {
   const selectedForCurrent = q ? answers[String(q.id)] : undefined;
   const isRevealed = q ? !!revealed[String(q.id)] : false;
 
+  // Persist answers to the database when quiz is finished
+  React.useEffect(() => {
+    if (!finished || !user || questions.length === 0) return;
+
+    (async () => {
+      try {
+        // Look up the DB user id from the supabaseId
+        const { data: dbUser } = await supabase
+          .from('User')
+          .select('id')
+          .eq('supabaseId', user.id)
+          .single();
+
+        if (!dbUser) return;
+
+        const dbUserId = dbUser.id as number;
+
+        // Build rows for UserAnswer (one per question)
+        const rows = questions
+          .filter((q) => answers[String(q.id)] !== undefined)
+          .map((q) => {
+            const selectedIdx = answers[String(q.id)];
+            const isCorrect =
+              typeof q.correctIndex === 'number' && selectedIdx === q.correctIndex;
+            return {
+              userId: dbUserId,
+              questionId: Number(q.id),
+              selectedAnswer: q.options[selectedIdx] ?? '',
+              isCorrect,
+            };
+          });
+
+        if (rows.length === 0) return;
+
+        // Delete previous answers for these questions by this user, then insert new ones
+        const questionIds = rows.map((r) => r.questionId);
+        await supabase
+          .from('UserAnswer')
+          .delete()
+          .eq('userId', dbUserId)
+          .in('questionId', questionIds);
+
+        await supabase.from('UserAnswer').insert(rows);
+
+        // Update UserStatistics (upsert)
+        const totalAnswered = rows.length;
+        const totalCorrect = rows.filter((r) => r.isCorrect).length;
+
+        const { data: existingStats } = await supabase
+          .from('UserStatistics')
+          .select('id, answeredQuestions, correctAnswers')
+          .eq('userId', dbUserId)
+          .single();
+
+        if (existingStats) {
+          await supabase
+            .from('UserStatistics')
+            .update({
+              answeredQuestions: (existingStats.answeredQuestions ?? 0) + totalAnswered,
+              correctAnswers: (existingStats.correctAnswers ?? 0) + totalCorrect,
+            })
+            .eq('id', existingStats.id);
+        } else {
+          await supabase.from('UserStatistics').insert({
+            userId: dbUserId,
+            answeredQuestions: totalAnswered,
+            correctAnswers: totalCorrect,
+          });
+        }
+      } catch {
+        // silently ignore DB errors on the results page
+      }
+    })();
+  }, [finished, user, questions, answers]);
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
