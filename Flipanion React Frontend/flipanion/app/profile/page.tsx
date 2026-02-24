@@ -21,7 +21,9 @@ export default function ProfilePage() {
   const [editingUsername, setEditingUsername] = React.useState(false);
   const [username, setUsername] = React.useState("");
   const [originalUsername, setOriginalUsername] = React.useState("");
-  const [usernameAvailable, setUsernameAvailable] = React.useState<boolean | null>(null);
+  const [usernameAvailable, setUsernameAvailable] = React.useState<
+    boolean | null
+  >(null);
   const [checkingUsername, setCheckingUsername] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
   const [message, setMessage] = React.useState<{
@@ -52,7 +54,9 @@ export default function ProfilePage() {
       setTheme(savedTheme);
       applyTheme(savedTheme);
     } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
       const initialTheme = prefersDark ? "dark" : "light";
       setTheme(initialTheme);
       applyTheme(initialTheme);
@@ -94,7 +98,9 @@ export default function ProfilePage() {
       const currentName = currentUser.user_metadata?.name || "";
       setUsername(currentName);
       setOriginalUsername(currentName);
-      const existingAvatar = (currentUser.user_metadata as Record<string, string>)?.avatar_url ?? null;
+      const existingAvatar =
+        (currentUser.user_metadata as Record<string, string>)?.avatar_url ??
+        null;
       setAvatarUrl(existingAvatar);
       setLoading(false);
     };
@@ -172,10 +178,7 @@ export default function ProfilePage() {
     setMessage(null);
 
     try {
-      const {
-        data: updateData,
-        error: dbError,
-      } = await supabase
+      const { data: updateData, error: dbError } = await supabase
         .from("User")
         .update({ name: candidate })
         .eq("supabaseId", user.id)
@@ -250,11 +253,17 @@ export default function ProfilePage() {
     if (!user) return;
 
     if (newPassword.length < 6) {
-      setPasswordMessage({ type: "error", text: "Neues Passwort muss mindestens 6 Zeichen lang sein." });
+      setPasswordMessage({
+        type: "error",
+        text: "Neues Passwort muss mindestens 6 Zeichen lang sein.",
+      });
       return;
     }
     if (newPassword !== confirmPassword) {
-      setPasswordMessage({ type: "error", text: "Passwörter stimmen nicht überein." });
+      setPasswordMessage({
+        type: "error",
+        text: "Passwörter stimmen nicht überein.",
+      });
       return;
     }
 
@@ -269,7 +278,10 @@ export default function ProfilePage() {
       });
 
       if (signInError) {
-        setPasswordMessage({ type: "error", text: "Aktuelles Passwort ist falsch." });
+        setPasswordMessage({
+          type: "error",
+          text: "Aktuelles Passwort ist falsch.",
+        });
         setChangingPassword(false);
         return;
       }
@@ -280,18 +292,27 @@ export default function ProfilePage() {
       });
 
       if (updateError) {
-        setPasswordMessage({ type: "error", text: `Fehler beim Ändern: ${updateError.message}` });
+        setPasswordMessage({
+          type: "error",
+          text: `Fehler beim Ändern: ${updateError.message}`,
+        });
         setChangingPassword(false);
         return;
       }
 
-      setPasswordMessage({ type: "success", text: "Passwort erfolgreich geändert!" });
+      setPasswordMessage({
+        type: "success",
+        text: "Passwort erfolgreich geändert!",
+      });
       setEditingPassword(false);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch {
-      setPasswordMessage({ type: "error", text: "Ein unerwarteter Fehler ist aufgetreten." });
+      setPasswordMessage({
+        type: "error",
+        text: "Ein unerwarteter Fehler ist aufgetreten.",
+      });
     } finally {
       setChangingPassword(false);
     }
@@ -313,7 +334,10 @@ export default function ProfilePage() {
 
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
-      setMessage({ type: "error", text: "Nur JPEG, PNG, WebP oder GIF sind erlaubt." });
+      setMessage({
+        type: "error",
+        text: "Nur JPEG, PNG, WebP oder GIF sind erlaubt.",
+      });
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
@@ -333,11 +357,16 @@ export default function ProfilePage() {
         .upload(filePath, file, { upsert: true, contentType: file.type });
 
       if (uploadError) {
-        setMessage({ type: "error", text: `Upload fehlgeschlagen: ${uploadError.message}` });
+        setMessage({
+          type: "error",
+          text: `Upload fehlgeschlagen: ${uploadError.message}`,
+        });
         return;
       }
 
-      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
       const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
 
       const { error: authError } = await supabase.auth.updateUser({
@@ -345,14 +374,23 @@ export default function ProfilePage() {
       });
 
       if (authError) {
-        setMessage({ type: "error", text: `Metadaten konnten nicht gespeichert werden: ${authError.message}` });
+        setMessage({
+          type: "error",
+          text: `Metadaten konnten nicht gespeichert werden: ${authError.message}`,
+        });
         return;
       }
 
       setAvatarUrl(publicUrl);
-      setMessage({ type: "success", text: "Profilbild erfolgreich aktualisiert!" });
+      setMessage({
+        type: "success",
+        text: "Profilbild erfolgreich aktualisiert!",
+      });
     } catch {
-      setMessage({ type: "error", text: "Ein unerwarteter Fehler ist aufgetreten." });
+      setMessage({
+        type: "error",
+        text: "Ein unerwarteter Fehler ist aufgetreten.",
+      });
     } finally {
       setUploadingAvatar(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -375,7 +413,9 @@ export default function ProfilePage() {
         <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
-            <p className="mt-4 text-sm text-[var(--text-muted)]">Profil wird geladen ...</p>
+            <p className="mt-4 text-sm text-[var(--text-muted)]">
+              Profil wird geladen ...
+            </p>
           </div>
         </main>
       </div>
@@ -522,7 +562,11 @@ export default function ProfilePage() {
               <div className="w-32 h-32 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center border-4 border-[var(--surface)] dark:border-[var(--background)] shadow-lg shadow-indigo-500/20 overflow-hidden">
                 {avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={avatarUrl} alt="Profilbild" className="w-full h-full object-cover" />
+                  <img
+                    src={avatarUrl}
+                    alt="Profilbild"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <span className="text-white font-bold text-5xl">
                     {(user.user_metadata?.name || user.email || "U")
@@ -664,34 +708,79 @@ export default function ProfilePage() {
 
                 {username !== originalUsername && (
                   <>
-                    {username.includes(' ') && (
+                    {username.includes(" ") && (
                       <p className="text-xs text-red-500 font-medium flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                         Leerzeichen sind nicht erlaubt
                       </p>
                     )}
-                    {!username.includes(' ') && usernameAvailable === false && username.length >= 3 && (
-                      <p className="text-xs text-red-500 font-medium flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Benutzername bereits vergeben
-                      </p>
-                    )}
-                    {!username.includes(' ') && usernameAvailable === false && username.length > 0 && username.length < 3 && (
-                      <p className="text-xs text-amber-500 font-medium flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        Mindestens 3 Zeichen erforderlich
-                      </p>
-                    )}
-                    {!username.includes(' ') && usernameAvailable === true && (
+                    {!username.includes(" ") &&
+                      usernameAvailable === false &&
+                      username.length >= 3 && (
+                        <p className="text-xs text-red-500 font-medium flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          Benutzername bereits vergeben
+                        </p>
+                      )}
+                    {!username.includes(" ") &&
+                      usernameAvailable === false &&
+                      username.length > 0 &&
+                      username.length < 3 && (
+                        <p className="text-xs text-amber-500 font-medium flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            />
+                          </svg>
+                          Mindestens 3 Zeichen erforderlich
+                        </p>
+                      )}
+                    {!username.includes(" ") && usernameAvailable === true && (
                       <p className="text-xs text-green-500 font-medium flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                         Benutzername verfügbar ✓
                       </p>
@@ -707,7 +796,7 @@ export default function ProfilePage() {
                       usernameAvailable === false ||
                       username.length < 3 ||
                       username === originalUsername ||
-                      username.includes(' ')
+                      username.includes(" ")
                     }
                     className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 text-sm"
                   >
@@ -825,7 +914,10 @@ export default function ProfilePage() {
               {!editingPassword && (
                 <button
                   type="button"
-                  onClick={() => { setEditingPassword(true); setPasswordMessage(null); }}
+                  onClick={() => {
+                    setEditingPassword(true);
+                    setPasswordMessage(null);
+                  }}
                   className="px-4 py-2 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
                 >
                   Ändern
@@ -843,15 +935,41 @@ export default function ProfilePage() {
                 }`}
               >
                 {passwordMessage.type === "success" ? (
-                  <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-5 h-5 text-green-500 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-5 h-5 text-red-500 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 )}
-                <p className={passwordMessage.type === "success" ? "text-green-600 dark:text-green-400 font-medium text-sm" : "text-red-600 dark:text-red-400 font-medium text-sm"}>
+                <p
+                  className={
+                    passwordMessage.type === "success"
+                      ? "text-green-600 dark:text-green-400 font-medium text-sm"
+                      : "text-red-600 dark:text-red-400 font-medium text-sm"
+                  }
+                >
                   {passwordMessage.text}
                 </p>
               </div>
@@ -874,13 +992,38 @@ export default function ProfilePage() {
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
                   >
                     {showCurrentPassword ? (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                        />
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
                       </svg>
                     )}
                   </button>
@@ -901,13 +1044,38 @@ export default function ProfilePage() {
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
                   >
                     {showNewPassword ? (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                        />
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
                       </svg>
                     )}
                   </button>
@@ -936,20 +1104,41 @@ export default function ProfilePage() {
                 {/* Validation hints */}
                 {newPassword.length > 0 && newPassword.length < 6 && (
                   <p className="text-xs text-amber-500 font-medium flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
                     </svg>
                     Mindestens 6 Zeichen erforderlich
                   </p>
                 )}
-                {confirmPassword.length > 0 && newPassword !== confirmPassword && (
-                  <p className="text-xs text-red-500 font-medium flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Passwörter stimmen nicht überein
-                  </p>
-                )}
+                {confirmPassword.length > 0 &&
+                  newPassword !== confirmPassword && (
+                    <p className="text-xs text-red-500 font-medium flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Passwörter stimmen nicht überein
+                    </p>
+                  )}
 
                 <div className="flex gap-3">
                   <button
@@ -1040,7 +1229,11 @@ export default function ProfilePage() {
                     : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)]"
                 }`}
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
                 Hell
@@ -1057,7 +1250,11 @@ export default function ProfilePage() {
                     : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)]"
                 }`}
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M20.354 15.354A9 9 0 015.646 5.646 9.001 9.001 0 0115.354 15.354z" />
                 </svg>
                 Dunkel
@@ -1088,7 +1285,7 @@ export default function ProfilePage() {
                   Benutzer-ID
                 </h2>
                 <p className="text-xs text-[var(--text-muted)]">
-                  Deine einigartige User ID 
+                  Deine einigartige User ID
                 </p>
               </div>
             </div>

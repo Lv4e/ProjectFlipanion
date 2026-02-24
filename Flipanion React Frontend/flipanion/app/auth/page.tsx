@@ -148,7 +148,9 @@ export default function AuthPage() {
     if (error) {
       setError(error.message);
     } else {
-      setMessage("Wir haben dir eine E-Mail zum Zurücksetzen deines Passworts gesendet. Bitte prüfe dein Postfach.");
+      setMessage(
+        "Wir haben dir eine E-Mail zum Zurücksetzen deines Passworts gesendet. Bitte prüfe dein Postfach.",
+      );
       setResetCooldown(300); // 5 minutes = 300 seconds
     }
     setResetLoading(false);
@@ -172,7 +174,7 @@ export default function AuthPage() {
       return;
     }
 
-    if (username.includes(' ')) {
+    if (username.includes(" ")) {
       setError("Benutzername darf keine Leerzeichen enthalten.");
       setLoading(false);
       return;
@@ -372,7 +374,8 @@ export default function AuthPage() {
                     />
                     <div
                       className={`h-1.5 flex-1 rounded-full transition-all ${
-                        passwordStrength === "strong" || passwordStrength === "medium"
+                        passwordStrength === "strong" ||
+                        passwordStrength === "medium"
                           ? passwordStrength === "medium"
                             ? "bg-amber-500"
                             : "bg-green-500"
@@ -381,7 +384,9 @@ export default function AuthPage() {
                     />
                     <div
                       className={`h-1.5 flex-1 rounded-full transition-all ${
-                        passwordStrength === "strong" ? "bg-green-500" : "bg-[var(--border)]"
+                        passwordStrength === "strong"
+                          ? "bg-green-500"
+                          : "bg-[var(--border)]"
                       }`}
                     />
                   </div>
@@ -403,7 +408,8 @@ export default function AuthPage() {
                   </p>
                   {passwordStrength === "weak" && (
                     <p className="mt-1 text-xs text-[var(--text-muted)]">
-                      Verwende min. 8 Zeichen mit Zahlen & Buchstaben. Vermeide einfache Muster.
+                      Verwende min. 8 Zeichen mit Zahlen & Buchstaben. Vermeide
+                      einfache Muster.
                     </p>
                   )}
                 </div>
@@ -462,7 +468,7 @@ export default function AuthPage() {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={loading || (!isLogin && username.includes(' '))}
+              disabled={loading || (!isLogin && username.includes(" "))}
               className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center cursor-pointer mt-6"
             >
               {loading ? (
@@ -485,8 +491,18 @@ export default function AuthPage() {
             href="/"
             className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Zurück zur Startseite
           </Link>
