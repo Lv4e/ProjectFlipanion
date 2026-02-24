@@ -17,7 +17,7 @@
     3. Abhängigkeiten installieren:
 
     ```bash
-    npm install
+    pnpm install
     ```
 
     4. Umweltvariablen setzen (lokal z. B. in `.env.local`):
@@ -30,7 +30,7 @@
     5. Dev-Server starten:
 
     ```bash
-    npm run dev
+    pnpm dev
     ```
 
     Die App läuft dann unter `http://localhost:3000`.
