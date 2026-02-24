@@ -45,7 +45,7 @@ function AuthPageInner() {
   }, [resetCooldown]);
 
   React.useEffect(() => {
-    if (!isLogin && username.length >= 3) {
+    if (!isLogin && username.length >= 3 && !username.includes(" ")) {
       const timeoutId = setTimeout(async () => {
         setCheckingUsername(true);
         const candidate = username.trim();
@@ -156,7 +156,9 @@ function AuthPageInner() {
     if (error) {
       setError(error.message);
     } else {
-      setMessage("Wir haben dir eine E-Mail zum Zurücksetzen deines Passworts gesendet. Bitte prüfe dein Postfach.");
+      setMessage(
+        "Wir haben dir eine E-Mail zum Zurücksetzen deines Passworts gesendet. Bitte prüfe dein Postfach.",
+      );
       setResetCooldown(300); // 5 minutes = 300 seconds
     }
     setResetLoading(false);
@@ -176,6 +178,12 @@ function AuthPageInner() {
 
     if (passwordStrength === "weak") {
       setError("Passwort ist zu schwach. Bitte wähle ein stärkeres Passwort.");
+      setLoading(false);
+      return;
+    }
+
+    if (username.includes(" ")) {
+      setError("Benutzername darf keine Leerzeichen enthalten.");
       setLoading(false);
       return;
     }
@@ -289,12 +297,30 @@ function AuthPageInner() {
                     </div>
                   )}
                 </div>
-                {usernameAvailable === false && (
+                {username.includes(" ") && (
+                  <p className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Leerzeichen sind nicht erlaubt
+                  </p>
+                )}
+                {!username.includes(" ") && usernameAvailable === false && (
                   <p className="mt-1.5 text-xs text-red-500 font-medium">
                     Benutzername bereits vergeben
                   </p>
                 )}
-                {usernameAvailable === true && (
+                {!username.includes(" ") && usernameAvailable === true && (
                   <p className="mt-1.5 text-xs text-green-500 font-medium">
                     Benutzername verfügbar ✓
                   </p>
@@ -374,7 +400,8 @@ function AuthPageInner() {
                     />
                     <div
                       className={`h-1.5 flex-1 rounded-full transition-all ${
-                        passwordStrength === "strong" || passwordStrength === "medium"
+                        passwordStrength === "strong" ||
+                        passwordStrength === "medium"
                           ? passwordStrength === "medium"
                             ? "bg-amber-500"
                             : "bg-green-500"
@@ -383,7 +410,9 @@ function AuthPageInner() {
                     />
                     <div
                       className={`h-1.5 flex-1 rounded-full transition-all ${
-                        passwordStrength === "strong" ? "bg-green-500" : "bg-[var(--border)]"
+                        passwordStrength === "strong"
+                          ? "bg-green-500"
+                          : "bg-[var(--border)]"
                       }`}
                     />
                   </div>
@@ -405,7 +434,8 @@ function AuthPageInner() {
                   </p>
                   {passwordStrength === "weak" && (
                     <p className="mt-1 text-xs text-[var(--text-muted)]">
-                      Verwende min. 8 Zeichen mit Zahlen & Buchstaben. Vermeide einfache Muster.
+                      Verwende min. 8 Zeichen mit Zahlen & Buchstaben. Vermeide
+                      einfache Muster.
                     </p>
                   )}
                 </div>
@@ -464,7 +494,7 @@ function AuthPageInner() {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || (!isLogin && username.includes(" "))}
               className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center cursor-pointer mt-6"
             >
               {loading ? (
@@ -487,8 +517,18 @@ function AuthPageInner() {
             href="/"
             className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Zurück zur Startseite
           </Link>
