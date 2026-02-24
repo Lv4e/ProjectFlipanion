@@ -172,6 +172,12 @@ export default function AuthPage() {
       return;
     }
 
+    if (username.includes(' ')) {
+      setError("Benutzername darf keine Leerzeichen enthalten.");
+      setLoading(false);
+      return;
+    }
+
     if (!usernameAvailable) {
       setError(
         "Benutzername ist nicht verfügbar oder zu kurz (mindestens 3 Zeichen).",
@@ -456,7 +462,7 @@ export default function AuthPage() {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || (!isLogin && username.includes(' '))}
               className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center cursor-pointer mt-6"
             >
               {loading ? (
