@@ -23,7 +23,18 @@ export default function AuthPage() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const [message, setMessage] = React.useState("");
+  const [resetLoading, setResetLoading] = React.useState(false);
+  const [resetCooldown, setResetCooldown] = React.useState(0);
   const router = useRouter();
+
+  // Cooldown countdown timer
+  React.useEffect(() => {
+    if (resetCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResetCooldown((prev) => (prev <= 1 ? 0 : prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resetCooldown]);
 
   React.useEffect(() => {
     if (!isLogin && username.length >= 3) {
@@ -101,6 +112,46 @@ export default function AuthPage() {
     }
 
     setLoading(false);
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Bitte gib zuerst deine E-Mail-Adresse ein.");
+      return;
+    }
+    setResetLoading(true);
+    setError("");
+    setMessage("");
+
+    // Check if the email exists in the database before sending the reset email
+    const { count, error: dbError } = await supabase
+      .from("User")
+      .select("email", { count: "exact", head: true })
+      .eq("email", email);
+
+    if (dbError) {
+      setError("Fehler bei der Überprüfung. Bitte versuche es erneut.");
+      setResetLoading(false);
+      return;
+    }
+
+    if (!count || count === 0) {
+      setError("Diese E-Mail-Adresse ist nicht registriert.");
+      setResetLoading(false);
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    });
+
+    if (error) {
+      setError(error.message);
+    } else {
+      setMessage("Wir haben dir eine E-Mail zum Zurücksetzen deines Passworts gesendet. Bitte prüfe dein Postfach.");
+      setResetCooldown(300); // 5 minutes = 300 seconds
+    }
+    setResetLoading(false);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -280,6 +331,26 @@ export default function AuthPage() {
                 placeholder="••••••••"
                 minLength={8}
               />
+              {isLogin && (
+                <div className="mt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    disabled={resetLoading || resetCooldown > 0}
+                    className={`text-xs font-medium transition-colors ${
+                      resetCooldown > 0
+                        ? "text-[var(--text-muted)] cursor-not-allowed"
+                        : "text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
+                    }`}
+                  >
+                    {resetLoading
+                      ? "Wird gesendet ..."
+                      : resetCooldown > 0
+                        ? `Erneut senden in ${Math.floor(resetCooldown / 60)}:${String(resetCooldown % 60).padStart(2, "0")}`
+                        : "Passwort vergessen?"}
+                  </button>
+                </div>
+              )}
               {!isLogin && passwordStrength && (
                 <div className="mt-2.5">
                   {/* Password Strength Bar */}

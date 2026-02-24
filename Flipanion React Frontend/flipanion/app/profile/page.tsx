@@ -31,6 +31,17 @@ export default function ProfilePage() {
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
   const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = React.useState(false);
+  const [editingPassword, setEditingPassword] = React.useState(false);
+  const [currentPassword, setCurrentPassword] = React.useState("");
+  const [newPassword, setNewPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [changingPassword, setChangingPassword] = React.useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
+  const [showNewPassword, setShowNewPassword] = React.useState(false);
+  const [passwordMessage, setPasswordMessage] = React.useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -233,6 +244,67 @@ export default function ProfilePage() {
     setEditingUsername(false);
     setMessage(null);
     setUsernameAvailable(null);
+  };
+
+  const handleChangePassword = async () => {
+    if (!user) return;
+
+    if (newPassword.length < 6) {
+      setPasswordMessage({ type: "error", text: "Neues Passwort muss mindestens 6 Zeichen lang sein." });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage({ type: "error", text: "Passwörter stimmen nicht überein." });
+      return;
+    }
+
+    setChangingPassword(true);
+    setPasswordMessage(null);
+
+    try {
+      // Verify current password by re-authenticating
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      });
+
+      if (signInError) {
+        setPasswordMessage({ type: "error", text: "Aktuelles Passwort ist falsch." });
+        setChangingPassword(false);
+        return;
+      }
+
+      // Update to new password
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (updateError) {
+        setPasswordMessage({ type: "error", text: `Fehler beim Ändern: ${updateError.message}` });
+        setChangingPassword(false);
+        return;
+      }
+
+      setPasswordMessage({ type: "success", text: "Passwort erfolgreich geändert!" });
+      setEditingPassword(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch {
+      setPasswordMessage({ type: "error", text: "Ein unerwarteter Fehler ist aufgetreten." });
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
+  const handleCancelPassword = () => {
+    setEditingPassword(false);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setShowCurrentPassword(false);
+    setShowNewPassword(false);
+    setPasswordMessage(null);
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -713,6 +785,218 @@ export default function ProfilePage() {
             </div>
           </div>
 
+          {/* Password Card */}
+          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-3">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-rose-100 dark:bg-rose-500/10 rounded-xl flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-rose-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-[var(--foreground)]">
+                    Passwort
+                  </h2>
+                  <p className="text-xs text-[var(--text-muted)]">
+                    Ändere dein Anmeldepasswort
+                  </p>
+                </div>
+              </div>
+              {!editingPassword && (
+                <button
+                  type="button"
+                  onClick={() => { setEditingPassword(true); setPasswordMessage(null); }}
+                  className="px-4 py-2 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
+                >
+                  Ändern
+                </button>
+              )}
+            </div>
+
+            {/* Password feedback message */}
+            {passwordMessage && (
+              <div
+                className={`mb-4 p-3 rounded-xl flex items-center gap-3 border ${
+                  passwordMessage.type === "success"
+                    ? "border-green-200 dark:border-green-500/20 bg-green-50/50 dark:bg-green-500/8"
+                    : "border-red-200 dark:border-red-500/20 bg-red-50/50 dark:bg-red-500/8"
+                }`}
+              >
+                {passwordMessage.type === "success" ? (
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                )}
+                <p className={passwordMessage.type === "success" ? "text-green-600 dark:text-green-400 font-medium text-sm" : "text-red-600 dark:text-red-400 font-medium text-sm"}>
+                  {passwordMessage.text}
+                </p>
+              </div>
+            )}
+
+            {editingPassword ? (
+              <div className="space-y-3">
+                {/* Current Password */}
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Aktuelles Passwort"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
+                  >
+                    {showCurrentPassword ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+
+                {/* New Password */}
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Neues Passwort (mind. 6 Zeichen)"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
+                  >
+                    {showNewPassword ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+
+                {/* Confirm New Password */}
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Neues Passwort bestätigen"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                  />
+                  {confirmPassword.length > 0 && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {newPassword === confirmPassword ? (
+                        <div className="text-green-500 text-lg">✓</div>
+                      ) : (
+                        <div className="text-red-500 text-lg">✗</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Validation hints */}
+                {newPassword.length > 0 && newPassword.length < 6 && (
+                  <p className="text-xs text-amber-500 font-medium flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Mindestens 6 Zeichen erforderlich
+                  </p>
+                )}
+                {confirmPassword.length > 0 && newPassword !== confirmPassword && (
+                  <p className="text-xs text-red-500 font-medium flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Passwörter stimmen nicht überein
+                  </p>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={handleChangePassword}
+                    disabled={
+                      changingPassword ||
+                      currentPassword.length === 0 ||
+                      newPassword.length < 6 ||
+                      newPassword !== confirmPassword
+                    }
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 text-sm"
+                  >
+                    {changingPassword ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Wird geändert
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        Passwort ändern
+                      </>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelPassword}
+                    disabled={changingPassword}
+                    className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--foreground)] font-medium rounded-xl transition-colors text-sm"
+                  >
+                    Abbrechen
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)]">
+                <p className="text-[var(--foreground)] font-semibold text-sm">
+                  ••••••••
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* Theme Card */}
           <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-3">
             <div className="flex items-center gap-3 mb-6">
@@ -795,7 +1079,7 @@ export default function ProfilePage() {
                   Benutzer-ID
                 </h2>
                 <p className="text-xs text-[var(--text-muted)]">
-                  Deine eindeutige Kennung
+                  Deine einigartige User ID 
                 </p>
               </div>
             </div>
