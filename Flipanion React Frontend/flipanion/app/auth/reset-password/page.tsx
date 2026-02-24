@@ -1,11 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { supabase } from "../../supabase-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><span className="text-[var(--text-muted)]">Laden…</span></div>}>
+      <ResetPasswordInner />
+    </Suspense>
+  );
+}
+
+function ResetPasswordInner() {
   const [newPassword, setNewPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);

@@ -1,11 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { supabase } from "../supabase-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AuthPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><span className="text-[var(--text-muted)]">Laden…</span></div>}>
+      <AuthPageInner />
+    </Suspense>
+  );
+}
+
+function AuthPageInner() {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
   const [isLogin, setIsLogin] = React.useState(mode !== "signup");
