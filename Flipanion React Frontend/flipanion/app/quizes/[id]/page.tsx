@@ -325,7 +325,7 @@ export default function QuizPage() {
                 <div className="flex items-center justify-between mt-4 text-sm text-[var(--text-muted)]">
                   <span className="inline-flex items-center gap-1.5">
                     <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
-                      {(quiz as AnyRow)?.Subject?.name ?? (quiz as AnyRow)?.subject ?? 'Allgemein'}
+                      {(quiz?.Subject as Record<string, unknown> | undefined)?.name as string ?? (quiz?.subject as string) ?? 'Allgemein'}
                     </span>
                   </span>
                   <span className="text-sm">
