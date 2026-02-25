@@ -34,9 +34,6 @@ export default function ImpressumPage() {
             <h2 className="text-xl font-semibold mb-3">Angaben gemäß § 5 ECG</h2>
             <div className="glass-card rounded-2xl p-6 space-y-1 text-sm leading-relaxed">
               <p className="font-medium">Flipanion – Schulprojekt</p>
-              <p>Adressenplatzhalter</p>
-              <p>Adressenplatzhalter</p>
-              <p>XXXX Wien, Österreich</p>
             </div>
           </section>
 

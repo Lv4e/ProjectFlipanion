@@ -129,7 +129,7 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                 <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                  Kostenlos &amp; Open Source
+                  Kostenlos &amp; ohne Werbung
                 </span>
               </div>
             </div>

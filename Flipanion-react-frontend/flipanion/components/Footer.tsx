@@ -1,7 +1,25 @@
+'use client';
+
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { supabase } from '../app/supabase-client';
 
 export default function Footer() {
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setLoggedIn(!!user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setLoggedIn(!!session?.user);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--surface)]/60 backdrop-blur-sm mt-auto">
       <div className="max-w-6xl mx-auto px-6 py-10">
@@ -31,8 +49,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/auth" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
-                  Anmelden
+                <Link href={loggedIn ? '/profile' : '/auth'} className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                  Mein Konto
                 </Link>
               </li>
             </ul>
@@ -45,6 +63,11 @@ export default function Footer() {
               <li>
                 <Link href="/impressum" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
                   Impressum
+                </Link>
+              </li>
+              <li>
+                <Link href="/agb" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                  AGB
                 </Link>
               </li>
             </ul>
@@ -63,7 +86,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="text-sm text-[var(--text-muted)]">
-                Adressenplatzhalter, XXXX Wien
+                ------------------------------
               </li>
             </ul>
           </div>
@@ -75,7 +98,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Flipanion. Mit Liebe gebaut.
           </p>
           <p className="text-xs text-[var(--text-muted)]">
-            Ein Schulprojekt der 3AHWII der Spengergasse.
+            Ein Schulprojekt des Teams "Flipanion" der 3AHWII an der Spengergasse.
           </p>
         </div>
       </div>
