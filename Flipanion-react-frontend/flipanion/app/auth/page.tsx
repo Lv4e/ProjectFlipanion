@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 import { supabase } from "../supabase-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 export default function AuthPage() {
   return (
@@ -230,8 +231,8 @@ function AuthPageInner() {
             href="/"
             className="inline-flex items-center gap-2 justify-center group"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-indigo-500/25 transition-shadow">
-              <span className="text-white font-bold text-lg">F</span>
+            <div className="w-12 h-12 rounded-xl shadow-md group-hover:shadow-indigo-500/25 transition-shadow overflow-hidden flex items-center justify-center">
+              <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
             </div>
             <span className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
               Flipanion

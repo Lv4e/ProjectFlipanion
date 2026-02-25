@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Flipanion - Quiz-Plattform",
   description: "Flipanion - Teste dein Wissen mit interaktiven Quizzen",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/logo_flipanion.png",
   },
 };
 

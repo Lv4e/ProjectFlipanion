@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -8,8 +9,8 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 group mb-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-indigo-500/25 transition-shadow">
-                <span className="text-white font-bold text-sm">F</span>
+              <div className="w-10 h-10 rounded-lg shadow-sm group-hover:shadow-indigo-500/25 transition-shadow overflow-hidden flex items-center justify-center">
+                <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
               </div>
               <span className="text-lg font-bold text-[var(--foreground)] tracking-tight">
                 Flipanion
