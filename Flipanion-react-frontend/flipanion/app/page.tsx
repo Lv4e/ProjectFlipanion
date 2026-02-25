@@ -265,9 +265,11 @@ export default function Home() {
               Erstelle dein erstes Quiz oder entdecke bestehende, um direkt loszulegen!
             </p>
             <div className="flex flex-wrap gap-3">
-              <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all shadow-md shadow-indigo-500/20 active:scale-[0.98] cursor-pointer">
-                Quiz erstellen
-              </button>
+              <Link href="/quiz/create">
+                <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all shadow-md shadow-indigo-500/20 active:scale-[0.98] cursor-pointer">
+                  Quiz erstellen
+                </button>
+              </Link>
               <Link href="/browse">
                 <button className="px-6 py-3 bg-[var(--surface)] text-[var(--foreground)] font-semibold rounded-xl border border-[var(--border)] hover:bg-[var(--surface-hover)] hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all cursor-pointer">
                   Quizze entdecken
@@ -317,14 +319,14 @@ export default function Home() {
           {/* Tab content */}
           {activeTab === 'mine' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              <div className="glass-card rounded-2xl p-8 col-span-full flex flex-col items-center justify-center text-center">
-                <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
+              <Link href="/quiz/create" className="glass-card rounded-2xl p-8 col-span-full flex flex-col items-center justify-center text-center hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group cursor-pointer">
+                <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
                   <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                 </div>
-                <p className="text-[var(--text-muted)] text-sm">Noch keine Quizze vorhanden. Erstelle dein erstes!</p>
-              </div>
+                <p className="text-[var(--text-muted)] text-sm group-hover:text-indigo-500 transition-colors">Noch keine Quizze vorhanden. Erstelle dein erstes!</p>
+              </Link>
             </div>
           ) : loadingCompleted ? (
             <div className="flex flex-col items-center justify-center py-12">
