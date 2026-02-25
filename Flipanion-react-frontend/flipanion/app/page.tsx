@@ -4,6 +4,7 @@ import React from 'react';
 import { supabase } from './supabase-client';
 import Link from 'next/link';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 interface User {
   id: string;
@@ -231,14 +232,9 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          {/* Footer */}
-          <footer className="pb-10 text-center">
-            <p className="text-sm text-[var(--text-muted)]">
-              &copy; 2026 Flipanion. Mit Liebe gebaut.
-            </p>
-          </footer>
         </main>
+
+        <Footer />
       </div>
     );
   }
@@ -385,6 +381,7 @@ export default function Home() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

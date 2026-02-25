@@ -1,0 +1,83 @@
+import Link from 'next/link';
+
+export default function Footer() {
+  return (
+    <footer className="border-t border-[var(--border)] bg-[var(--surface)]/60 backdrop-blur-sm mt-auto">
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Link href="/" className="flex items-center gap-2 group mb-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-indigo-500/25 transition-shadow">
+                <span className="text-white font-bold text-sm">F</span>
+              </div>
+              <span className="text-lg font-bold text-[var(--foreground)] tracking-tight">
+                Flipanion
+              </span>
+            </Link>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed max-w-xs">
+              Deine interaktive Quiz-Plattform zum Lernen, Üben und Wissen testen.
+            </p>
+          </div>
+
+          {/* Navigation */}
+          <div>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Plattform</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/browse" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                  Quizze entdecken
+                </Link>
+              </li>
+              <li>
+                <Link href="/auth" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                  Anmelden
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Rechtliches */}
+          <div>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Rechtliches</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/impressum" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                  Impressum
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Kontakt */}
+          <div>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Kontakt</h3>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="mailto:flipanion@spengergasse.at"
+                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                >
+                  flipanion@spengergasse.at
+                </a>
+              </li>
+              <li className="text-sm text-[var(--text-muted)]">
+                Adressenplatzhalter, XXXX Wien
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Divider + Copyright */}
+        <div className="mt-10 pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="text-xs text-[var(--text-muted)]">
+            &copy; {new Date().getFullYear()} Flipanion. Mit Liebe gebaut.
+          </p>
+          <p className="text-xs text-[var(--text-muted)]">
+            Ein Schulprojekt der 3AHWII der Spengergasse.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}

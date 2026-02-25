@@ -4,6 +4,7 @@ import React from 'react';
 import { supabase } from '../supabase-client';
 import Link from 'next/link';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 // Define the Quiz type based on your database structure
 interface Quiz {
@@ -253,6 +254,7 @@ export default function BrowseQuizzes() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
