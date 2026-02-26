@@ -89,6 +89,16 @@ export default function Header() {
                 Entdecken
               </Link>
               <Link 
+                href="/leaderboard" 
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  pathname === '/leaderboard' 
+                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10' 
+                    : 'text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
+                }`}
+              >
+                Leaderboard
+              </Link>
+              <Link 
                 href="/profile" 
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
               >
