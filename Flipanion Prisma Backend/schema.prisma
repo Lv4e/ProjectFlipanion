@@ -21,6 +21,7 @@ model User {
   points         Points[]
   userAnswers    UserAnswer[]
   userStatistics UserStatistics?
+  quizzes        Quiz[]
 }
 
 model Subject {
@@ -79,8 +80,10 @@ model Quiz {
   description String?
   createdAt   DateTime   @default(now())
   subjectId   Int
+  creatorId   Int?
   questions   Question[]
   subject     Subject    @relation(fields: [subjectId], references: [id])
+  creator     User?      @relation(fields: [creatorId], references: [id])
 
   @@unique([title, subjectId])      
 }

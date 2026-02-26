@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { supabase } from './supabase-client';
-import Link from 'next/link';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import React from "react";
+import { supabase } from "./supabase-client";
+import Link from "next/link";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 interface User {
   id: string;
@@ -22,12 +22,27 @@ interface CompletedQuiz {
   date: string;
 }
 
+interface MyQuiz {
+  id: number;
+  title: string;
+  description: string | null;
+  createdAt: string;
+  subjectName: string;
+  questionCount: number;
+}
+
 export default function Home() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
-  const [activeTab, setActiveTab] = React.useState<'mine' | 'completed'>('mine');
-  const [completedQuizzes, setCompletedQuizzes] = React.useState<CompletedQuiz[]>([]);
+  const [activeTab, setActiveTab] = React.useState<"mine" | "completed">(
+    "mine",
+  );
+  const [completedQuizzes, setCompletedQuizzes] = React.useState<
+    CompletedQuiz[]
+  >([]);
   const [loadingCompleted, setLoadingCompleted] = React.useState(false);
+  const [myQuizzes, setMyQuizzes] = React.useState<MyQuiz[]>([]);
+  const [loadingMyQuizzes, setLoadingMyQuizzes] = React.useState(false);
 
   React.useEffect(() => {
     supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
@@ -35,24 +50,72 @@ export default function Home() {
       setLoading(false);
 
       if (currentUser) {
+        // Fetch user's own quizzes
+        (async () => {
+          setLoadingMyQuizzes(true);
+          try {
+            const { data: dbUser } = await supabase
+              .from("User")
+              .select("id")
+              .eq("supabaseId", currentUser.id)
+              .single();
+
+            if (dbUser) {
+              const { data: quizzes } = await supabase
+                .from("Quiz")
+                .select(
+                  "id, title, description, createdAt, subjectId, Subject(name), Question(id)",
+                )
+                .eq("creatorId", dbUser.id)
+                .order("createdAt", { ascending: false });
+
+              if (quizzes) {
+                setMyQuizzes(
+                  quizzes.map((q: Record<string, unknown>) => ({
+                    id: q.id as number,
+                    title: q.title as string,
+                    description: (q.description as string) || null,
+                    createdAt: q.createdAt as string,
+                    subjectName:
+                      ((q.Subject as Record<string, unknown>)
+                        ?.name as string) || "Unbekannt",
+                    questionCount: Array.isArray(q.Question)
+                      ? q.Question.length
+                      : 0,
+                  })),
+                );
+              }
+            }
+          } catch {
+            // ignore
+          } finally {
+            setLoadingMyQuizzes(false);
+          }
+        })();
+
         // Fetch completed quizzes from the database
         (async () => {
           setLoadingCompleted(true);
           try {
             // Get DB user id
             const { data: dbUser } = await supabase
-              .from('User')
-              .select('id')
-              .eq('supabaseId', currentUser.id)
+              .from("User")
+              .select("id")
+              .eq("supabaseId", currentUser.id)
               .single();
 
-            if (!dbUser) { setLoadingCompleted(false); return; }
+            if (!dbUser) {
+              setLoadingCompleted(false);
+              return;
+            }
 
             // Get all user answers with their question→quiz info
             const { data: userAnswers } = await supabase
-              .from('UserAnswer')
-              .select('isCorrect, question:Question(id, quizId, quiz:Quiz(id, title, createdAt))')
-              .eq('userId', dbUser.id);
+              .from("UserAnswer")
+              .select(
+                "isCorrect, question:Question(id, quizId, quiz:Quiz(id, title, createdAt))",
+              )
+              .eq("userId", dbUser.id);
 
             if (!userAnswers || userAnswers.length === 0) {
               setLoadingCompleted(false);
@@ -60,18 +123,29 @@ export default function Home() {
             }
 
             // Group answers by quiz
-            const quizMap = new Map<number, { title: string; correct: number; total: number; date: string }>();
+            const quizMap = new Map<
+              number,
+              { title: string; correct: number; total: number; date: string }
+            >();
 
             for (const ua of userAnswers as Array<Record<string, unknown>>) {
               const q = ua.question as Record<string, unknown> | undefined;
               if (!q) continue;
-              const quizData = q.quiz as Record<string, unknown> | Array<Record<string, unknown>> | undefined;
+              const quizData = q.quiz as
+                | Record<string, unknown>
+                | Array<Record<string, unknown>>
+                | undefined;
               if (!quizData) continue;
               const quiz = Array.isArray(quizData) ? quizData[0] : quizData;
               if (!quiz) continue;
               const qId = quiz.id as number;
               if (!quizMap.has(qId)) {
-                quizMap.set(qId, { title: quiz.title as string, correct: 0, total: 0, date: quiz.createdAt as string });
+                quizMap.set(qId, {
+                  title: quiz.title as string,
+                  correct: 0,
+                  total: 0,
+                  date: quiz.createdAt as string,
+                });
               }
               const entry = quizMap.get(qId)!;
               entry.total++;
@@ -80,11 +154,19 @@ export default function Home() {
 
             const results: CompletedQuiz[] = [];
             quizMap.forEach((v, quizId) => {
-              results.push({ quizId, title: v.title, score: v.correct, total: v.total, date: v.date });
+              results.push({
+                quizId,
+                title: v.title,
+                score: v.correct,
+                total: v.total,
+                date: v.date,
+              });
             });
 
             // Sort by most recently created quiz
-            results.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+            results.sort(
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+            );
             setCompletedQuizzes(results);
           } catch {
             // ignore
@@ -147,8 +229,8 @@ export default function Home() {
 
             {/* Subtitle */}
             <p className="text-center text-lg md:text-xl text-[var(--text-muted)] max-w-2xl mx-auto mt-6 mb-10 animate-fade-in-up-delay-1 leading-relaxed">
-              Erstelle interaktive Quizze, lerne mit smarten Karteikarten
-              und verfolge deinen Fortschritt — alles an einem Ort.
+              Erstelle interaktive Quizze, lerne mit smarten Karteikarten und
+              verfolge deinen Fortschritt — alles an einem Ort.
             </p>
 
             {/* CTA Buttons */}
@@ -172,39 +254,78 @@ export default function Home() {
               {/* Feature 1 */}
               <div className="glass-card p-7 rounded-2xl hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group">
                 <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center mb-5 shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">Quizze erstellen</h3>
+                <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">
+                  Quizze erstellen
+                </h3>
                 <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  Erstelle individuelle Quizze passend zu deinem Lernstoff und teile sie mit Freunden.
+                  Erstelle individuelle Quizze passend zu deinem Lernstoff und
+                  teile sie mit Freunden.
                 </p>
               </div>
 
               {/* Feature 2 */}
               <div className="glass-card p-7 rounded-2xl hover:shadow-lg hover:shadow-violet-500/5 transition-all duration-300 group">
                 <div className="w-11 h-11 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center mb-5 shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">Interaktiv lernen</h3>
+                <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">
+                  Interaktiv lernen
+                </h3>
                 <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  Lerne mit dynamischen Karteikarten und Quizzen — effektiv, motivierend und mit Spaß.
+                  Lerne mit dynamischen Karteikarten und Quizzen — effektiv,
+                  motivierend und mit Spaß.
                 </p>
               </div>
 
               {/* Feature 3 */}
               <div className="glass-card p-7 rounded-2xl hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-300 group">
                 <div className="w-11 h-11 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">Fortschritt verfolgen</h3>
+                <h3 className="text-lg font-bold text-[var(--foreground)] mb-2">
+                  Fortschritt verfolgen
+                </h3>
                 <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  Behalte deinen Lernfortschritt mit detaillierten Statistiken jederzeit im Blick.
+                  Behalte deinen Lernfortschritt mit detaillierten Statistiken
+                  jederzeit im Blick.
                 </p>
               </div>
             </div>
@@ -248,21 +369,26 @@ export default function Home() {
         {/* Welcome */}
         <div className="mb-10 animate-fade-in-up">
           <h2 className="text-3xl font-bold text-[var(--foreground)] mb-1 tracking-tight">
-            Willkommen zurück,{' '}
+            Willkommen zurück,{" "}
             <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">
-              {user?.user_metadata?.name || 'Nutzer'}
+              {user?.user_metadata?.name || "Nutzer"}
             </span>
           </h2>
-          <p className="text-[var(--text-muted)]">Bereit, deine Lernreise fortzusetzen?</p>
+          <p className="text-[var(--text-muted)]">
+            Bereit, deine Lernreise fortzusetzen?
+          </p>
         </div>
 
         {/* Quick Actions */}
         <div className="glass-card rounded-2xl p-8 mb-10 animate-fade-in-up-delay-1 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br from-indigo-500/10 to-violet-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
           <div className="relative">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Loslegen</h3>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
+              Loslegen
+            </h3>
             <p className="text-[var(--text-muted)] mb-6">
-              Erstelle dein erstes Quiz oder entdecke bestehende, um direkt loszulegen!
+              Erstelle dein erstes Quiz oder entdecke bestehende, um direkt
+              loszulegen!
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/quiz/create">
@@ -285,31 +411,33 @@ export default function Home() {
           <div className="flex gap-1 mb-6 bg-[var(--surface)] rounded-xl p-1 border border-[var(--border)] w-fit">
             <button
               type="button"
-              onClick={() => setActiveTab('mine')}
+              onClick={() => setActiveTab("mine")}
               className={`px-5 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer ${
-                activeTab === 'mine'
-                  ? 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/15'
-                  : 'text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
+                activeTab === "mine"
+                  ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/15"
+                  : "text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]"
               }`}
             >
               Deine Quizze
             </button>
             <button
               type="button"
-              onClick={() => setActiveTab('completed')}
+              onClick={() => setActiveTab("completed")}
               className={`px-5 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer flex items-center ${
-                activeTab === 'completed'
-                  ? 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/15'
-                  : 'text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
+                activeTab === "completed"
+                  ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/15"
+                  : "text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]"
               }`}
             >
               Abgeschlossene Quizze
               {completedQuizzes.length > 0 && (
-                <span className={`ml-2 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full ${
-                  activeTab === 'completed'
-                    ? 'bg-white/20 text-white'
-                    : 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400'
-                }`}>
+                <span
+                  className={`ml-2 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full ${
+                    activeTab === "completed"
+                      ? "bg-white/20 text-white"
+                      : "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400"
+                  }`}
+                >
                   {completedQuizzes.length}
                 </span>
               )}
@@ -317,53 +445,189 @@ export default function Home() {
           </div>
 
           {/* Tab content */}
-          {activeTab === 'mine' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              <Link href="/quiz/create" className="glass-card rounded-2xl p-8 col-span-full flex flex-col items-center justify-center text-center hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group cursor-pointer">
-                <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
-                  <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                </div>
-                <p className="text-[var(--text-muted)] text-sm group-hover:text-indigo-500 transition-colors">Noch keine Quizze vorhanden. Erstelle dein erstes!</p>
-              </Link>
-            </div>
+          {activeTab === "mine" ? (
+            loadingMyQuizzes ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="w-8 h-8 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+                <p className="mt-3 text-sm text-[var(--text-muted)]">
+                  Wird geladen ...
+                </p>
+              </div>
+            ) : myQuizzes.length === 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <Link
+                  href="/quiz/create"
+                  className="glass-card rounded-2xl p-8 col-span-full flex flex-col items-center justify-center text-center hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group cursor-pointer"
+                >
+                  <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <svg
+                      className="w-7 h-7 text-indigo-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-[var(--text-muted)] text-sm group-hover:text-indigo-500 transition-colors">
+                    Noch keine Quizze vorhanden. Erstelle dein erstes!
+                  </p>
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {myQuizzes.map((quiz) => (
+                  <Link
+                    key={quiz.id}
+                    href={`/quizes/${quiz.id}`}
+                    className="glass-card rounded-2xl p-6 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group block"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                        <svg
+                          className="w-5 h-5 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                        {quiz.questionCount}{" "}
+                        {quiz.questionCount === 1 ? "Frage" : "Fragen"}
+                      </span>
+                    </div>
+                    <h4 className="text-base font-bold text-[var(--foreground)] mb-1 group-hover:text-indigo-500 transition-colors">
+                      {quiz.title}
+                    </h4>
+                    {quiz.description && (
+                      <p className="text-sm text-[var(--text-muted)] mb-2 line-clamp-2">
+                        {quiz.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 mt-3">
+                      <span className="text-xs text-[var(--text-muted)] bg-[var(--surface-hover)] px-2 py-0.5 rounded-md">
+                        {quiz.subjectName}
+                      </span>
+                      <span className="text-xs text-[var(--text-muted)]">
+                        {new Date(quiz.createdAt).toLocaleDateString("de-DE", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+                <Link
+                  href="/quiz/create"
+                  className="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group cursor-pointer min-h-[180px]"
+                >
+                  <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                    <svg
+                      className="w-6 h-6 text-indigo-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-[var(--text-muted)] text-sm group-hover:text-indigo-500 transition-colors">
+                    Neues Quiz erstellen
+                  </p>
+                </Link>
+              </div>
+            )
           ) : loadingCompleted ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="w-8 h-8 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
-              <p className="mt-3 text-sm text-[var(--text-muted)]">Wird geladen ...</p>
+              <p className="mt-3 text-sm text-[var(--text-muted)]">
+                Wird geladen ...
+              </p>
             </div>
           ) : completedQuizzes.length === 0 ? (
             <div className="glass-card rounded-2xl p-8 flex flex-col items-center justify-center text-center">
               <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
-                <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-7 h-7 text-indigo-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
-              <p className="text-[var(--foreground)] font-medium mb-1">Noch keine Quizze abgeschlossen</p>
-              <p className="text-sm text-[var(--text-muted)]">Starte ein Quiz und komm zurück, um deinen Fortschritt zu sehen.</p>
+              <p className="text-[var(--foreground)] font-medium mb-1">
+                Noch keine Quizze abgeschlossen
+              </p>
+              <p className="text-sm text-[var(--text-muted)]">
+                Starte ein Quiz und komm zurück, um deinen Fortschritt zu sehen.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {completedQuizzes.map((cq) => {
-                const pct = cq.total > 0 ? Math.round((cq.score / cq.total) * 100) : 0;
+                const pct =
+                  cq.total > 0 ? Math.round((cq.score / cq.total) * 100) : 0;
                 return (
-                  <Link key={cq.quizId} href={`/quizes/${cq.quizId}`} className="glass-card rounded-2xl p-6 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group block">
+                  <Link
+                    key={cq.quizId}
+                    href={`/quizes/${cq.quizId}`}
+                    className="glass-card rounded-2xl p-6 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group block"
+                  >
                     <div className="flex items-start justify-between mb-4">
                       <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-5 h-5 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                       </div>
-                      <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
-                        pct >= 80 ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400' :
-                        pct >= 50 ? 'bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400' :
-                        'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400'
-                      }`}>
+                      <span
+                        className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
+                          pct >= 80
+                            ? "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400"
+                            : pct >= 50
+                              ? "bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                              : "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400"
+                        }`}
+                      >
                         {pct}%
                       </span>
                     </div>
-                    <h4 className="text-base font-bold text-[var(--foreground)] mb-1 group-hover:text-indigo-500 transition-colors">{cq.title}</h4>
+                    <h4 className="text-base font-bold text-[var(--foreground)] mb-1 group-hover:text-indigo-500 transition-colors">
+                      {cq.title}
+                    </h4>
                     <p className="text-sm text-[var(--text-muted)] mb-3">
                       {cq.score} von {cq.total} richtig
                     </p>
@@ -371,7 +635,11 @@ export default function Home() {
                     <div className="w-full bg-[var(--border)] rounded-full h-1.5 overflow-hidden">
                       <div
                         className={`h-1.5 rounded-full transition-all ${
-                          pct >= 80 ? 'bg-green-500' : pct >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                          pct >= 80
+                            ? "bg-green-500"
+                            : pct >= 50
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
                         }`}
                         style={{ width: `${pct}%` }}
                       />
