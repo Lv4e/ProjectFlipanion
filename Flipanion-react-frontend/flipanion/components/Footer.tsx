@@ -70,6 +70,11 @@ export default function Footer() {
                   AGB
                 </Link>
               </li>
+              <li>
+                <Link href="/datenschutz" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                  Datenschutz
+                </Link>
+              </li>
             </ul>
           </div>
 

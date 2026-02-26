@@ -57,6 +57,13 @@ export default function CookieBanner() {
                   className="text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 underline underline-offset-2 transition-colors"
                 >
                   AGB
+                </Link>
+                ,{' '}
+                <Link
+                  href="/datenschutz"
+                  className="text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 underline underline-offset-2 transition-colors"
+                >
+                  Datenschutzerklärung
                 </Link>{' '}
                 und im{' '}
                 <Link
