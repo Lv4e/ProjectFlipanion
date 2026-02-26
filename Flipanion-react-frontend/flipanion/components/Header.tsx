@@ -50,11 +50,14 @@ export default function Header() {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled 
-        ? 'bg-white/80 dark:bg-[#0f0f1a]/80 backdrop-blur-xl shadow-sm border-b border-[var(--border)]' 
-        : 'bg-transparent'
-    }`}>
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? 'backdrop-blur-xl shadow-sm border-b border-[var(--border)]' 
+          : 'bg-transparent'
+      }`}
+      style={scrolled ? { backgroundColor: 'color-mix(in srgb, var(--surface) 80%, transparent)' } : undefined}
+    >
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
