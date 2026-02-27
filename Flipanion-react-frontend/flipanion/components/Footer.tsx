@@ -53,6 +53,11 @@ export default function Footer() {
                   Mein Konto
                 </Link>
               </li>
+              <li>
+                <Link href="/leaderboard" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                  Leaderboard
+                </Link>
+              </li>
             </ul>
           </div>
 
