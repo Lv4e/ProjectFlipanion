@@ -102,6 +102,22 @@ export default function ProfilePage() {
         (currentUser.user_metadata as Record<string, string>)?.avatar_url ??
         null;
       setAvatarUrl(existingAvatar);
+
+      // Backfill: sync avatar URL to User table if it exists in auth metadata but not in DB
+      if (existingAvatar) {
+        const { data: dbUser } = await supabase
+          .from("User")
+          .select("avatarUrl")
+          .eq("supabaseId", currentUser.id)
+          .single();
+        if (dbUser && !dbUser.avatarUrl) {
+          await supabase
+            .from("User")
+            .update({ avatarUrl: existingAvatar })
+            .eq("supabaseId", currentUser.id);
+        }
+      }
+
       setLoading(false);
     };
 
@@ -380,6 +396,12 @@ export default function ProfilePage() {
         });
         return;
       }
+
+      // Also update the User table so the avatar is visible on the leaderboard
+      await supabase
+        .from("User")
+        .update({ avatarUrl: urlData.publicUrl })
+        .eq("supabaseId", user.id);
 
       setAvatarUrl(publicUrl);
       setMessage({

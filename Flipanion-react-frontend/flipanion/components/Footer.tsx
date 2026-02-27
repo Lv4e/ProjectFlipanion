@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { supabase } from '../app/supabase-client';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { supabase } from "../app/supabase-client";
 
 export default function Footer() {
   const [loggedIn, setLoggedIn] = React.useState(false);
@@ -13,7 +13,9 @@ export default function Footer() {
       setLoggedIn(!!user);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setLoggedIn(!!session?.user);
     });
 
@@ -28,33 +30,51 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 group mb-3">
               <div className="w-10 h-10 rounded-lg shadow-sm group-hover:shadow-indigo-500/25 transition-shadow overflow-hidden flex items-center justify-center">
-                <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+                <Image
+                  src="/logo_flipanion.png"
+                  alt="Flipanion"
+                  width={200}
+                  height={200}
+                  className="scale-[1.6]"
+                />
               </div>
               <span className="text-lg font-bold text-[var(--foreground)] tracking-tight">
                 Flipanion
               </span>
             </Link>
             <p className="text-sm text-[var(--text-muted)] leading-relaxed max-w-xs">
-              Deine interaktive Quiz-Plattform zum Lernen, Üben und Wissen testen.
+              Deine interaktive Quiz-Plattform zum Lernen, Üben und Wissen
+              testen.
             </p>
           </div>
 
           {/* Navigation */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Plattform</h3>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">
+              Plattform
+            </h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/browse" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                <Link
+                  href="/browse"
+                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                >
                   Quizze entdecken
                 </Link>
               </li>
               <li>
-                <Link href={loggedIn ? '/profile' : '/auth'} className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                <Link
+                  href={loggedIn ? "/profile" : "/auth"}
+                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                >
                   Mein Konto
                 </Link>
               </li>
               <li>
-                <Link href="/leaderboard" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                <Link
+                  href="/leaderboard"
+                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                >
                   Leaderboard
                 </Link>
               </li>
@@ -63,20 +83,31 @@ export default function Footer() {
 
           {/* Rechtliches */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Rechtliches</h3>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">
+              Rechtliches
+            </h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/impressum" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                <Link
+                  href="/impressum"
+                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                >
                   Impressum
                 </Link>
               </li>
               <li>
-                <Link href="/agb" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                <Link
+                  href="/agb"
+                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                >
                   AGB
                 </Link>
               </li>
               <li>
-                <Link href="/datenschutz" className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors">
+                <Link
+                  href="/datenschutz"
+                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                >
                   Datenschutz
                 </Link>
               </li>
@@ -85,7 +116,9 @@ export default function Footer() {
 
           {/* Kontakt */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">Kontakt</h3>
+            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">
+              Kontakt
+            </h3>
             <ul className="space-y-2">
               <li>
                 <a
@@ -108,7 +141,8 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Flipanion. Mit Liebe gebaut.
           </p>
           <p className="text-xs text-[var(--text-muted)]">
-            Ein Schulprojekt des Teams "Flipanion" der 3AHWII an der Spengergasse.
+            Ein Schulprojekt des Teams "Flipanion" der 3AHWII an der
+            Spengergasse.
           </p>
         </div>
       </div>

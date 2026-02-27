@@ -254,8 +254,23 @@ export default function LeaderboardPage() {
       <main className="max-w-6xl mx-auto px-6 pt-28 pb-12">
         {/* Page Header */}
         <div className="mb-8 animate-fade-in-up">
-          <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4 transition-colors"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
             Zurück zur Startseite
           </Link>
           <h1 className="text-3xl font-bold text-[var(--foreground)] tracking-tight mb-1">
