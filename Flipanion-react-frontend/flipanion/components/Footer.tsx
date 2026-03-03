@@ -72,12 +72,13 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/leaderboard"
+                  href={loggedIn ? "/leaderboard" : "/auth"}
                   className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
                 >
                   Leaderboard
                 </Link>
               </li>
+
             </ul>
           </div>
 
