@@ -45,6 +45,18 @@ export default function Home() {
   const [loadingMyQuizzes, setLoadingMyQuizzes] = React.useState(false);
 
   React.useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user as User | null);
+      if (!session?.user) {
+        setMyQuizzes([]);
+        setCompletedQuizzes([]);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  React.useEffect(() => {
     supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
       setUser(currentUser as User | null);
       setLoading(false);
