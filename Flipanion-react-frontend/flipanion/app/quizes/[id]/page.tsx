@@ -208,6 +208,11 @@ export default function QuizPage() {
     return s;
   }, [answers, questions, canScore]);
 
+  const pointsEarned = React.useMemo(() => {
+    if (!canScore || questions.length === 0) return 0;
+    return parseFloat(((score / questions.length) * 20).toFixed(2));
+  }, [score, questions, canScore]);
+
   const selectedForCurrent = q ? answers[String(q.id)] : undefined;
   const isRevealed = q ? !!revealed[String(q.id)] : false;
 
@@ -255,9 +260,25 @@ export default function QuizPage() {
 
         await supabase.from('UserAnswer').insert(rows);
 
-        // Update UserStatistics (upsert)
+        // Save QuizAttempt (always insert new entry for each attempt)
         const totalAnswered = rows.length;
         const totalCorrect = rows.filter((r) => r.isCorrect).length;
+        const attemptPoints = totalAnswered > 0 ? parseFloat(((totalCorrect / totalAnswered) * 20).toFixed(2)) : 0;
+
+        console.log('Inserting QuizAttempt:', { userId: dbUserId, quizId, points: attemptPoints });
+        const { error: attemptError } = await supabase.from('QuizAttempt').insert({
+          userId: dbUserId,
+          quizId: quizId,
+          points: attemptPoints,
+        });
+        if (attemptError) {
+          console.error('QuizAttempt insert error:', JSON.stringify(attemptError, null, 2));
+          console.error('Error code:', attemptError.code, 'Message:', attemptError.message, 'Details:', attemptError.details, 'Hint:', attemptError.hint);
+        } else {
+          console.log('QuizAttempt saved successfully');
+        }
+
+        // Update UserStatistics (upsert)
 
         const { data: existingStats } = await supabase
           .from('UserStatistics')
@@ -330,7 +351,7 @@ export default function QuizPage() {
                   </span>
                   <span className="text-sm">
                     {questions.length} {questions.length === 1 ? 'Frage' : 'Fragen'}
-                    {canScore ? ` · ${score} Punkte` : ''}
+                    {canScore ? ` · ${pointsEarned} / 20 Pkt.` : ''}
                   </span>
                 </div>
 
@@ -379,6 +400,14 @@ export default function QuizPage() {
                     ? <>Du hast <span className="font-bold text-indigo-500">{score}</span> von <span className="font-bold">{questions.length}</span> Fragen richtig beantwortet.</>
                     : 'Quiz abgeschlossen.'}
                 </p>
+
+                {canScore && (
+                  <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 mb-6">
+                    <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+                    <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{pointsEarned}</span>
+                    <span className="text-sm text-indigo-500">von 20 Punkten</span>
+                  </div>
+                )}
 
                 {/* Progress Bar */}
                 {canScore && (

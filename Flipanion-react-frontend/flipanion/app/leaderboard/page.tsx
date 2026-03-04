@@ -101,11 +101,10 @@ export default function LeaderboardPage() {
 
       const { data: quizzes } = await quizzesQuery;
 
-      // Fetch points
-      let pointsQuery = supabase
-        .from("Points")
-        .select("userId, subjectId, points");
-      const { data: pointsData } = await pointsQuery;
+      // Fetch quiz attempts (new points system)
+      const { data: attemptsData } = await supabase
+        .from("QuizAttempt")
+        .select("userId, quizId, points, quiz:Quiz(subjectId)");
 
       // Build leaderboard
       const map = new Map<number, LeaderboardEntry>();
@@ -176,14 +175,22 @@ export default function LeaderboardPage() {
         }
       }
 
-      // Process points
-      if (pointsData) {
-        for (const p of pointsData) {
-          if (selectedSubject !== "all" && p.subjectId !== selectedSubject)
+      // Process points from QuizAttempt
+      if (attemptsData) {
+        for (const a of attemptsData as Array<Record<string, unknown>>) {
+          const quizRelation = a.quiz as Record<string, unknown> | Array<Record<string, unknown>> | null;
+          const quiz = Array.isArray(quizRelation) ? quizRelation[0] : quizRelation;
+          const subjectId = quiz?.subjectId as number | undefined;
+          if (selectedSubject !== "all" && subjectId !== selectedSubject)
             continue;
-          const entry = map.get(p.userId);
-          if (entry) entry.points += p.points;
+          const entry = map.get(a.userId as number);
+          if (entry) entry.points += (a.points as number) || 0;
         }
+      }
+
+      // Round points for display
+      for (const entry of map.values()) {
+        entry.points = parseFloat(entry.points.toFixed(2));
       }
 
       // Calculate avg percent

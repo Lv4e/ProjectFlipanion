@@ -22,6 +22,7 @@ model User {
   userAnswers    UserAnswer[]
   userStatistics UserStatistics?
   quizzes        Quiz[]
+  quizAttempts   QuizAttempt[]
 }
 
 model Subject {
@@ -82,8 +83,19 @@ model Quiz {
   subjectId   Int
   creatorId   Int?
   questions   Question[]
+  attempts    QuizAttempt[]
   subject     Subject    @relation(fields: [subjectId], references: [id])
   creator     User?      @relation(fields: [creatorId], references: [id])
 
   @@unique([title, subjectId])      
+}
+
+model QuizAttempt {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  quizId    Int
+  points    Float
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  quiz      Quiz     @relation(fields: [quizId], references: [id])
 }
