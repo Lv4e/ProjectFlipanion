@@ -33,6 +33,7 @@ export default function BrowseQuizzes() {
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState('');
+
   
   const [selectedSubject, setSelectedSubject] = React.useState('all');
   const [user, setUser] = React.useState<import('@supabase/supabase-js').User | null>(null);
@@ -92,6 +93,7 @@ export default function BrowseQuizzes() {
     const { data: subjectsData, error: subjectsError } = await supabase
       .from('Subject')
       .select('*')
+
       .order('name', { ascending: true });
 
     if (subjectsError) {
@@ -134,7 +136,7 @@ export default function BrowseQuizzes() {
           </p>
         </div>
 
-        {/* Error Message for Unauthenticated Users */}
+        {/* Error Message for Unautenticated Users */}
         {questionsError && !user && (
           <div className="glass-card border-red-200 dark:border-red-500/20 rounded-2xl p-4 mb-8 animate-fade-in-up">
             <p className="text-red-600 dark:text-red-400 text-sm font-medium">
