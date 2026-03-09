@@ -6,6 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
+import { GradientButton } from "@/components/ui/gradient-button";
+import { FluidDropdown } from "@/components/ui/fluid-dropdown";
+import { BookOpen } from "lucide-react";
 
 interface Subject {
   id: number;
@@ -199,7 +202,7 @@ export default function CreateQuiz() {
     return (
       <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+          <div className="w-10 h-10 border-3 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
           <span className="text-sm text-[var(--text-muted)]">Lädt ...</span>
         </div>
       </div>
@@ -211,7 +214,7 @@ export default function CreateQuiz() {
     return (
       <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="max-w-2xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-2xl mx-auto px-6 pt-16 pb-12">
           <div className="glass-card rounded-2xl p-10 text-center animate-fade-in-up">
             <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
               <svg
@@ -235,9 +238,9 @@ export default function CreateQuiz() {
               Du musst angemeldet sein, um ein Quiz zu erstellen.
             </p>
             <Link href="/auth">
-              <button className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all shadow-md shadow-indigo-500/20 active:scale-[0.98] cursor-pointer">
+              <GradientButton className="px-8 py-3">
                 Jetzt anmelden
-              </button>
+              </GradientButton>
             </Link>
           </div>
         </main>
@@ -251,7 +254,7 @@ export default function CreateQuiz() {
     return (
       <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="max-w-2xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-2xl mx-auto px-6 pt-16 pb-12">
           <div className="glass-card rounded-2xl p-10 text-center animate-fade-in-up">
             <div className="w-16 h-16 bg-green-50 dark:bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
               <svg
@@ -285,12 +288,12 @@ export default function CreateQuiz() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-3xl mx-auto px-6 pt-28 pb-12">
+      <main className="max-w-3xl mx-auto px-6 pt-16 pb-12">
         {/* Page Header */}
         <div className="mb-8 animate-fade-in-up">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 mb-4 transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -342,7 +345,7 @@ export default function CreateQuiz() {
         {/* Quiz Details Card */}
         <div className="glass-card rounded-2xl p-6 md:p-8 mb-6 animate-fade-in-up-delay-1">
           <h2 className="text-lg font-bold text-[var(--foreground)] mb-5 flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center">
               <svg
                 className="w-4 h-4 text-white"
                 fill="none"
@@ -375,7 +378,7 @@ export default function CreateQuiz() {
                 placeholder="z.B. Mathe Grundlagen Quiz"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
               />
             </div>
 
@@ -396,7 +399,7 @@ export default function CreateQuiz() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none resize-none"
+                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none resize-none"
               />
             </div>
 
@@ -408,21 +411,18 @@ export default function CreateQuiz() {
               >
                 Fach <span className="text-red-400">*</span>
               </label>
-              <select
-                id="subject"
-                value={subjectId}
-                onChange={(e) =>
-                  setSubjectId(e.target.value ? Number(e.target.value) : "")
-                }
-                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] transition-all outline-none appearance-none cursor-pointer"
-              >
-                <option value="">Fach auswählen ...</option>
-                {subjects.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+              <FluidDropdown
+                items={[
+                  { id: '', label: 'Fach auswählen ...', icon: BookOpen, color: '#fb7185' },
+                  ...subjects.map((s) => ({
+                    id: String(s.id),
+                    label: s.name,
+                  })),
+                ]}
+                value={String(subjectId)}
+                onChange={(val) => setSubjectId(val ? Number(val) : '')}
+                placeholder="Fach auswählen ..."
+              />
             </div>
           </div>
         </div>
@@ -431,7 +431,7 @@ export default function CreateQuiz() {
         <div className="animate-fade-in-up-delay-2">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center">
                 <svg
                   className="w-4 h-4 text-white"
                   fill="none"
@@ -451,7 +451,7 @@ export default function CreateQuiz() {
             <button
               type="button"
               onClick={addQuestion}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 rounded-xl hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors cursor-pointer"
             >
               <svg
                 className="w-4 h-4"
@@ -476,7 +476,7 @@ export default function CreateQuiz() {
                 {/* Question Header */}
                 <div className="flex items-center justify-between mb-5">
                   <span className="inline-flex items-center gap-2 text-sm font-bold text-[var(--foreground)]">
-                    <span className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                    <span className="w-7 h-7 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-sm">
                       {idx + 1}
                     </span>
                     Frage {idx + 1}
@@ -517,7 +517,7 @@ export default function CreateQuiz() {
                       updateQuestion(idx, "questionText", e.target.value)
                     }
                     rows={2}
-                    className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none resize-none"
+                    className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none resize-none"
                   />
                 </div>
 
@@ -539,7 +539,7 @@ export default function CreateQuiz() {
                             onChange={(e) =>
                               updateQuestion(idx, fieldKey, e.target.value)
                             }
-                            className={`w-full px-4 py-2.5 pr-10 bg-[var(--background)] border rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none ${
+                            className={`w-full px-4 py-2.5 pr-10 bg-[var(--background)] border rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none ${
                               isCorrect
                                 ? "border-green-400 dark:border-green-500/50 bg-green-50/50 dark:bg-green-500/5"
                                 : "border-[var(--border)]"
@@ -612,7 +612,7 @@ export default function CreateQuiz() {
           <button
             type="button"
             onClick={addQuestion}
-            className="w-full mt-5 py-4 border-2 border-dashed border-[var(--border)] hover:border-indigo-300 dark:hover:border-indigo-500/40 rounded-2xl text-[var(--text-muted)] hover:text-indigo-500 font-medium transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full mt-5 py-4 border-2 border-dashed border-[var(--border)] hover:border-rose-300 dark:hover:border-rose-500/40 rounded-2xl text-[var(--text-muted)] hover:text-rose-500 font-medium transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <svg
               className="w-5 h-5"
@@ -633,11 +633,11 @@ export default function CreateQuiz() {
 
         {/* Save Button */}
         <div className="mt-8 flex flex-col sm:flex-row gap-3 animate-fade-in-up-delay-3">
-          <button
+          <GradientButton
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 py-3.5 px-8 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
+            className="flex-1 py-3.5 px-8 flex items-center justify-center gap-2"
           >
             {saving ? (
               <>
@@ -662,11 +662,11 @@ export default function CreateQuiz() {
                 Quiz erstellen
               </>
             )}
-          </button>
+          </GradientButton>
           <Link href="/" className="flex-shrink-0">
             <button
               type="button"
-              className="w-full sm:w-auto py-3.5 px-8 bg-[var(--surface)] text-[var(--foreground)] font-semibold rounded-xl border border-[var(--border)] hover:bg-[var(--surface-hover)] hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all cursor-pointer"
+              className="w-full sm:w-auto py-3.5 px-8 bg-[var(--surface)] text-[var(--foreground)] font-semibold rounded-xl border border-[var(--border)] hover:bg-[var(--surface-hover)] hover:border-rose-200 dark:hover:border-rose-500/30 transition-all cursor-pointer"
             >
               Abbrechen
             </button>

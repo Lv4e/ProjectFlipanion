@@ -5,6 +5,11 @@ import { supabase } from '../supabase-client';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { GradientButton } from '@/components/ui/gradient-button';
+import { GlowCard } from '@/components/ui/spotlight-card';
+import { FluidDropdown } from '@/components/ui/fluid-dropdown';
+import { ShowMore } from '@/components/ui/show-more';
+import { BookOpen } from 'lucide-react';
 
 // Define the Quiz type based on your database structure
 interface Quiz {
@@ -38,6 +43,7 @@ export default function BrowseQuizzes() {
   const [selectedSubject, setSelectedSubject] = React.useState('all');
   const [user, setUser] = React.useState<import('@supabase/supabase-js').User | null>(null);
   const [questionsError, setQuestionsError] = React.useState<boolean>(false);
+  const [visibleCount, setVisibleCount] = React.useState(9);
 
   // Fetch quizzes and subjects from Supabase
   React.useEffect(() => {
@@ -121,10 +127,10 @@ export default function BrowseQuizzes() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-6 pt-28 pb-12">
+      <main className="max-w-6xl mx-auto px-6 pt-16 pb-12">
         {/* Page Header */}
         <div className="mb-10 animate-fade-in-up">
-          <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4 transition-colors">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 mb-4 transition-colors">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             Zurück zur Startseite
           </Link>
@@ -146,7 +152,7 @@ export default function BrowseQuizzes() {
         )}
 
         {/* Search and Filter Bar */}
-        <div className="glass-card rounded-2xl p-6 mb-8 animate-fade-in-up-delay-1">
+        <div className="glass-card rounded-2xl p-6 mb-8 animate-fade-in-up-delay-1 relative z-40">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Search Input */}
             <div>
@@ -161,29 +167,28 @@ export default function BrowseQuizzes() {
                   placeholder="Suche nach Titel oder Beschreibung ..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                 />
               </div>
             </div>
 
             {/* Subject Filter */}
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                 Nach Fach filtern
               </label>
-              <select
-                id="subject"
+              <FluidDropdown
+                items={[
+                  { id: 'all', label: 'Alle Fächer', icon: BookOpen, color: '#fb7185' },
+                  ...subjects.map((s) => ({
+                    id: s.name,
+                    label: s.name,
+                  })),
+                ]}
                 value={selectedSubject}
-                onChange={(e) => setSelectedSubject(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] transition-all outline-none appearance-none cursor-pointer"
-              >
-                <option value="all">Alle Fächer</option>
-                {subjects.map((subject) => (
-                  <option key={subject.id} value={subject.name}>
-                    {subject.name}
-                  </option>
-                ))}
-              </select>
+                onChange={setSelectedSubject}
+                placeholder="Alle Fächer"
+              />
             </div>
           </div>
         </div>
@@ -198,61 +203,77 @@ export default function BrowseQuizzes() {
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16">
-              <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+              <div className="w-10 h-10 border-3 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
               <p className="mt-4 text-sm text-[var(--text-muted)]">Quizze werden geladen ...</p>
             </div>
           ) : filteredQuizzes.length === 0 ? (
             <div className="glass-card rounded-2xl py-16 flex flex-col items-center justify-center text-center">
-              <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
-                <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              <div className="w-14 h-14 bg-rose-50 dark:bg-rose-500/10 rounded-2xl flex items-center justify-center mb-4">
+                <svg className="w-7 h-7 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               </div>
               <p className="text-[var(--foreground)] font-medium mb-1">Keine Quizze gefunden</p>
               <p className="text-sm text-[var(--text-muted)]">Passe deine Suche oder Filter an</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredQuizzes.map((quiz) => (
-                  <div
-                    key={quiz.id}
-                    className="glass-card rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group"
-                  >
-                    {/* Quiz Image/Icon */}
-                    <div className="h-28 bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 flex items-center justify-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
-                      <span className="text-white/90 text-4xl font-bold relative">
-                        {quiz.title ? quiz.title.charAt(0).toUpperCase() : 'Q'}
-                      </span>
-                    </div>
+              {filteredQuizzes.slice(0, visibleCount).map((quiz) => (
+                  <li key={quiz.id} className="list-none">
+                    <GlowCard glowColor="red" customSize className="h-full p-0 gap-0">
+                      <div className="relative flex h-full flex-col overflow-hidden rounded-xl bg-[var(--background)] shadow-sm dark:shadow-[0px_0px_27px_0px_rgba(45,45,45,0.3)] group">
+                        {/* Quiz Image/Icon */}
+                        <div className="h-16 bg-gradient-to-br from-rose-500 via-pink-500 to-pink-500 flex items-center justify-center relative overflow-hidden">
+                          <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
+                          <span className="text-white/90 text-xl font-bold relative">
+                            {quiz.title ? quiz.title.charAt(0).toUpperCase() : 'Q'}
+                          </span>
+                        </div>
 
-                    {/* Quiz Content */}
-                    <div className="p-5">
-                      <h3 className="font-semibold text-[var(--foreground)] mb-1.5 group-hover:text-indigo-500 transition-colors">
-                        {quiz.title || 'Ohne Titel'}
-                      </h3>
-                      <p className="text-sm text-[var(--text-muted)] mb-4 line-clamp-2 leading-relaxed">
-                        {quiz.description || 'Keine Beschreibung vorhanden'}
-                      </p>
+                        {/* Quiz Content */}
+                        <div className="p-5 flex flex-col flex-1">
+                          <h3 className="font-semibold text-[var(--foreground)] mb-1.5 group-hover:text-rose-500 transition-colors">
+                            {quiz.title || 'Ohne Titel'}
+                          </h3>
+                          <p className="text-sm text-[var(--text-muted)] mb-4 line-clamp-2 leading-relaxed">
+                            {quiz.description || 'Keine Beschreibung vorhanden'}
+                          </p>
 
-                      {/* Quiz Meta */}
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
-                          {quiz.Subject?.name || quiz.subject || 'Allgemein'}
-                        </span>
-                        <span className="text-xs text-[var(--text-muted)]">
-                          {!user ? '?' : quiz.questionCount || 0} Fragen
-                        </span>
+                          {/* Quiz Meta */}
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-lg">
+                              {quiz.Subject?.name || quiz.subject || 'Allgemein'}
+                            </span>
+                            <span className="text-xs text-[var(--text-muted)]">
+                              {!user ? '?' : quiz.questionCount || 0} Fragen
+                            </span>
+                          </div>
+
+                          {/* Action Button */}
+                          <GradientButton asChild className="w-full py-2.5 px-4 text-sm mt-auto">
+                            <Link href={`/quizes/${quiz.id}`}>
+                              Quiz starten
+                            </Link>
+                          </GradientButton>
+                        </div>
                       </div>
-
-                      {/* Action Button */}
-                      <Link
-                        href={`/quizes/${quiz.id}`}
-                        className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/15 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] block text-center"
-                      >
-                        Quiz starten
-                      </Link>
-                    </div>
-                  </div>
+                    </GlowCard>
+                  </li>
               ))}
+            </div>
+          )}
+
+          {/* Show More / Show Less Button */}
+          {filteredQuizzes.length > 9 && (
+            <div className="mt-8">
+              <ShowMore
+                expanded={visibleCount >= filteredQuizzes.length}
+                onClick={() => {
+                  if (visibleCount >= filteredQuizzes.length) {
+                    setVisibleCount(9);
+                  } else {
+                    setVisibleCount((prev) => Math.min(prev + 6, filteredQuizzes.length));
+                  }
+                }}
+              />
             </div>
           )}
         </div>

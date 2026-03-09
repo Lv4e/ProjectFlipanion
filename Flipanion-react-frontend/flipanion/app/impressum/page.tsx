@@ -45,7 +45,7 @@ export default function ImpressumPage() {
                 <span className="text-[var(--text-muted)]">E-Mail:</span>{' '}
                 <a
                   href="mailto:flipanion@spengergasse.at"
-                  className="text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+                  className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors"
                 >
                   flipanion@spengergasse.at
                 </a>

@@ -5,6 +5,12 @@ import { supabase } from '../app/supabase-client';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
+import { MenuIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetFooter } from '@/components/ui/sheet';
+import { GradientButton } from './ui/gradient-button';
+import { ButtonHoldAndRelease } from './ui/hold-and-release-button';
 
 interface User {
   id: string;
@@ -17,11 +23,10 @@ interface User {
 export default function Header() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
-  const [scrolled, setScrolled] = React.useState(false);
+  const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
+  const [open, setOpen] = React.useState(false);
   const router = useRouter();
   const pathname = usePathname();
-
-  const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -38,107 +43,184 @@ export default function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
-  React.useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setOpen(false);
     router.push('/');
   };
 
+  const links = [
+    { label: 'Entdecken', href: '/browse' },
+    { label: 'Leaderboard', href: '/leaderboard' },
+    { label: 'Quiz erstellen', href: '/quiz/create' },
+  ];
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'backdrop-blur-xl shadow-sm border-b border-[var(--border)]' 
-          : 'bg-transparent'
-      }`}
-      style={scrolled ? { backgroundColor: 'color-mix(in srgb, var(--surface) 80%, transparent)' } : undefined}
+      className={cn(
+        'sticky top-5 z-50',
+        'mx-auto w-full max-w-4xl rounded-lg border border-[var(--border)] shadow',
+        'bg-[var(--background)]/95 supports-[backdrop-filter]:bg-[var(--background)]/80 backdrop-blur-lg',
+      )}
     >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <nav className="mx-auto flex items-center justify-between p-1.5">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-11 h-11 rounded-xl shadow-md group-hover:shadow-indigo-500/25 transition-shadow overflow-hidden flex items-center justify-center">
-            <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+        <Link
+          href="/"
+          className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:bg-[var(--surface-hover)] duration-100"
+        >
+          <div className="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center shadow-sm">
+            <Image src="/logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
           </div>
-          <span className="text-xl font-bold text-[var(--foreground)] tracking-tight">
+          <span className="text-base font-bold text-[var(--foreground)]">
             Flipanion
           </span>
         </Link>
-        
-        {/* Navigation */}
-        <nav className="flex items-center gap-2">
+
+        {/* Desktop nav links */}
+        <div className="hidden items-center gap-1 lg:flex">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'sm' }),
+                pathname === link.href &&
+                  'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10',
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Right side actions */}
+        <div className="flex items-center gap-2">
           {loading ? (
             <div className="flex gap-2">
               <div className="h-9 w-20 bg-[var(--border)] rounded-lg animate-pulse" />
-              <div className="h-9 w-24 bg-[var(--border)] rounded-lg animate-pulse" />
             </div>
           ) : user ? (
-            <div className="flex items-center gap-2">
-              <Link 
-                href="/browse" 
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  pathname === '/browse' 
-                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10' 
-                    : 'text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
-                }`}
+            <>
+              {/* Profile avatar (desktop) */}
+              <Link
+                href="/profile"
+                className="hidden lg:flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
               >
-                Entdecken
-              </Link>
-              <Link 
-                href="/leaderboard" 
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  pathname === '/leaderboard' 
-                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10' 
-                    : 'text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
-                }`}
-              >
-                Leaderboard
-              </Link>
-              <Link 
-                href="/profile" 
-                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
-              >
-                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-[#1a1a2e] shadow-sm overflow-hidden">
+                <div className="w-7 h-7 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center ring-2 ring-white dark:ring-[#1a1a2e] shadow-sm overflow-hidden">
                   {avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-white font-semibold text-xs">
+                    <span className="text-white font-semibold text-[10px]">
                       {(user.user_metadata?.name || user.email || 'U').charAt(0).toUpperCase()}
                     </span>
                   )}
                 </div>
-                <span className="text-sm font-medium text-[var(--foreground)] hidden sm:block">
+                <span className="text-sm font-medium text-[var(--foreground)] hidden xl:block">
                   {user.user_metadata?.name || user.email?.split('@')[0] || 'Nutzer'}
                 </span>
               </Link>
-              <button
-                onClick={handleLogout}
-                className="px-3 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-              >
-                Abmelden
-              </button>
-            </div>
+
+              {/* Desktop logout */}
+              <div className="hidden lg:block">
+                <ButtonHoldAndRelease
+                  holdDuration={1200}
+                  onHoldComplete={handleLogout}
+                  holdLabel="Abmelden"
+                  releaseLabel="Loslassen"
+                  className="min-w-28 h-8 text-xs"
+                />
+              </div>
+            </>
           ) : (
             <>
               <Link href="/auth?mode=login">
-                <button className="px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] rounded-lg hover:bg-[var(--surface-hover)] transition-colors">
-                  Anmelden
-                </button>
+                <Button size="sm" variant="ghost">Anmelden</Button>
               </Link>
-              <Link href="/auth?mode=signup">
-                <button className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-violet-600 rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all shadow-md hover:shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98]">
+              <Link href="/auth?mode=signup" className="hidden lg:block">
+                <GradientButton className="px-4 py-2 text-sm">
                   Registrieren
-                </button>
+                </GradientButton>
               </Link>
             </>
           )}
-        </nav>
-      </div>
+
+          {/* Mobile menu button */}
+          <Sheet open={open} onOpenChange={setOpen}>
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => setOpen(!open)}
+              className="lg:hidden h-9 w-9 border-[var(--border)] cursor-pointer"
+            >
+              <MenuIcon className="size-4" />
+            </Button>
+            <SheetContent
+              className="bg-[var(--background)]/95 supports-[backdrop-filter]:bg-[var(--background)]/80 gap-0 backdrop-blur-lg border-[var(--border)]"
+              showClose={false}
+              side="left"
+            >
+              {/* Mobile nav links */}
+              <div className="grid gap-y-1 overflow-y-auto px-4 pt-12 pb-5">
+                {links.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      buttonVariants({ variant: 'ghost', className: 'justify-start' }),
+                      pathname === link.href &&
+                        'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10',
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                {user && (
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      buttonVariants({ variant: 'ghost', className: 'justify-start' }),
+                      pathname === '/profile' &&
+                        'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10',
+                    )}
+                  >
+                    Profil
+                  </Link>
+                )}
+              </div>
+
+              {/* Mobile footer actions */}
+              <SheetFooter className="border-[var(--border)]">
+                {user ? (
+                  <ButtonHoldAndRelease
+                    holdDuration={1200}
+                    onHoldComplete={handleLogout}
+                    holdLabel="Abmelden"
+                    releaseLabel="Loslassen"
+                    className="w-full"
+                  />
+                ) : (
+                  <>
+                    <Link href="/auth?mode=login" onClick={() => setOpen(false)}>
+                      <Button variant="outline" className="w-full border-[var(--border)]">
+                        Anmelden
+                      </Button>
+                    </Link>
+                    <Link href="/auth?mode=signup" onClick={() => setOpen(false)}>
+                      <GradientButton className="w-full py-2.5 text-sm">
+                        Registrieren
+                      </GradientButton>
+                    </Link>
+                  </>
+                )}
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </nav>
     </header>
   );
 }

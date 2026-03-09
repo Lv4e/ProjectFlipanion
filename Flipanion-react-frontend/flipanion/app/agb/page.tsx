@@ -129,7 +129,7 @@ export default function AGBPage() {
                 personenbezogener Daten finden Sie in unserer Datenschutzerklärung im{' '}
                 <Link
                   href="/impressum"
-                  className="text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+                  className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors"
                 >
                   Impressum
                 </Link>

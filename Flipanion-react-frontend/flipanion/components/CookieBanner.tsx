@@ -37,8 +37,8 @@ export default function CookieBanner() {
         <div className="max-w-3xl mx-auto glass-card rounded-2xl p-6 shadow-2xl border border-[var(--border)]">
           <div className="flex items-start gap-4">
             {/* Cookie Icon */}
-            <div className="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 shrink-0">
-              <svg className="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-500/10 shrink-0">
+              <svg className="w-6 h-6 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                   d="M12 2a10 10 0 1010 10 4 4 0 01-5-1 4 4 0 01-1-5 10 10 0 00-4-4zm1 7a1 1 0 11-2 0 1 1 0 012 0zm-4 4a1 1 0 11-2 0 1 1 0 012 0zm6 2a1 1 0 11-2 0 1 1 0 012 0z" />
               </svg>
@@ -54,21 +54,21 @@ export default function CookieBanner() {
                 Mehr dazu in unserer{' '}
                 <Link
                   href="/agb"
-                  className="text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 underline underline-offset-2 transition-colors"
+                  className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 underline underline-offset-2 transition-colors"
                 >
                   AGB
                 </Link>
                 ,{' '}
                 <Link
                   href="/datenschutz"
-                  className="text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 underline underline-offset-2 transition-colors"
+                  className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 underline underline-offset-2 transition-colors"
                 >
                   Datenschutzerklärung
                 </Link>{' '}
                 und im{' '}
                 <Link
                   href="/impressum"
-                  className="text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 underline underline-offset-2 transition-colors"
+                  className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 underline underline-offset-2 transition-colors"
                 >
                   Impressum
                 </Link>
@@ -78,7 +78,7 @@ export default function CookieBanner() {
               <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   onClick={accept}
-                  className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-xl transition-colors shadow-sm cursor-pointer"
+                  className="px-5 py-2.5 text-sm font-medium text-white bg-rose-500 hover:bg-rose-600 rounded-xl transition-colors shadow-sm cursor-pointer"
                 >
                   Alle akzeptieren
                 </button>

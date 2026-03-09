@@ -5,6 +5,7 @@ import { supabase } from "../supabase-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 export default function AuthPage() {
   return (
@@ -220,8 +221,8 @@ function AuthPageInner() {
     <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-8 relative overflow-hidden">
       {/* Background decorations */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-indigo-400/10 dark:bg-indigo-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-violet-400/10 dark:bg-violet-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-rose-400/10 dark:bg-rose-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-pink-400/10 dark:bg-pink-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-md w-full relative">
@@ -231,8 +232,8 @@ function AuthPageInner() {
             href="/"
             className="inline-flex items-center gap-2 justify-center group"
           >
-            <div className="w-12 h-12 rounded-xl shadow-md group-hover:shadow-indigo-500/25 transition-shadow overflow-hidden flex items-center justify-center">
-              <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+            <div className="w-12 h-12 rounded-xl shadow-md group-hover:shadow-rose-500/25 transition-shadow overflow-hidden flex items-center justify-center">
+              <Image src="/logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
             </div>
             <span className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
               Flipanion
@@ -249,7 +250,7 @@ function AuthPageInner() {
                 setError("");
                 setMessage("");
               }}
-              className="font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+              className="font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors"
             >
               {isLogin ? "Registrieren" : "Anmelden"}
             </button>
@@ -257,7 +258,7 @@ function AuthPageInner() {
         </div>
 
         {/* Form Card */}
-        <div className="glass-card rounded-2xl p-7 animate-fade-in-up-delay-1 shadow-xl shadow-indigo-500/5">
+        <div className="glass-card rounded-2xl p-7 animate-fade-in-up-delay-1 shadow-xl shadow-rose-500/5">
           <form
             onSubmit={isLogin ? handleLogin : handleSignup}
             className="space-y-5"
@@ -278,13 +279,13 @@ function AuthPageInner() {
                     required={!isLogin}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                     placeholder="maxmustermann"
                     minLength={3}
                   />
                   {checkingUsername && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
                     </div>
                   )}
                   {!checkingUsername && usernameAvailable === true && (
@@ -343,7 +344,7 @@ function AuthPageInner() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                 placeholder="du@example.com"
               />
             </div>
@@ -362,7 +363,7 @@ function AuthPageInner() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                 placeholder="••••••••"
                 minLength={8}
               />
@@ -375,7 +376,7 @@ function AuthPageInner() {
                     className={`text-xs font-medium transition-colors ${
                       resetCooldown > 0
                         ? "text-[var(--text-muted)] cursor-not-allowed"
-                        : "text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300"
+                        : "text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300"
                     }`}
                   >
                     {resetLoading
@@ -458,7 +459,7 @@ function AuthPageInner() {
                   required={!isLogin}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                   placeholder="••••••••"
                 />
                 {confirmPassword && password !== confirmPassword && (
@@ -493,10 +494,10 @@ function AuthPageInner() {
             )}
 
             {/* Submit button */}
-            <button
+            <GradientButton
               type="submit"
               disabled={loading || (!isLogin && username.includes(" "))}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center cursor-pointer mt-6"
+              className="w-full py-2.5 px-4 flex items-center justify-center mt-6"
             >
               {loading ? (
                 <>
@@ -508,7 +509,7 @@ function AuthPageInner() {
               ) : (
                 "Registrieren"
               )}
-            </button>
+            </GradientButton>
           </form>
         </div>
 

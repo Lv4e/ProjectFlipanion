@@ -48,39 +48,19 @@ export default function ProfilePage() {
   const router = useRouter();
 
   React.useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-
-    if (savedTheme) {
-      setTheme(savedTheme);
-      applyTheme(savedTheme);
-    } else {
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)",
-      ).matches;
-      const initialTheme = prefersDark ? "dark" : "light";
-      setTheme(initialTheme);
-      applyTheme(initialTheme);
-    }
+    // Always dark theme
+    setTheme("dark");
+    document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("light");
+    document.documentElement.style.colorScheme = "dark";
   }, []);
 
-  const applyTheme = (newTheme: "light" | "dark") => {
-    const html = document.documentElement;
-    if (newTheme === "dark") {
-      html.classList.add("dark");
-      html.classList.remove("light");
-      html.style.colorScheme = "dark";
-    } else {
-      html.classList.remove("dark");
-      html.classList.add("light");
-      html.style.colorScheme = "light";
-    }
-    localStorage.setItem("theme", newTheme);
+  const applyTheme = (_newTheme: "light" | "dark") => {
+    // Always dark — no-op
   };
 
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    applyTheme(newTheme);
+    // Always dark — no-op
   };
 
   React.useEffect(() => {
@@ -432,9 +412,9 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-4xl mx-auto px-6 pt-16 pb-12">
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-3 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
             <p className="mt-4 text-sm text-[var(--text-muted)]">
               Profil wird geladen ...
             </p>
@@ -448,11 +428,11 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-4xl mx-auto px-6 pt-16 pb-12">
           <div className="glass-card rounded-2xl py-16 px-8 flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 rounded-2xl flex items-center justify-center mb-4">
               <svg
-                className="w-8 h-8 text-indigo-400"
+                className="w-8 h-8 text-rose-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -473,7 +453,7 @@ export default function ProfilePage() {
             </p>
             <Link
               href="/auth?mode=login"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-semibold rounded-xl transition-all shadow-md shadow-rose-500/20 active:scale-[0.98]"
             >
               Zur Anmeldung
               <svg
@@ -500,11 +480,11 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
+      <main className="max-w-4xl mx-auto px-6 pt-16 pb-12">
         {/* Back link */}
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-8 transition-colors animate-fade-in-up"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 mb-8 transition-colors animate-fade-in-up"
         >
           <svg
             className="w-4 h-4"
@@ -575,13 +555,13 @@ export default function ProfilePage() {
         {/* Profile Header Card */}
         <div className="glass-card rounded-2xl overflow-hidden mb-8 animate-fade-in-up">
           {/* Cover gradient */}
-          <div className="h-32 bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-600" />
+          <div className="h-32 bg-gradient-to-r from-rose-500 via-pink-500 to-pink-600" />
 
           {/* Profile info */}
           <div className="px-8 pb-8">
             {/* Avatar */}
             <div className="relative -mt-16 mb-4">
-              <div className="w-32 h-32 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center border-4 border-[var(--surface)] dark:border-[var(--background)] shadow-lg shadow-indigo-500/20 overflow-hidden">
+              <div className="w-32 h-32 bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl flex items-center justify-center border-4 border-[var(--surface)] dark:border-[var(--background)] shadow-lg shadow-rose-500/20 overflow-hidden">
                 {avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -611,7 +591,7 @@ export default function ProfilePage() {
                 className="absolute bottom-2 right-2 w-10 h-10 bg-[var(--surface)] dark:bg-[var(--surface)] rounded-full shadow-md flex items-center justify-center hover:shadow-lg transition-all border border-[var(--border)] cursor-pointer hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {uploadingAvatar ? (
-                  <div className="w-5 h-5 border-2 border-indigo-300 border-t-indigo-500 rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-rose-300 border-t-rose-500 rounded-full animate-spin" />
                 ) : (
                   <svg
                     className="w-5 h-5 text-[var(--text-muted)]"
@@ -670,9 +650,9 @@ export default function ProfilePage() {
           <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-1">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-rose-100 dark:bg-rose-500/10 rounded-xl flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-indigo-500"
+                    className="w-5 h-5 text-rose-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -697,7 +677,7 @@ export default function ProfilePage() {
               {!editingUsername && (
                 <button
                   onClick={() => setEditingUsername(true)}
-                  className="px-4 py-2 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"
                 >
                   Bearbeiten
                 </button>
@@ -713,11 +693,11 @@ export default function ProfilePage() {
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Benutzername eingeben"
                     minLength={3}
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                     {checkingUsername && (
-                      <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
                     )}
                     {!checkingUsername && usernameAvailable === true && (
                       <div className="text-green-500 text-lg">✓</div>
@@ -820,7 +800,7 @@ export default function ProfilePage() {
                       username === originalUsername ||
                       username.includes(" ")
                     }
-                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 text-sm"
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 disabled:from-rose-400 disabled:to-pink-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-rose-500/20 flex items-center justify-center gap-2 text-sm"
                   >
                     {saving ? (
                       <>
@@ -871,9 +851,9 @@ export default function ProfilePage() {
           {/* Email Card (Read-only) */}
           <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-violet-100 dark:bg-violet-500/10 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/10 rounded-xl flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-violet-500"
+                  className="w-5 h-5 text-pink-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -899,7 +879,7 @@ export default function ProfilePage() {
               <p className="text-[var(--foreground)] font-semibold text-sm">
                 {user.email}
               </p>
-              <span className="text-xs px-2 py-1 bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg font-medium">
+              <span className="text-xs px-2 py-1 bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-lg font-medium">
                 Schreibgeschützt
               </span>
             </div>
@@ -940,7 +920,7 @@ export default function ProfilePage() {
                     setEditingPassword(true);
                     setPasswordMessage(null);
                   }}
-                  className="px-4 py-2 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"
                 >
                   Ändern
                 </button>
@@ -1006,7 +986,7 @@ export default function ProfilePage() {
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     placeholder="Aktuelles Passwort"
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
                   />
                   <button
                     type="button"
@@ -1058,7 +1038,7 @@ export default function ProfilePage() {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Neues Passwort (mind. 6 Zeichen)"
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
                   />
                   <button
                     type="button"
@@ -1110,7 +1090,7 @@ export default function ProfilePage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Neues Passwort bestätigen"
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                   />
                   {confirmPassword.length > 0 && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -1172,7 +1152,7 @@ export default function ProfilePage() {
                       newPassword.length < 6 ||
                       newPassword !== confirmPassword
                     }
-                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 text-sm"
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 disabled:from-rose-400 disabled:to-pink-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-rose-500/20 flex items-center justify-center gap-2 text-sm"
                   >
                     {changingPassword ? (
                       <>
@@ -1247,7 +1227,7 @@ export default function ProfilePage() {
                 }}
                 className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm ${
                   theme === "light"
-                    ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/20"
+                    ? "bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20"
                     : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)]"
                 }`}
               >
@@ -1268,7 +1248,7 @@ export default function ProfilePage() {
                 }}
                 className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm ${
                   theme === "dark"
-                    ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/20"
+                    ? "bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20"
                     : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)]"
                 }`}
               >

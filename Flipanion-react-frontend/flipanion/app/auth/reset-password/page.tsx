@@ -5,6 +5,7 @@ import { supabase } from "../../supabase-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 export default function ResetPasswordPage() {
   return (
@@ -136,8 +137,8 @@ function ResetPasswordInner() {
     return (
       <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-8 relative overflow-hidden">
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-indigo-400/10 dark:bg-indigo-500/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-violet-400/10 dark:bg-violet-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-rose-400/10 dark:bg-rose-500/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-pink-400/10 dark:bg-pink-500/5 rounded-full blur-3xl" />
         </div>
         <div className="max-w-md w-full relative text-center">
           <div className="glass-card rounded-2xl p-8">
@@ -150,16 +151,17 @@ function ResetPasswordInner() {
                 </div>
                 <p className="text-[var(--foreground)] font-semibold mb-2">Link ungültig oder abgelaufen</p>
                 <p className="text-sm text-[var(--text-muted)] mb-6">{error}</p>
-                <Link
-                  href="/auth?mode=login"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 text-sm"
-                >
-                  Neuen Link anfordern
-                </Link>
+                <GradientButton asChild className="px-5 py-2.5 text-sm">
+                  <Link
+                    href="/auth?mode=login"
+                  >
+                    Neuen Link anfordern
+                  </Link>
+                </GradientButton>
               </>
             ) : (
               <>
-                <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin mx-auto" />
+                <div className="w-10 h-10 border-3 border-rose-200 border-t-rose-500 rounded-full animate-spin mx-auto" />
                 <p className="mt-4 text-sm text-[var(--text-muted)]">
                   Link wird überprüft ...
                 </p>
@@ -175,8 +177,8 @@ function ResetPasswordInner() {
     <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-8 relative overflow-hidden">
       {/* Background decorations */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-indigo-400/10 dark:bg-indigo-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-violet-400/10 dark:bg-violet-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-rose-400/10 dark:bg-rose-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-pink-400/10 dark:bg-pink-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-md w-full relative">
@@ -186,8 +188,8 @@ function ResetPasswordInner() {
             href="/"
             className="inline-flex items-center gap-2 justify-center group"
           >
-            <div className="w-12 h-12 rounded-xl shadow-md group-hover:shadow-indigo-500/25 transition-shadow overflow-hidden flex items-center justify-center">
-              <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+            <div className="w-12 h-12 rounded-xl shadow-md group-hover:shadow-rose-500/25 transition-shadow overflow-hidden flex items-center justify-center">
+              <Image src="/logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
             </div>
             <span className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
               Flipanion
@@ -202,7 +204,7 @@ function ResetPasswordInner() {
         </div>
 
         {/* Form Card */}
-        <div className="glass-card rounded-2xl p-7 animate-fade-in-up-delay-1 shadow-xl shadow-indigo-500/5">
+        <div className="glass-card rounded-2xl p-7 animate-fade-in-up-delay-1 shadow-xl shadow-rose-500/5">
           <form onSubmit={handleResetPassword} className="space-y-5">
             {/* New Password */}
             <div>
@@ -219,7 +221,7 @@ function ResetPasswordInner() {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
                   placeholder="••••••••"
                   minLength={8}
                 />
@@ -301,7 +303,7 @@ function ResetPasswordInner() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
                 placeholder="••••••••"
               />
               {confirmPassword && newPassword !== confirmPassword && (
@@ -335,10 +337,10 @@ function ResetPasswordInner() {
             )}
 
             {/* Submit button */}
-            <button
+            <GradientButton
               type="submit"
               disabled={loading || newPassword.length < 8 || newPassword !== confirmPassword}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 active:scale-[0.98] flex items-center justify-center cursor-pointer mt-6"
+              className="w-full py-2.5 px-4 flex items-center justify-center mt-6"
             >
               {loading ? (
                 <>
@@ -348,7 +350,7 @@ function ResetPasswordInner() {
               ) : (
                 "Neues Passwort speichern"
               )}
-            </button>
+            </GradientButton>
           </form>
         </div>
 

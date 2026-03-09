@@ -5,6 +5,8 @@ import Link from "next/link";
 import { supabase } from "../supabase-client";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { FluidDropdown } from "@/components/ui/fluid-dropdown";
+import { BookOpen, Trophy, BarChart3, Gamepad2, PenTool } from "lucide-react";
 
 interface LeaderboardEntry {
   userId: number;
@@ -279,12 +281,12 @@ export default function LeaderboardPage() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-6 pt-28 pb-12">
+      <main className="max-w-6xl mx-auto px-6 pt-16 pb-12">
         {/* Page Header */}
         <div className="mb-8 animate-fade-in-up">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 mb-4 transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -326,10 +328,10 @@ export default function LeaderboardPage() {
         {/* My Stats Card */}
         {myEntry && (
           <div className="glass-card rounded-2xl p-6 mb-8 animate-fade-in-up-delay-1 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-gradient-to-br from-indigo-500/10 to-violet-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+            <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-gradient-to-br from-rose-500/10 to-pink-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
             <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <div className="w-14 h-14 bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-rose-500/20">
                   {myEntry.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -357,13 +359,13 @@ export default function LeaderboardPage() {
               </div>
               <div className="flex flex-wrap gap-4 sm:ml-auto">
                 <div className="text-center px-4">
-                  <p className="text-2xl font-bold text-indigo-500">
+                  <p className="text-2xl font-bold text-rose-500">
                     {myEntry.avgPercent}%
                   </p>
                   <p className="text-xs text-[var(--text-muted)]">Ø Ergebnis</p>
                 </div>
                 <div className="text-center px-4">
-                  <p className="text-2xl font-bold text-purple-500">
+                  <p className="text-2xl font-bold text-pink-500">
                     {myEntry.quizzesCompleted}
                   </p>
                   <p className="text-xs text-[var(--text-muted)]">
@@ -390,7 +392,7 @@ export default function LeaderboardPage() {
         )}
 
         {/* Filters */}
-        <div className="glass-card rounded-2xl p-5 mb-6 animate-fade-in-up-delay-2">
+        <div className="glass-card rounded-2xl p-5 mb-6 animate-fade-in-up-delay-2 relative z-40">
           <div className="flex flex-col md:flex-row gap-3">
             {/* Search */}
             <div className="relative flex-1">
@@ -412,58 +414,52 @@ export default function LeaderboardPage() {
                 placeholder="Nutzer suchen ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl text-sm text-[var(--foreground)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl text-sm text-[var(--foreground)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 transition-all"
               />
             </div>
 
             {/* Subject filter */}
-            <select
-              value={
-                selectedSubject === "all" ? "all" : String(selectedSubject)
-              }
-              onChange={(e) =>
-                setSelectedSubject(
-                  e.target.value === "all" ? "all" : Number(e.target.value),
-                )
-              }
-              className="px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all cursor-pointer"
-            >
-              <option value="all">Alle Fächer</option>
-              {subjects.map((s) => (
-                <option key={s.id} value={String(s.id)}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+            <FluidDropdown
+              items={[
+                { id: 'all', label: 'Alle Fächer', icon: BookOpen, color: '#fb7185' },
+                ...subjects.map((s) => ({
+                  id: String(s.id),
+                  label: s.name,
+                })),
+              ]}
+              value={selectedSubject === 'all' ? 'all' : String(selectedSubject)}
+              onChange={(val) => setSelectedSubject(val === 'all' ? 'all' : Number(val))}
+              placeholder="Alle Fächer"
+            />
 
             {/* Sort */}
-            <select
+            <FluidDropdown
+              items={sortOptions.map((o) => ({
+                id: o.key,
+                label: `Top 10: ${o.label}`,
+                icon: o.key === 'points' ? Trophy : o.key === 'avgPercent' ? BarChart3 : o.key === 'quizzesCompleted' ? Gamepad2 : PenTool,
+                color: '#fb7185',
+              }))}
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortKey)}
-              className="px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all cursor-pointer"
-            >
-              {sortOptions.map((o) => (
-                <option key={o.key} value={o.key}>
-                  Top 10: {o.label}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setSortBy(val as SortKey)}
+              placeholder="Top 10: Punkte"
+            />
           </div>
         </div>
 
         {/* Leaderboard Table */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-3 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
             <p className="mt-3 text-sm text-[var(--text-muted)]">
               Leaderboard wird geladen ...
             </p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="glass-card rounded-2xl p-12 text-center">
-            <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-8 h-8 text-indigo-400"
+                className="w-8 h-8 text-rose-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -500,7 +496,7 @@ export default function LeaderboardPage() {
                       key={entry.userId}
                       className={`glass-card rounded-2xl p-5 text-center relative overflow-hidden transition-all ${
                         rank === 1 ? "md:-mt-4" : ""
-                      } ${isMe ? "ring-2 ring-indigo-500/40" : ""}`}
+                      } ${isMe ? "ring-2 ring-rose-500/40" : ""}`}
                     >
                       {rank <= 3 && (
                         <div
@@ -522,7 +518,7 @@ export default function LeaderboardPage() {
                         className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center shadow-lg mb-3 ${
                           rank <= 3
                             ? `bg-gradient-to-br ${getMedalColor(rank)}`
-                            : "bg-gradient-to-br from-indigo-500 to-violet-600"
+                            : "bg-gradient-to-br from-rose-500 to-pink-600"
                         }`}
                       >
                         {entry.avatarUrl ? (
@@ -541,10 +537,10 @@ export default function LeaderboardPage() {
                       <p className="font-bold text-[var(--foreground)] text-sm truncate">
                         {entry.name}
                         {isMe && (
-                          <span className="text-indigo-500 ml-1">(Du)</span>
+                          <span className="text-rose-500 ml-1">(Du)</span>
                         )}
                       </p>
-                      <p className="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent mt-1">
+                      <p className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent mt-1">
                         {entry[sortBy]}
                         {sortOptions.find((o) => o.key === sortBy)?.suffix}
                       </p>
@@ -579,14 +575,14 @@ export default function LeaderboardPage() {
                     key={entry.userId}
                     className={`grid grid-cols-10 gap-2 px-5 py-3.5 items-center transition-colors ${
                       isMe
-                        ? "bg-indigo-50/50 dark:bg-indigo-500/5 border-l-2 border-indigo-500"
+                        ? "bg-rose-50/50 dark:bg-rose-500/5 border-l-2 border-rose-500"
                         : "hover:bg-[var(--surface-hover)] border-l-2 border-transparent"
                     } ${idx < filtered.length - 1 ? "border-b border-[var(--border)]" : ""}`}
                   >
                     {/* Rank */}
                     <div className="col-span-1">
                       <span
-                        className={`text-sm font-bold ${rank <= 3 ? "text-indigo-500" : "text-[var(--text-muted)]"}`}
+                        className={`text-sm font-bold ${rank <= 3 ? "text-rose-500" : "text-[var(--text-muted)]"}`}
                       >
                         {rank}
                       </span>
@@ -594,7 +590,7 @@ export default function LeaderboardPage() {
 
                     {/* User */}
                     <div className="col-span-3 flex items-center gap-2.5 min-w-0">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
                         {entry.avatarUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -609,7 +605,7 @@ export default function LeaderboardPage() {
                         )}
                       </div>
                       <span
-                        className={`text-sm font-medium truncate ${isMe ? "text-indigo-600 dark:text-indigo-400" : "text-[var(--foreground)]"}`}
+                        className={`text-sm font-medium truncate ${isMe ? "text-rose-600 dark:text-rose-400" : "text-[var(--foreground)]"}`}
                       >
                         {entry.name}
                         {isMe && (

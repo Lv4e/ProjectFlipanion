@@ -29,9 +29,9 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 group mb-3">
-              <div className="w-10 h-10 rounded-lg shadow-sm group-hover:shadow-indigo-500/25 transition-shadow overflow-hidden flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg shadow-sm group-hover:shadow-rose-500/25 transition-shadow overflow-hidden flex items-center justify-center">
                 <Image
-                  src="/logo_flipanion.png"
+                  src="/logo.png"
                   alt="Flipanion"
                   width={200}
                   height={200}
@@ -57,7 +57,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/browse"
-                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                 >
                   Quizze entdecken
                 </Link>
@@ -65,7 +65,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={loggedIn ? "/profile" : "/auth"}
-                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                 >
                   Mein Konto
                 </Link>
@@ -73,7 +73,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={loggedIn ? "/leaderboard" : "/auth"}
-                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                 >
                   Leaderboard
                 </Link>
@@ -91,7 +91,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/impressum"
-                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                 >
                   Impressum
                 </Link>
@@ -99,7 +99,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/agb"
-                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                 >
                   AGB
                 </Link>
@@ -107,7 +107,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/datenschutz"
-                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                 >
                   Datenschutz
                 </Link>
@@ -124,7 +124,7 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:flipanion@spengergasse.at"
-                  className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                 >
                   flipanion@spengergasse.at
                 </a>
