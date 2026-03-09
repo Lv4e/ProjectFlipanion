@@ -16,6 +16,7 @@ interface LeaderboardEntry {
   totalCorrect: number;
   avgPercent: number;
   points: number;
+  streak: number;
 }
 
 interface Subject {
@@ -101,10 +102,16 @@ export default function LeaderboardPage() {
 
       const { data: quizzes } = await quizzesQuery;
 
-      // Fetch quiz attempts (new points system)
+      // Fetch quiz attempts (only first attempts where points were awarded)
       const { data: attemptsData } = await supabase
         .from("QuizAttempt")
-        .select("userId, quizId, points, quiz:Quiz(subjectId)");
+        .select("userId, quizId, points, pointsAwarded, quiz:Quiz(subjectId)")
+        .eq("pointsAwarded", true);
+
+      // Fetch streaks from UserStatistics
+      const { data: statsData } = await supabase
+        .from("UserStatistics")
+        .select("userId, streak");
 
       // Build leaderboard
       const map = new Map<number, LeaderboardEntry>();
@@ -120,7 +127,16 @@ export default function LeaderboardPage() {
           totalCorrect: 0,
           avgPercent: 0,
           points: 0,
+          streak: 0,
         });
+      }
+
+      // Apply streaks
+      if (statsData) {
+        for (const s of statsData) {
+          const entry = map.get(s.userId);
+          if (entry) entry.streak = (s.streak as number) ?? 0;
+        }
       }
 
       // Count quizzes created
@@ -178,8 +194,13 @@ export default function LeaderboardPage() {
       // Process points from QuizAttempt
       if (attemptsData) {
         for (const a of attemptsData as Array<Record<string, unknown>>) {
-          const quizRelation = a.quiz as Record<string, unknown> | Array<Record<string, unknown>> | null;
-          const quiz = Array.isArray(quizRelation) ? quizRelation[0] : quizRelation;
+          const quizRelation = a.quiz as
+            | Record<string, unknown>
+            | Array<Record<string, unknown>>
+            | null;
+          const quiz = Array.isArray(quizRelation)
+            ? quizRelation[0]
+            : quizRelation;
           const subjectId = quiz?.subjectId as number | undefined;
           if (selectedSubject !== "all" && subjectId !== selectedSubject)
             continue;
@@ -287,6 +308,19 @@ export default function LeaderboardPage() {
             Vergleiche dich mit anderen Nutzern und sieh, wer die besten
             Ergebnisse hat.
           </p>
+
+          {/* Streak Explanation */}
+          <div className="mt-4 px-4 py-3 rounded-xl bg-orange-50 dark:bg-orange-500/5 border border-orange-200 dark:border-orange-500/15 text-sm text-orange-800 dark:text-orange-300">
+            <p className="font-semibold flex items-center gap-1.5 mb-1">
+              <span>🔥</span> Streak-System
+            </p>
+            <p className="text-xs text-orange-700 dark:text-orange-400 leading-relaxed">
+              Pro Quiz bekommst du nur beim ersten Mal Punkte. Schließe Quizze
+              mit über 90 % ab, um eine Streak aufzubauen. Ab 2× hintereinander
+              über 90 % erhältst du einen Bonus-Multiplikator auf deine Punkte
+              (×1.1, ×1.2, ×1.3 …). Unter 90 % wird die Streak zurückgesetzt.
+            </p>
+          </div>
         </div>
 
         {/* My Stats Card */}
@@ -342,6 +376,14 @@ export default function LeaderboardPage() {
                   </p>
                   <p className="text-xs text-[var(--text-muted)]">Erstellt</p>
                 </div>
+                {myEntry.streak >= 1 && (
+                  <div className="text-center px-4">
+                    <p className="text-2xl font-bold text-orange-500">
+                      🔥 {myEntry.streak}
+                    </p>
+                    <p className="text-xs text-[var(--text-muted)]">Streak</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -626,6 +668,14 @@ export default function LeaderboardPage() {
                       <span className="text-sm font-bold text-[var(--foreground)]">
                         {entry.points}
                       </span>
+                      {entry.streak >= 2 && (
+                        <span
+                          className="ml-1 text-xs text-orange-500"
+                          title={`Streak: ${entry.streak} (×${(1 + (entry.streak - 1) * 0.1).toFixed(1)})`}
+                        >
+                          🔥{entry.streak}
+                        </span>
+                      )}
                     </div>
                   </div>
                 );
