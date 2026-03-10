@@ -426,10 +426,10 @@ export default function QuizPage() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-3xl mx-auto px-6 pt-28 pb-12">
+      <main className="max-w-3xl mx-auto px-8 pt-32 pb-16">
         <Link
           href="/browse"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-6 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] mb-8 transition-colors duration-300"
         >
           <svg
             className="w-4 h-4"
@@ -449,26 +449,26 @@ export default function QuizPage() {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-3 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
             <p className="mt-4 text-sm text-[var(--text-muted)]">
               Quiz wird geladen ...
             </p>
           </div>
         ) : error ? (
-          <div className="glass-card rounded-2xl p-6 border-red-200 dark:border-red-500/20">
+          <div className="glass-card rounded-xl p-6 border-red-500/20">
             <h1 className="text-lg font-semibold text-[var(--foreground)] mb-2">
               Quiz konnte nicht geöffnet werden
             </h1>
-            <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>
+            <p className="text-red-400 text-sm">{error}</p>
           </div>
         ) : (
           <>
             {/* Quiz Header Card */}
             {user && (
-              <div className="glass-card rounded-2xl p-6 mb-6 animate-fade-in-up relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-gradient-to-br from-indigo-500/8 to-violet-500/8 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+              <div className="glass-card-static rounded-2xl p-8 mb-8 animate-fade-in-up relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-gradient-to-br from-[color-mix(in_srgb,var(--primary)_4%,transparent)] to-[color-mix(in_srgb,var(--primary)_3%,transparent)] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
                 <div className="relative">
-                  <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
+                  <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-[-0.02em]">
                     {typeof quiz?.title === "string" &&
                     quiz.title.trim().length > 0
                       ? quiz.title
@@ -482,7 +482,7 @@ export default function QuizPage() {
 
                   <div className="flex items-center justify-between mt-4 text-sm text-[var(--text-muted)]">
                     <span className="inline-flex items-center gap-1.5">
-                      <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                      <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-[var(--border)] text-[var(--text-muted)] rounded-md">
                         {((quiz?.Subject as Record<string, unknown> | undefined)
                           ?.name as string) ??
                           (quiz?.subject as string) ??
@@ -497,7 +497,7 @@ export default function QuizPage() {
                   </div>
 
                   {hint ? (
-                    <div className="mt-4 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl p-3">
+                    <div className="mt-4 text-sm text-red-400 bg-red-500/5 border border-red-500/20 rounded-lg p-3">
                       {hint}
                     </div>
                   ) : null}
@@ -506,10 +506,10 @@ export default function QuizPage() {
             )}
 
             {!user ? (
-              <div className="glass-card rounded-2xl p-10 flex flex-col items-center justify-center text-center animate-fade-in-up">
-                <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20">
+              <div className="glass-card rounded-xl p-10 flex flex-col items-center justify-center text-center animate-fade-in-up">
+                <div className="w-20 h-20 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center mb-6">
                   <svg
-                    className="w-10 h-10 text-white"
+                    className="w-10 h-10 text-[var(--text-muted)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -522,7 +522,7 @@ export default function QuizPage() {
                     />
                   </svg>
                 </div>
-                <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">
+                <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
                   Bereit zum Lernen?
                 </h2>
                 <p className="text-[var(--text-muted)] mb-6 max-w-sm leading-relaxed">
@@ -531,16 +531,16 @@ export default function QuizPage() {
                 </p>
                 <Link
                   href="/auth"
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-medium shadow-md shadow-indigo-500/15 transition-all active:scale-[0.98]"
+                  className="px-6 py-3 rounded-lg bg-[var(--foreground)] text-[var(--background)] font-medium transition-all duration-300 hover:opacity-90 active:scale-[0.98]"
                 >
                   Jetzt anmelden
                 </Link>
               </div>
             ) : questions.length === 0 ? (
-              <div className="glass-card rounded-2xl p-8 flex flex-col items-center justify-center text-center">
-                <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
+              <div className="glass-card rounded-xl p-8 flex flex-col items-center justify-center text-center">
+                <div className="w-14 h-14 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center mb-4">
                   <svg
-                    className="w-7 h-7 text-indigo-400"
+                    className="w-7 h-7 text-[var(--text-muted)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -562,10 +562,10 @@ export default function QuizPage() {
               </div>
             ) : finished ? (
               /* Results Card */
-              <div className="glass-card rounded-2xl p-8 text-center animate-fade-in-up">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-500/20">
+              <div className="glass-card rounded-xl p-8 text-center animate-fade-in-up">
+                <div className="w-16 h-16 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center mx-auto mb-5">
                   <svg
-                    className="w-8 h-8 text-white"
+                    className="w-8 h-8 text-[var(--primary)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -578,14 +578,14 @@ export default function QuizPage() {
                     />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">
+                <h2 className="text-2xl font-semibold text-[var(--foreground)] mb-2">
                   Geschafft!
                 </h2>
                 <p className="text-[var(--text-muted)] mb-6">
                   {canScore ? (
                     <>
                       Du hast{" "}
-                      <span className="font-bold text-indigo-500">{score}</span>{" "}
+                      <span className="font-bold text-[var(--primary)]">{score}</span>{" "}
                       von <span className="font-bold">{questions.length}</span>{" "}
                       Fragen richtig beantwortet.
                     </>
@@ -595,9 +595,9 @@ export default function QuizPage() {
                 </p>
 
                 {canScore && (
-                  <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 mb-4">
+                  <div className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[var(--surface-hover)] border border-[var(--border)] mb-4">
                     <svg
-                      className="w-5 h-5 text-indigo-500"
+                      className="w-5 h-5 text-[var(--primary)]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -609,14 +609,14 @@ export default function QuizPage() {
                         d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
                       />
                     </svg>
-                    <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="text-lg font-bold text-[var(--primary)]">
                       {pointsEarned}
                     </span>
-                    <span className="text-sm text-indigo-500">
+                    <span className="text-sm text-[var(--primary)]">
                       von 20 Punkten
                     </span>
                     {streakInfo && streakInfo.multiplier > 1 && (
-                      <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/10 px-2 py-0.5 rounded-lg ml-1">
+                      <span className="text-xs font-semibold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-md ml-1">
                         ×{streakInfo.multiplier.toFixed(1)} Streak
                       </span>
                     )}
@@ -627,7 +627,7 @@ export default function QuizPage() {
                 {streakInfo && canScore && (
                   <div className="mb-6 space-y-2">
                     {!streakInfo.isFirstAttempt && (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-sm text-amber-700 dark:text-amber-400">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-sm text-amber-400">
                         <svg
                           className="w-4 h-4"
                           fill="none"
@@ -646,7 +646,7 @@ export default function QuizPage() {
                       </div>
                     )}
                     {streakInfo.isFirstAttempt && streakInfo.streak >= 1 && (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-sm text-orange-700 dark:text-orange-400">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500/10 border border-orange-500/20 text-sm text-orange-400">
                         <span className="text-lg">🔥</span>
                         <span className="font-semibold">
                           Streak: {streakInfo.streak}
@@ -659,7 +659,7 @@ export default function QuizPage() {
                       </div>
                     )}
                     {streakInfo.isFirstAttempt && streakInfo.streak === 0 && (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-500/10 border border-gray-200 dark:border-gray-500/20 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-[var(--text-muted)]">
                         <span className="text-lg">💡</span>
                         <span>
                           Erreiche über 90 %, um eine Streak zu starten!
@@ -671,7 +671,7 @@ export default function QuizPage() {
 
                 {/* Streak Explanation */}
                 {canScore && (
-                  <div className="w-full max-w-sm mx-auto mb-6 px-4 py-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-[var(--text-muted)] space-y-1">
+                  <div className="w-full max-w-sm mx-auto mb-6 px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-xs text-[var(--text-muted)] space-y-1">
                     <p className="font-semibold text-[var(--foreground)] flex items-center gap-1">
                       <span>🔥</span> So funktioniert die Streak:
                     </p>
@@ -694,7 +694,7 @@ export default function QuizPage() {
                 {canScore && (
                   <div className="w-full max-w-xs mx-auto bg-[var(--border)] rounded-full h-2.5 mb-8 overflow-hidden">
                     <div
-                      className="bg-gradient-to-r from-indigo-500 to-violet-500 h-2.5 rounded-full transition-all duration-500"
+                      className="bg-[var(--primary)] h-2.5 rounded-full transition-all duration-700"
                       style={{ width: `${(score / questions.length) * 100}%` }}
                     />
                   </div>
@@ -710,13 +710,13 @@ export default function QuizPage() {
                       setRevealed({});
                       setStreakInfo(null);
                     }}
-                    className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[var(--foreground)] font-medium hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
+                    className="px-5 py-2.5 rounded-lg border border-[var(--border)] text-[var(--foreground)] font-medium hover:border-[var(--border-strong)] transition-all duration-300 cursor-pointer"
                   >
                     Erneut versuchen
                   </button>
                   <Link
                     href="/browse"
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-medium shadow-md shadow-indigo-500/15 transition-all active:scale-[0.98]"
+                    className="px-5 py-2.5 rounded-lg bg-[var(--foreground)] text-[var(--background)] font-medium transition-all duration-300 hover:opacity-90 active:scale-[0.98]"
                   >
                     Zur Übersicht
                   </Link>
@@ -724,7 +724,7 @@ export default function QuizPage() {
               </div>
             ) : (
               /* Question Card */
-              <div className="glass-card rounded-2xl p-6 animate-fade-in-up">
+              <div className="glass-card rounded-xl p-6 animate-fade-in-up">
                 {/* Progress */}
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-[var(--text-muted)]">
@@ -736,7 +736,7 @@ export default function QuizPage() {
                 </div>
                 <div className="w-full bg-[var(--border)] rounded-full h-1.5 mb-6 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-indigo-500 to-violet-500 h-1.5 rounded-full transition-all duration-300"
+                    className="bg-[var(--primary)] h-1.5 rounded-full transition-all duration-300"
                     style={{
                       width: `${((current + 1) / questions.length) * 100}%`,
                     }}
@@ -758,19 +758,19 @@ export default function QuizPage() {
                     const showCorrect = isRevealed && isCorrectOption;
 
                     let optionClasses =
-                      "w-full text-left px-4 py-3.5 rounded-xl border-2 transition-all duration-200 group text-[var(--foreground)]";
+                      "w-full text-left px-4 py-3.5 rounded-lg border transition-all duration-300 group text-[var(--foreground)]";
                     let badgeClasses =
-                      "inline-flex items-center justify-center w-7 h-7 rounded-lg text-sm font-semibold mr-3 transition-colors";
+                      "inline-flex items-center justify-center w-7 h-7 rounded-md text-sm font-medium mr-3 transition-colors";
 
                     if (isRevealed) {
                       optionClasses += " cursor-default";
                       if (showCorrect) {
                         optionClasses +=
-                          " border-green-500 bg-green-50 dark:bg-green-500/10 shadow-sm shadow-green-500/10";
+                          " border-green-500/40 bg-green-500/10";
                         badgeClasses += " bg-green-500 text-white";
                       } else if (isWrongSelection) {
                         optionClasses +=
-                          " border-red-500 bg-red-50 dark:bg-red-500/10 shadow-sm shadow-red-500/10";
+                          " border-red-500/40 bg-red-500/10";
                         badgeClasses += " bg-red-500 text-white";
                       } else {
                         optionClasses += " border-[var(--border)] opacity-50";
@@ -781,13 +781,13 @@ export default function QuizPage() {
                       optionClasses += " cursor-pointer";
                       if (selected) {
                         optionClasses +=
-                          " border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 shadow-sm shadow-indigo-500/10";
-                        badgeClasses += " bg-indigo-500 text-white";
+                          " border-[var(--primary)]/40 bg-[var(--primary)]/5";
+                        badgeClasses += " bg-[var(--primary)] text-white";
                       } else {
                         optionClasses +=
-                          " border-[var(--border)] hover:border-indigo-300 dark:hover:border-indigo-500/30 hover:bg-[var(--surface-hover)]";
+                          " border-[var(--border)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-hover)]";
                         badgeClasses +=
-                          " bg-[var(--background)] text-[var(--text-muted)] group-hover:text-indigo-500";
+                          " bg-[var(--background)] text-[var(--text-muted)] group-hover:text-[var(--primary)]";
                       }
                     }
 
@@ -851,10 +851,10 @@ export default function QuizPage() {
                 {/* Feedback message */}
                 {isRevealed && typeof q.correctIndex === "number" && (
                   <div
-                    className={`mt-4 flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium ${
+                    className={`mt-4 flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium ${
                       selectedForCurrent === q.correctIndex
-                        ? "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-500/20"
-                        : "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/20"
+                        ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                        : "bg-red-500/10 text-red-400 border border-red-500/20"
                     }`}
                   >
                     {selectedForCurrent === q.correctIndex ? (
@@ -902,7 +902,7 @@ export default function QuizPage() {
                     type="button"
                     onClick={() => setCurrent((c) => Math.max(0, c - 1))}
                     disabled={current === 0}
-                    className="px-5 py-2.5 rounded-xl border border-[var(--border)] text-[var(--foreground)] font-medium hover:bg-[var(--surface-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    className="px-5 py-2.5 rounded-lg border border-[var(--border)] text-[var(--foreground)] font-medium hover:border-[var(--border-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 cursor-pointer"
                   >
                     Zurück
                   </button>
@@ -913,7 +913,7 @@ export default function QuizPage() {
                       onClick={() =>
                         setCurrent((c) => Math.min(questions.length - 1, c + 1))
                       }
-                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-medium shadow-md shadow-indigo-500/15 transition-all active:scale-[0.98] cursor-pointer"
+                      className="px-5 py-2.5 rounded-lg bg-[var(--foreground)] text-[var(--background)] font-medium transition-all duration-300 hover:opacity-90 active:scale-[0.98] cursor-pointer"
                     >
                       Weiter
                     </button>
@@ -921,7 +921,7 @@ export default function QuizPage() {
                     <button
                       type="button"
                       onClick={() => setFinished(true)}
-                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-medium shadow-md shadow-indigo-500/15 transition-all active:scale-[0.98] cursor-pointer"
+                      className="px-5 py-2.5 rounded-lg bg-[var(--foreground)] text-[var(--background)] font-medium transition-all duration-300 hover:opacity-90 active:scale-[0.98] cursor-pointer"
                     >
                       Abschließen
                     </button>

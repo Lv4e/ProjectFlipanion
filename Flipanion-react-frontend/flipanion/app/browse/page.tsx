@@ -5,6 +5,7 @@ import { supabase } from '../supabase-client';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import CustomDropdown from '../../components/CustomDropdown';
 
 // Define the Quiz type based on your database structure
 interface Quiz {
@@ -26,6 +27,41 @@ interface Quiz {
 interface Subject {
   id: number;
   name: string;
+}
+
+// Slide-in card wrapper with Intersection Observer
+function SlideInCard({ children, index }: { children: React.ReactNode; index: number }) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateX(0)' : `translateX(${index % 2 === 0 ? '-40px' : '40px'})`,
+        transition: `opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.08}s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.08}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
 }
 
 export default function BrowseQuizzes() {
@@ -121,36 +157,36 @@ export default function BrowseQuizzes() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-6 pt-28 pb-12">
+      <main className="max-w-7xl mx-auto px-8 pt-32 pb-20">
         {/* Page Header */}
-        <div className="mb-10 animate-fade-in-up">
-          <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4 transition-colors">
+        <div className="mb-12 animate-fade-in-up">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] mb-6 transition-colors duration-300">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             Zurück zur Startseite
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--foreground)] tracking-tight mb-1">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--foreground)] tracking-[-0.03em] mb-2">
             Quizze entdecken
           </h1>
-          <p className="text-[var(--text-muted)]">
+          <p className="text-lg text-[var(--text-muted)]">
             Finde Quizze, um dein Wissen zu testen
           </p>
         </div>
 
         {/* Error Message for Unautenticated Users */}
         {questionsError && !user && (
-          <div className="glass-card border-red-200 dark:border-red-500/20 rounded-2xl p-4 mb-8 animate-fade-in-up">
-            <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+          <div className="glass-card border-red-500/20 rounded-lg p-4 mb-8 animate-fade-in-up">
+            <p className="text-red-400 text-sm font-medium">
               Du musst dich anmelden, um die Anzahl der Fragen zu sehen.
             </p>
           </div>
         )}
 
         {/* Search and Filter Bar */}
-        <div className="glass-card rounded-2xl p-6 mb-8 animate-fade-in-up-delay-1">
+        <div className="glass-card-static rounded-2xl p-8 mb-10 animate-fade-in-up-delay-1 relative z-20" style={{ overflow: 'visible' }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Search Input */}
             <div>
-              <label htmlFor="search" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label htmlFor="search" className="block text-[13px] font-medium text-[var(--text-muted)] mb-2">
                 Quizze suchen
               </label>
               <div className="relative">
@@ -161,72 +197,72 @@ export default function BrowseQuizzes() {
                   placeholder="Suche nach Titel oder Beschreibung ..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none"
                 />
               </div>
             </div>
 
             {/* Subject Filter */}
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+              <label htmlFor="subject" className="block text-[13px] font-medium text-[var(--text-muted)] mb-2">
                 Nach Fach filtern
               </label>
-              <select
+              <CustomDropdown
                 id="subject"
                 value={selectedSubject}
-                onChange={(e) => setSelectedSubject(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 text-[var(--foreground)] transition-all outline-none appearance-none cursor-pointer"
-              >
-                <option value="all">Alle Fächer</option>
-                {subjects.map((subject) => (
-                  <option key={subject.id} value={subject.name}>
-                    {subject.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setSelectedSubject(val)}
+                placeholder="Alle Fächer"
+                options={[
+                  { value: 'all', label: 'Alle Fächer' },
+                  ...subjects.map((subject) => ({
+                    value: subject.name,
+                    label: subject.name,
+                  })),
+                ]}
+              />
             </div>
           </div>
         </div>
 
         {/* Quiz Grid */}
-        <div className="animate-fade-in-up-delay-2">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold text-[var(--foreground)]">
+        <div className="animate-fade-in-up-delay-2 relative z-10">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-xl font-bold text-[var(--foreground)]">
               {filteredQuizzes.length} {filteredQuizzes.length === 1 ? 'Quiz gefunden' : 'Quizze gefunden'}
             </h2>
           </div>
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16">
-              <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+              <div className="w-10 h-10 border-3 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
               <p className="mt-4 text-sm text-[var(--text-muted)]">Quizze werden geladen ...</p>
             </div>
           ) : filteredQuizzes.length === 0 ? (
-            <div className="glass-card rounded-2xl py-16 flex flex-col items-center justify-center text-center">
-              <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
-                <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <div className="glass-card rounded-xl py-16 flex flex-col items-center justify-center text-center">
+              <div className="w-14 h-14 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-7 h-7 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               </div>
               <p className="text-[var(--foreground)] font-medium mb-1">Keine Quizze gefunden</p>
               <p className="text-sm text-[var(--text-muted)]">Passe deine Suche oder Filter an</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredQuizzes.map((quiz) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredQuizzes.map((quiz, index) => (
+                <SlideInCard key={quiz.id} index={index}>
                   <div
-                    key={quiz.id}
-                    className="glass-card rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 group"
+                    className="glass-card gradient-border rounded-2xl overflow-hidden hover:border-[var(--border-strong)] transition-all duration-300 group"
                   >
                     {/* Quiz Image/Icon */}
-                    <div className="h-28 bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-500 flex items-center justify-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
-                      <span className="text-white/90 text-4xl font-bold relative">
+                    <div className="h-32 bg-[var(--surface-hover)] border-b border-[var(--border)] flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-500" />
+                      <span className="text-[var(--text-muted)] text-5xl font-bold relative group-hover:scale-110 transition-transform duration-500">
                         {quiz.title ? quiz.title.charAt(0).toUpperCase() : 'Q'}
                       </span>
                     </div>
 
                     {/* Quiz Content */}
-                    <div className="p-5">
-                      <h3 className="font-semibold text-[var(--foreground)] mb-1.5 group-hover:text-indigo-500 transition-colors">
+                    <div className="p-6">
+                      <h3 className="font-semibold text-[var(--foreground)] mb-2 text-lg group-hover:text-[var(--foreground)] transition-colors">
                         {quiz.title || 'Ohne Titel'}
                       </h3>
                       <p className="text-sm text-[var(--text-muted)] mb-4 line-clamp-2 leading-relaxed">
@@ -235,7 +271,7 @@ export default function BrowseQuizzes() {
 
                       {/* Quiz Meta */}
                       <div className="flex items-center justify-between mb-4">
-                        <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                        <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-[var(--border)] text-[var(--text-muted)] rounded-md">
                           {quiz.Subject?.name || quiz.subject || 'Allgemein'}
                         </span>
                         <span className="text-xs text-[var(--text-muted)]">
@@ -246,12 +282,13 @@ export default function BrowseQuizzes() {
                       {/* Action Button */}
                       <Link
                         href={`/quizes/${quiz.id}`}
-                        className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/15 hover:shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] block text-center"
+                        className="w-full py-3 px-4 bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold rounded-xl transition-all duration-300 hover:opacity-90 active:scale-[0.98] block text-center"
                       >
                         Quiz starten
                       </Link>
                     </div>
                   </div>
+                </SlideInCard>
               ))}
             </div>
           )}

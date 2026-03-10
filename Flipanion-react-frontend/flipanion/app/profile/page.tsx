@@ -434,7 +434,7 @@ export default function ProfilePage() {
         <Header />
         <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-3 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
             <p className="mt-4 text-sm text-[var(--text-muted)]">
               Profil wird geladen ...
             </p>
@@ -449,10 +449,10 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-[var(--background)]">
         <Header />
         <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
-          <div className="glass-card rounded-2xl py-16 px-8 flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4">
+          <div className="glass-card rounded-xl py-16 px-8 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center mb-4">
               <svg
-                className="w-8 h-8 text-indigo-400"
+                className="w-8 h-8 text-[var(--text-muted)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -465,7 +465,7 @@ export default function ProfilePage() {
                 />
               </svg>
             </div>
-            <h2 className="text-lg font-bold text-[var(--foreground)] mb-1">
+            <h2 className="text-lg font-semibold text-[var(--foreground)] mb-1">
               Nicht angemeldet
             </h2>
             <p className="text-sm text-[var(--text-muted)] mb-6">
@@ -473,7 +473,7 @@ export default function ProfilePage() {
             </p>
             <Link
               href="/auth?mode=login"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold rounded-xl transition-all shadow-md shadow-indigo-500/20 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg transition-all duration-300 hover:opacity-90 active:scale-[0.98]"
             >
               Zur Anmeldung
               <svg
@@ -500,11 +500,11 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
+      <main className="max-w-4xl mx-auto px-8 pt-32 pb-20">
         {/* Back link */}
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 mb-8 transition-colors animate-fade-in-up"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] mb-10 transition-colors duration-300 animate-fade-in-up"
         >
           <svg
             className="w-4 h-4"
@@ -525,10 +525,10 @@ export default function ProfilePage() {
         {/* Success/Error Message */}
         {message && (
           <div
-            className={`mb-6 p-4 rounded-2xl flex items-center gap-3 animate-fade-in-up glass-card border ${
+            className={`mb-6 p-4 rounded-lg flex items-center gap-3 animate-fade-in-up border ${
               message.type === "success"
-                ? "border-green-200 dark:border-green-500/20 bg-green-50/50 dark:bg-green-500/8"
-                : "border-red-200 dark:border-red-500/20 bg-red-50/50 dark:bg-red-500/8"
+                ? "border-green-500/20 bg-green-500/5"
+                : "border-red-500/20 bg-red-500/5"
             }`}
           >
             {message.type === "success" ? (
@@ -563,8 +563,8 @@ export default function ProfilePage() {
             <p
               className={
                 message.type === "success"
-                  ? "text-green-600 dark:text-green-400 font-medium text-sm"
-                  : "text-red-600 dark:text-red-400 font-medium text-sm"
+                  ? "text-green-400 font-medium text-sm"
+                  : "text-red-400 font-medium text-sm"
               }
             >
               {message.text}
@@ -573,15 +573,15 @@ export default function ProfilePage() {
         )}
 
         {/* Profile Header Card */}
-        <div className="glass-card rounded-2xl overflow-hidden mb-8 animate-fade-in-up">
+        <div className="glass-card-static rounded-2xl overflow-hidden mb-10 animate-fade-in-up">
           {/* Cover gradient */}
-          <div className="h-32 bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-600" />
+          <div className="h-36 bg-gradient-to-r from-[var(--surface-hover)] via-[color-mix(in_srgb,var(--primary)_5%,var(--surface))] to-[var(--surface-hover)] border-b border-[var(--border)]" />
 
           {/* Profile info */}
           <div className="px-8 pb-8">
             {/* Avatar */}
             <div className="relative -mt-16 mb-4">
-              <div className="w-32 h-32 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center border-4 border-[var(--surface)] dark:border-[var(--background)] shadow-lg shadow-indigo-500/20 overflow-hidden">
+              <div className="w-32 h-32 bg-[var(--surface-hover)] rounded-xl flex items-center justify-center border-4 border-[var(--background)] overflow-hidden">
                 {avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -590,7 +590,7 @@ export default function ProfilePage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-white font-bold text-5xl">
+                  <span className="text-[var(--text-muted)] font-semibold text-5xl">
                     {(user.user_metadata?.name || user.email || "U")
                       .charAt(0)
                       .toUpperCase()}
@@ -608,10 +608,10 @@ export default function ProfilePage() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
                 title="Profilbild ändern"
-                className="absolute bottom-2 right-2 w-10 h-10 bg-[var(--surface)] dark:bg-[var(--surface)] rounded-full shadow-md flex items-center justify-center hover:shadow-lg transition-all border border-[var(--border)] cursor-pointer hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="absolute bottom-2 right-2 w-10 h-10 bg-[var(--surface)] rounded-full flex items-center justify-center hover:bg-[var(--surface-hover)] transition-all border border-[var(--border)] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {uploadingAvatar ? (
-                  <div className="w-5 h-5 border-2 border-indigo-300 border-t-indigo-500 rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-[color-mix(in_srgb,var(--primary)_30%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
                 ) : (
                   <svg
                     className="w-5 h-5 text-[var(--text-muted)]"
@@ -637,7 +637,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Name and email */}
-            <h1 className="text-3xl font-bold text-[var(--foreground)] tracking-tight">
+            <h1 className="text-2xl font-semibold text-[var(--foreground)] tracking-[-0.03em]">
               {user.user_metadata?.name || "Kein Name festgelegt"}
             </h1>
             <p className="text-[var(--text-muted)] mt-1 text-sm">
@@ -665,14 +665,14 @@ export default function ProfilePage() {
         </div>
 
         {/* Settings Cards */}
-        <div className="space-y-5">
+        <div className="space-y-6">
           {/* Username Card */}
-          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-1">
+          <div className="glass-card rounded-xl p-6 animate-fade-in-up-delay-1">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/10 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-indigo-500"
+                    className="w-5 h-5 text-[var(--text-muted)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -686,7 +686,7 @@ export default function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-[var(--foreground)]">
+                  <h2 className="text-sm font-medium text-[var(--foreground)]">
                     Benutzername
                   </h2>
                   <p className="text-xs text-[var(--text-muted)]">
@@ -697,7 +697,7 @@ export default function ProfilePage() {
               {!editingUsername && (
                 <button
                   onClick={() => setEditingUsername(true)}
-                  className="px-4 py-2 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] rounded-lg transition-colors"
                 >
                   Bearbeiten
                 </button>
@@ -713,11 +713,11 @@ export default function ProfilePage() {
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Benutzername eingeben"
                     minLength={3}
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none pr-12"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                     {checkingUsername && (
-                      <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
                     )}
                     {!checkingUsername && usernameAvailable === true && (
                       <div className="text-green-500 text-lg">✓</div>
@@ -820,11 +820,11 @@ export default function ProfilePage() {
                       username === originalUsername ||
                       username.includes(" ")
                     }
-                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 text-sm"
+                    className="flex-1 px-4 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-dark)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-2 text-sm"
                   >
                     {saving ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-[var(--background)]/30 border-t-[var(--background)] rounded-full animate-spin" />
                         Wird gespeichert
                       </>
                     ) : (
@@ -849,7 +849,7 @@ export default function ProfilePage() {
                   <button
                     onClick={handleCancelUsername}
                     disabled={saving}
-                    className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--foreground)] font-medium rounded-xl transition-colors text-sm"
+                    className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] text-[var(--foreground)] font-medium rounded-lg transition-all text-sm"
                   >
                     Abbrechen
                   </button>
@@ -869,11 +869,11 @@ export default function ProfilePage() {
           </div>
 
           {/* Email Card (Read-only) */}
-          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-2">
+          <div className="glass-card rounded-xl p-6 animate-fade-in-up-delay-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-violet-100 dark:bg-violet-500/10 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-violet-500"
+                  className="w-5 h-5 text-[var(--text-muted)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -887,7 +887,7 @@ export default function ProfilePage() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-sm font-bold text-[var(--foreground)]">
+                <h2 className="text-sm font-medium text-[var(--foreground)]">
                   E-Mail-Adresse
                 </h2>
                 <p className="text-xs text-[var(--text-muted)]">
@@ -895,23 +895,23 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-            <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)] flex items-center justify-between">
-              <p className="text-[var(--foreground)] font-semibold text-sm">
+            <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-lg border border-[var(--border)] flex items-center justify-between">
+              <p className="text-[var(--foreground)] font-medium text-sm">
                 {user.email}
               </p>
-              <span className="text-xs px-2 py-1 bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg font-medium">
+              <span className="text-xs px-2 py-1 border border-[var(--border)] text-[var(--text-muted)] rounded-md font-medium">
                 Schreibgeschützt
               </span>
             </div>
           </div>
 
           {/* Password Card */}
-          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-3">
+          <div className="glass-card rounded-xl p-6 animate-fade-in-up-delay-3">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-rose-100 dark:bg-rose-500/10 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-rose-500"
+                    className="w-5 h-5 text-[var(--text-muted)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -925,7 +925,7 @@ export default function ProfilePage() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-[var(--foreground)]">
+                  <h2 className="text-sm font-medium text-[var(--foreground)]">
                     Passwort
                   </h2>
                   <p className="text-xs text-[var(--text-muted)]">
@@ -940,7 +940,7 @@ export default function ProfilePage() {
                     setEditingPassword(true);
                     setPasswordMessage(null);
                   }}
-                  className="px-4 py-2 text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] rounded-lg transition-colors"
                 >
                   Ändern
                 </button>
@@ -950,10 +950,10 @@ export default function ProfilePage() {
             {/* Password feedback message */}
             {passwordMessage && (
               <div
-                className={`mb-4 p-3 rounded-xl flex items-center gap-3 border ${
+                className={`mb-4 p-3 rounded-lg flex items-center gap-3 border ${
                   passwordMessage.type === "success"
-                    ? "border-green-200 dark:border-green-500/20 bg-green-50/50 dark:bg-green-500/8"
-                    : "border-red-200 dark:border-red-500/20 bg-red-50/50 dark:bg-red-500/8"
+                    ? "border-green-500/20 bg-green-500/5"
+                    : "border-red-500/20 bg-red-500/5"
                 }`}
               >
                 {passwordMessage.type === "success" ? (
@@ -988,8 +988,8 @@ export default function ProfilePage() {
                 <p
                   className={
                     passwordMessage.type === "success"
-                      ? "text-green-600 dark:text-green-400 font-medium text-sm"
-                      : "text-red-600 dark:text-red-400 font-medium text-sm"
+                      ? "text-green-400 font-medium text-sm"
+                      : "text-red-400 font-medium text-sm"
                   }
                 >
                   {passwordMessage.text}
@@ -1006,7 +1006,7 @@ export default function ProfilePage() {
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     placeholder="Aktuelles Passwort"
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none pr-12"
                   />
                   <button
                     type="button"
@@ -1058,7 +1058,7 @@ export default function ProfilePage() {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Neues Passwort (mind. 6 Zeichen)"
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none pr-12"
                   />
                   <button
                     type="button"
@@ -1110,7 +1110,7 @@ export default function ProfilePage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Neues Passwort bestätigen"
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none"
                   />
                   {confirmPassword.length > 0 && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -1172,11 +1172,11 @@ export default function ProfilePage() {
                       newPassword.length < 6 ||
                       newPassword !== confirmPassword
                     }
-                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 disabled:from-indigo-400 disabled:to-violet-500 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 text-sm"
+                    className="flex-1 px-4 py-2.5 bg-[var(--primary)] hover:bg-[var(--primary-dark)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center gap-2 text-sm"
                   >
                     {changingPassword ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-[var(--background)]/30 border-t-[var(--background)] rounded-full animate-spin" />
                         Wird geändert
                       </>
                     ) : (
@@ -1202,15 +1202,15 @@ export default function ProfilePage() {
                     type="button"
                     onClick={handleCancelPassword}
                     disabled={changingPassword}
-                    className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--foreground)] font-medium rounded-xl transition-colors text-sm"
+                    className="px-4 py-2.5 bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--border-strong)] text-[var(--foreground)] font-medium rounded-lg transition-all text-sm"
                   >
                     Abbrechen
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)]">
-                <p className="text-[var(--foreground)] font-semibold text-sm">
+              <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-lg border border-[var(--border)]">
+                <p className="text-[var(--foreground)] font-medium text-sm">
                   ••••••••
                 </p>
               </div>
@@ -1218,11 +1218,11 @@ export default function ProfilePage() {
           </div>
 
           {/* Theme Card */}
-          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-3">
+          <div className="glass-card rounded-xl p-6 animate-fade-in-up-delay-3">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/10 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-amber-500"
+                  className="w-5 h-5 text-[var(--text-muted)]"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -1230,7 +1230,7 @@ export default function ProfilePage() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-sm font-bold text-[var(--foreground)]">
+                <h2 className="text-sm font-medium text-[var(--foreground)]">
                   Design-Modus
                 </h2>
                 <p className="text-xs text-[var(--text-muted)]">
@@ -1245,10 +1245,10 @@ export default function ProfilePage() {
                 onClick={() => {
                   if (theme !== "light") toggleTheme();
                 }}
-                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm ${
+                className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 text-sm ${
                   theme === "light"
-                    ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/20"
-                    : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)]"
+                    ? "bg-[var(--foreground)] text-[var(--background)]"
+                    : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)]"
                 }`}
               >
                 <svg
@@ -1266,10 +1266,10 @@ export default function ProfilePage() {
                 onClick={() => {
                   if (theme !== "dark") toggleTheme();
                 }}
-                className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm ${
+                className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 text-sm ${
                   theme === "dark"
-                    ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/20"
-                    : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface)]"
+                    ? "bg-[var(--foreground)] text-[var(--background)]"
+                    : "bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--foreground)]"
                 }`}
               >
                 <svg
@@ -1285,11 +1285,11 @@ export default function ProfilePage() {
           </div>
 
           {/* User ID Card (Read-only) */}
-          <div className="glass-card rounded-2xl p-6 animate-fade-in-up-delay-4">
+          <div className="glass-card rounded-xl p-6 animate-fade-in-up-delay-4">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/10 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-blue-500"
+                  className="w-5 h-5 text-[var(--text-muted)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1303,7 +1303,7 @@ export default function ProfilePage() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-sm font-bold text-[var(--foreground)]">
+                <h2 className="text-sm font-medium text-[var(--foreground)]">
                   Benutzer-ID
                 </h2>
                 <p className="text-xs text-[var(--text-muted)]">
@@ -1311,7 +1311,7 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-            <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-xl border border-[var(--border)]">
+            <div className="px-4 py-3 bg-[var(--surface-hover)] rounded-lg border border-[var(--border)]">
               <p className="text-[var(--text-muted)] font-mono text-xs break-all">
                 {user.id}
               </p>
