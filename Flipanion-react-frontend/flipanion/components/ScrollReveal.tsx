@@ -71,5 +71,5 @@ export default function ScrollReveal({
       {children}
     </div>
   );
-} s
+} 
  
