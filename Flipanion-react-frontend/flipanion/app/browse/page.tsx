@@ -182,7 +182,7 @@ export default function BrowseQuizzes() {
         )}
 
         {/* Search and Filter Bar */}
-        <div className="glass-card-static rounded-2xl p-8 mb-10 animate-fade-in-up-delay-1 relative z-20" style={{ overflow: 'visible' }}>
+        <div className="glass-card-static rounded-2xl p-8 mb-10 animate-fade-in-up-delay-1 relative z-10" style={{ overflow: 'visible' }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Search Input */}
             <div>
@@ -225,7 +225,7 @@ export default function BrowseQuizzes() {
         </div>
 
         {/* Quiz Grid */}
-        <div className="animate-fade-in-up-delay-2 relative z-10">
+        <div className="animate-fade-in-up-delay-2 relative z-20">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-bold text-[var(--foreground)]">
               {filteredQuizzes.length} {filteredQuizzes.length === 1 ? 'Quiz gefunden' : 'Quizze gefunden'}
@@ -250,11 +250,11 @@ export default function BrowseQuizzes() {
               {filteredQuizzes.map((quiz, index) => (
                 <SlideInCard key={quiz.id} index={index}>
                   <div
-                    className="glass-card gradient-border rounded-2xl overflow-hidden hover:border-[var(--border-strong)] transition-all duration-300 group"
+                    className="glass-card gradient-border relative isolate rounded-2xl overflow-hidden hover:border-[var(--border-strong)] transition-all duration-300 group"
                   >
                     {/* Quiz Image/Icon */}
                     <div className="h-32 bg-[var(--surface-hover)] border-b border-[var(--border)] flex items-center justify-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-500" />
+                      <div className="absolute inset-0 pointer-events-none bg-black/5 group-hover:bg-black/0 transition-colors duration-500" />
                       <span className="text-[var(--text-muted)] text-5xl font-bold relative group-hover:scale-110 transition-transform duration-500">
                         {quiz.title ? quiz.title.charAt(0).toUpperCase() : 'Q'}
                       </span>
@@ -282,7 +282,7 @@ export default function BrowseQuizzes() {
                       {/* Action Button */}
                       <Link
                         href={`/quizes/${quiz.id}`}
-                        className="w-full py-3 px-4 bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold rounded-xl transition-all duration-300 hover:opacity-90 active:scale-[0.98] block text-center"
+                        className="relative z-20 pointer-events-auto cursor-pointer w-full py-3 px-4 bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold rounded-xl transition-all duration-300 hover:opacity-90 active:scale-[0.98] block text-center"
                       >
                         Quiz starten
                       </Link>

@@ -114,9 +114,6 @@ export default function QuizPage() {
   const [error, setError] = React.useState<string | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
 
-  // Hinweistext, wenn quizId in Question fehlt oder nicht gesetzt ist
-  const [hint, setHint] = React.useState<string | null>(null);
-
   React.useEffect(() => {
     if (!Number.isFinite(quizId)) {
       setError("Ungültige Quiz-ID.");
@@ -127,7 +124,6 @@ export default function QuizPage() {
     (async () => {
       setLoading(true);
       setError(null);
-      setHint(null);
       setFinished(false);
 
       // Get current user
@@ -151,10 +147,11 @@ export default function QuizPage() {
 
       setQuiz(quizData);
 
-      // 2) Questions laden (erstmal ohne Filter, damit wir nicht “leer” enden)
+      // 2) Questions für dieses Quiz laden
       const { data: qData, error: qErr } = await supabase
         .from("Question")
         .select("*")
+        .eq("quizId", quizId)
         .order("id", { ascending: true });
 
       if (qErr) {
@@ -163,36 +160,7 @@ export default function QuizPage() {
         return;
       }
 
-      const all = (qData ?? []) as AnyRow[];
-
-      // Prüfen ob Spalte quizId existiert
-      const hasQuizIdColumn =
-        all.length > 0 &&
-        Object.prototype.hasOwnProperty.call(all[0], "quizId");
-
-      // Wenn quizId existiert: filtern
-      let filtered = all;
-      if (hasQuizIdColumn) {
-        filtered = all.filter((q) => q.quizId === quizId);
-      }
-
-      // Fallback: Wenn Filter 0 ergibt, trotzdem anzeigen + Hinweis
-      if (hasQuizIdColumn && filtered.length === 0 && all.length > 0) {
-        setHint(
-          "Keine Fragen mit quizId=" +
-            quizId +
-            " gefunden. Wahrscheinlich ist quizId in den Question-Rows nicht gesetzt. Ich zeige dir daher alle Fragen als Fallback.",
-        );
-        filtered = all;
-      }
-
-      if (!hasQuizIdColumn && currentUser) {
-        setHint(
-          'In der Question-Tabelle scheint keine Spalte "quizId" vorhanden zu sein (oder sie kommt nicht im Select zurück). Ich zeige daher alle Fragen an.',
-        );
-      }
-
-      const normalized = filtered.map(normalizeQuestion);
+      const normalized = (qData ?? []).map(normalizeQuestion);
 
       setQuestions(normalized);
       setCurrent(0);
@@ -495,12 +463,6 @@ export default function QuizPage() {
                       {canScore ? ` · ${pointsEarned} / 20 Pkt.` : ""}
                     </span>
                   </div>
-
-                  {hint ? (
-                    <div className="mt-4 text-sm text-red-400 bg-red-500/5 border border-red-500/20 rounded-lg p-3">
-                      {hint}
-                    </div>
-                  ) : null}
                 </div>
               </div>
             )}
