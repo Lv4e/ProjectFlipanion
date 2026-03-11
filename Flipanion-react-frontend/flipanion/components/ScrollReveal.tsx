@@ -26,7 +26,7 @@ const transforms: Record<RevealDirection, (d: number) => string> = {
 
 export default function ScrollReveal({
   children,
-  className = '',
+  className = '',       //probe
   direction = 'up',
   delay = 0,
   duration = 700,
