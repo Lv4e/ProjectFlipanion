@@ -5,7 +5,6 @@ import { supabase } from "../supabase-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { GradientButton } from "@/components/ui/gradient-button";
 
 export default function AuthPage() {
   return (
@@ -218,31 +217,31 @@ function AuthPageInner() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-8 relative overflow-hidden">
-      {/* Background decorations */}
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-6 py-12 relative overflow-hidden">
+      {/* Background orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-rose-400/10 dark:bg-rose-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-pink-400/10 dark:bg-pink-500/5 rounded-full blur-3xl" />
+        <div className="orb orb-primary" style={{ top: '-15%', right: '-8%', width: '600px', height: '600px' }} />
+        <div className="orb orb-accent" style={{ bottom: '-8%', left: '-8%', width: '500px', height: '500px' }} />
       </div>
 
       <div className="max-w-md w-full relative">
         {/* Header */}
-        <div className="text-center mb-8 animate-fade-in-up">
+        <div className="text-center mb-10 animate-fade-in-up">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 justify-center group"
+            className="inline-flex items-center gap-3 justify-center group"
           >
-            <div className="w-12 h-12 rounded-xl shadow-md group-hover:shadow-rose-500/25 transition-shadow overflow-hidden flex items-center justify-center">
-              <Image src="/logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+            <div className="w-11 h-11 rounded-xl overflow-hidden flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
+              <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
             </div>
-            <span className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
+            <span className="text-xl font-bold text-[var(--foreground)] tracking-[-0.02em]">
               Flipanion
             </span>
           </Link>
-          <h2 className="mt-8 text-3xl font-bold text-[var(--foreground)] tracking-tight">
+          <h2 className="mt-10 text-3xl font-bold text-[var(--foreground)] tracking-[-0.03em]">
             {isLogin ? "Willkommen zurück" : "Konto erstellen"}
           </h2>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
+          <p className="mt-3 text-[var(--text-muted)]">
             {isLogin ? "Noch kein Konto? " : "Bereits ein Konto? "}
             <button
               onClick={() => {
@@ -250,7 +249,7 @@ function AuthPageInner() {
                 setError("");
                 setMessage("");
               }}
-              className="font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors"
+              className="font-semibold text-[var(--foreground)] hover:opacity-70 transition-opacity"
             >
               {isLogin ? "Registrieren" : "Anmelden"}
             </button>
@@ -258,17 +257,17 @@ function AuthPageInner() {
         </div>
 
         {/* Form Card */}
-        <div className="glass-card rounded-2xl p-7 animate-fade-in-up-delay-1 shadow-xl shadow-rose-500/5">
+        <div className="glass-card-static rounded-2xl p-8 animate-fade-in-up-delay-1">
           <form
             onSubmit={isLogin ? handleLogin : handleSignup}
-            className="space-y-5"
+            className="space-y-6"
           >
             {/* Username field (only for signup) */}
             {!isLogin && (
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-semibold text-[var(--foreground)] mb-2"
+                  className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
                 >
                   Benutzername
                 </label>
@@ -279,13 +278,13 @@ function AuthPageInner() {
                     required={!isLogin}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                    className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none"
                     placeholder="maxmustermann"
                     minLength={3}
                   />
                   {checkingUsername && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 border-2 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
                     </div>
                   )}
                   {!checkingUsername && usernameAvailable === true && (
@@ -334,7 +333,7 @@ function AuthPageInner() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-[var(--foreground)] mb-2"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
               >
                 E-Mail
               </label>
@@ -344,7 +343,7 @@ function AuthPageInner() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none"
                 placeholder="du@example.com"
               />
             </div>
@@ -353,7 +352,7 @@ function AuthPageInner() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-[var(--foreground)] mb-2"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
               >
                 Passwort
               </label>
@@ -363,7 +362,7 @@ function AuthPageInner() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none"
                 placeholder="••••••••"
                 minLength={8}
               />
@@ -376,7 +375,7 @@ function AuthPageInner() {
                     className={`text-xs font-medium transition-colors ${
                       resetCooldown > 0
                         ? "text-[var(--text-muted)] cursor-not-allowed"
-                        : "text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300"
+                        : "text-[var(--text-muted)] hover:text-[var(--foreground)]"
                     }`}
                   >
                     {resetLoading
@@ -449,7 +448,7 @@ function AuthPageInner() {
               <div>
                 <label
                   htmlFor="confirmPassword"
-                  className="block text-sm font-semibold text-[var(--foreground)] mb-2"
+                  className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
                 >
                   Passwort bestätigen
                 </label>
@@ -459,7 +458,7 @@ function AuthPageInner() {
                   required={!isLogin}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none"
                   placeholder="••••••••"
                 />
                 {confirmPassword && password !== confirmPassword && (
@@ -477,8 +476,8 @@ function AuthPageInner() {
 
             {/* Error message */}
             {error && (
-              <div className="glass-card border border-red-200 dark:border-red-500/20 rounded-xl p-3.5 bg-red-50/50 dark:bg-red-500/8">
-                <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+              <div className="border border-red-500/20 rounded-lg p-3.5 bg-red-500/5">
+                <p className="text-sm text-red-400 font-medium">
                   {error}
                 </p>
               </div>
@@ -486,22 +485,22 @@ function AuthPageInner() {
 
             {/* Success message */}
             {message && (
-              <div className="glass-card border border-green-200 dark:border-green-500/20 rounded-xl p-3.5 bg-green-50/50 dark:bg-green-500/8">
-                <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+              <div className="border border-green-500/20 rounded-lg p-3.5 bg-green-500/5">
+                <p className="text-sm text-green-400 font-medium">
                   {message}
                 </p>
               </div>
             )}
 
             {/* Submit button */}
-            <GradientButton
+            <button
               type="submit"
               disabled={loading || (!isLogin && username.includes(" "))}
-              className="w-full py-2.5 px-4 flex items-center justify-center mt-6"
+              className="w-full py-2.5 px-4 bg-[var(--foreground)] text-[var(--background)] disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-lg transition-all duration-300 hover:opacity-90 active:scale-[0.98] flex items-center justify-center cursor-pointer mt-6"
             >
               {loading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                  <div className="w-4 h-4 border-2 border-[var(--background)]/30 border-t-[var(--background)] rounded-full animate-spin mr-2" />
                   {isLogin ? "Anmeldung ..." : "Konto wird erstellt ..."}
                 </>
               ) : isLogin ? (
@@ -509,7 +508,7 @@ function AuthPageInner() {
               ) : (
                 "Registrieren"
               )}
-            </GradientButton>
+            </button>
           </form>
         </div>
 

@@ -5,8 +5,6 @@ import Link from "next/link";
 import { supabase } from "../supabase-client";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { FluidDropdown } from "@/components/ui/fluid-dropdown";
-import { BookOpen, Trophy, BarChart3, Gamepad2, PenTool } from "lucide-react";
 
 interface LeaderboardEntry {
   userId: number;
@@ -281,12 +279,12 @@ export default function LeaderboardPage() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-6 pt-16 pb-12">
+      <main className="max-w-7xl mx-auto px-8 pt-32 pb-20">
         {/* Page Header */}
-        <div className="mb-8 animate-fade-in-up">
+        <div className="mb-10 animate-fade-in-up">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 mb-4 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] mb-6 transition-colors duration-300"
           >
             <svg
               className="w-4 h-4"
@@ -303,20 +301,20 @@ export default function LeaderboardPage() {
             </svg>
             Zurück zur Startseite
           </Link>
-          <h1 className="text-3xl font-bold text-[var(--foreground)] tracking-tight mb-1">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--foreground)] tracking-[-0.03em] mb-2">
             Leaderboard
           </h1>
-          <p className="text-[var(--text-muted)]">
+          <p className="text-lg text-[var(--text-muted)]">
             Vergleiche dich mit anderen Nutzern und sieh, wer die besten
             Ergebnisse hat.
           </p>
 
           {/* Streak Explanation */}
-          <div className="mt-4 px-4 py-3 rounded-xl bg-orange-50 dark:bg-orange-500/5 border border-orange-200 dark:border-orange-500/15 text-sm text-orange-800 dark:text-orange-300">
-            <p className="font-semibold flex items-center gap-1.5 mb-1">
+          <div className="mt-6 px-5 py-4 rounded-xl bg-orange-500/5 border border-orange-500/15 text-sm text-orange-300">
+            <p className="font-semibold flex items-center gap-1.5 mb-1.5">
               <span>🔥</span> Streak-System
             </p>
-            <p className="text-xs text-orange-700 dark:text-orange-400 leading-relaxed">
+            <p className="text-xs text-orange-400 leading-relaxed">
               Pro Quiz bekommst du nur beim ersten Mal Punkte. Schließe Quizze
               mit über 90 % ab, um eine Streak aufzubauen. Ab 2× hintereinander
               über 90 % erhältst du einen Bonus-Multiplikator auf deine Punkte
@@ -327,20 +325,20 @@ export default function LeaderboardPage() {
 
         {/* My Stats Card */}
         {myEntry && (
-          <div className="glass-card rounded-2xl p-6 mb-8 animate-fade-in-up-delay-1 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-gradient-to-br from-rose-500/10 to-pink-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+          <div className="glass-card-static rounded-2xl p-8 mb-10 animate-fade-in-up-delay-1 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-[color-mix(in_srgb,var(--primary)_4%,transparent)] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
             <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-rose-500/20">
+                <div className="w-14 h-14 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center">
                   {myEntry.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={myEntry.avatarUrl}
                       alt=""
-                      className="w-full h-full object-cover rounded-2xl"
+                      className="w-full h-full object-cover rounded-xl"
                     />
                   ) : (
-                    <span className="text-white font-bold text-xl">
+                    <span className="text-[var(--text-muted)] font-semibold text-xl">
                       {myEntry.name.charAt(0).toUpperCase()}
                     </span>
                   )}
@@ -349,7 +347,7 @@ export default function LeaderboardPage() {
                   <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider font-semibold">
                     Dein Rang
                   </p>
-                  <p className="text-2xl font-bold text-[var(--foreground)]">
+                  <p className="text-2xl font-semibold text-[var(--foreground)]">
                     {myRank ? `#${myRank}` : "—"}{" "}
                     <span className="text-base font-medium text-[var(--text-muted)]">
                       von {totalCount}
@@ -359,13 +357,13 @@ export default function LeaderboardPage() {
               </div>
               <div className="flex flex-wrap gap-4 sm:ml-auto">
                 <div className="text-center px-4">
-                  <p className="text-2xl font-bold text-rose-500">
+                  <p className="text-2xl font-bold text-[var(--primary)]">
                     {myEntry.avgPercent}%
                   </p>
                   <p className="text-xs text-[var(--text-muted)]">Ø Ergebnis</p>
                 </div>
                 <div className="text-center px-4">
-                  <p className="text-2xl font-bold text-pink-500">
+                  <p className="text-2xl font-bold text-purple-500">
                     {myEntry.quizzesCompleted}
                   </p>
                   <p className="text-xs text-[var(--text-muted)]">
@@ -392,7 +390,7 @@ export default function LeaderboardPage() {
         )}
 
         {/* Filters */}
-        <div className="glass-card rounded-2xl p-5 mb-6 animate-fade-in-up-delay-2 relative z-40">
+        <div className="glass-card rounded-xl p-5 mb-6 animate-fade-in-up-delay-2">
           <div className="flex flex-col md:flex-row gap-3">
             {/* Search */}
             <div className="relative flex-1">
@@ -414,52 +412,58 @@ export default function LeaderboardPage() {
                 placeholder="Nutzer suchen ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl text-sm text-[var(--foreground)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm text-[var(--foreground)] placeholder:text-[var(--text-subtle)] focus:outline-none focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] transition-all"
               />
             </div>
 
             {/* Subject filter */}
-            <FluidDropdown
-              items={[
-                { id: 'all', label: 'Alle Fächer', icon: BookOpen, color: '#fb7185' },
-                ...subjects.map((s) => ({
-                  id: String(s.id),
-                  label: s.name,
-                })),
-              ]}
-              value={selectedSubject === 'all' ? 'all' : String(selectedSubject)}
-              onChange={(val) => setSelectedSubject(val === 'all' ? 'all' : Number(val))}
-              placeholder="Alle Fächer"
-            />
+            <select
+              value={
+                selectedSubject === "all" ? "all" : String(selectedSubject)
+              }
+              onChange={(e) =>
+                setSelectedSubject(
+                  e.target.value === "all" ? "all" : Number(e.target.value),
+                )
+              }
+              className="px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm text-[var(--foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] transition-all cursor-pointer"
+            >
+              <option value="all">Alle Fächer</option>
+              {subjects.map((s) => (
+                <option key={s.id} value={String(s.id)}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
 
             {/* Sort */}
-            <FluidDropdown
-              items={sortOptions.map((o) => ({
-                id: o.key,
-                label: `Top 10: ${o.label}`,
-                icon: o.key === 'points' ? Trophy : o.key === 'avgPercent' ? BarChart3 : o.key === 'quizzesCompleted' ? Gamepad2 : PenTool,
-                color: '#fb7185',
-              }))}
+            <select
               value={sortBy}
-              onChange={(val) => setSortBy(val as SortKey)}
-              placeholder="Top 10: Punkte"
-            />
+              onChange={(e) => setSortBy(e.target.value as SortKey)}
+              className="px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm text-[var(--foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] transition-all cursor-pointer"
+            >
+              {sortOptions.map((o) => (
+                <option key={o.key} value={o.key}>
+                  Top 10: {o.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
         {/* Leaderboard Table */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-10 h-10 border-3 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-3 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
             <p className="mt-3 text-sm text-[var(--text-muted)]">
               Leaderboard wird geladen ...
             </p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="glass-card rounded-2xl p-12 text-center">
-            <div className="w-16 h-16 bg-rose-50 dark:bg-rose-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="glass-card rounded-xl p-12 text-center">
+            <div className="w-16 h-16 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-8 h-8 text-rose-400"
+                className="w-8 h-8 text-[var(--text-muted)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -494,9 +498,9 @@ export default function LeaderboardPage() {
                   return (
                     <div
                       key={entry.userId}
-                      className={`glass-card rounded-2xl p-5 text-center relative overflow-hidden transition-all ${
+                      className={`glass-card rounded-xl p-5 text-center relative overflow-hidden transition-all ${
                         rank === 1 ? "md:-mt-4" : ""
-                      } ${isMe ? "ring-2 ring-rose-500/40" : ""}`}
+                      } ${isMe ? "ring-2 ring-[var(--primary)]/40" : ""}`}
                     >
                       {rank <= 3 && (
                         <div
@@ -518,7 +522,7 @@ export default function LeaderboardPage() {
                         className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center shadow-lg mb-3 ${
                           rank <= 3
                             ? `bg-gradient-to-br ${getMedalColor(rank)}`
-                            : "bg-gradient-to-br from-rose-500 to-pink-600"
+                            : "bg-[var(--primary)]"
                         }`}
                       >
                         {entry.avatarUrl ? (
@@ -534,13 +538,13 @@ export default function LeaderboardPage() {
                           </span>
                         )}
                       </div>
-                      <p className="font-bold text-[var(--foreground)] text-sm truncate">
+                      <p className="font-medium text-[var(--foreground)] text-sm truncate">
                         {entry.name}
                         {isMe && (
-                          <span className="text-rose-500 ml-1">(Du)</span>
+                          <span className="text-[var(--primary)] ml-1">(Du)</span>
                         )}
                       </p>
-                      <p className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent mt-1">
+                      <p className="text-2xl font-semibold text-[var(--primary)] mt-1">
                         {entry[sortBy]}
                         {sortOptions.find((o) => o.key === sortBy)?.suffix}
                       </p>
@@ -554,7 +558,7 @@ export default function LeaderboardPage() {
             )}
 
             {/* Full list */}
-            <div className="glass-card rounded-2xl overflow-hidden">
+            <div className="glass-card rounded-xl overflow-hidden">
               {/* Table Header */}
               <div className="grid grid-cols-10 gap-2 px-5 py-3 border-b border-[var(--border)] text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                 <div className="col-span-1">#</div>
@@ -575,14 +579,14 @@ export default function LeaderboardPage() {
                     key={entry.userId}
                     className={`grid grid-cols-10 gap-2 px-5 py-3.5 items-center transition-colors ${
                       isMe
-                        ? "bg-rose-50/50 dark:bg-rose-500/5 border-l-2 border-rose-500"
+                        ? "bg-[color-mix(in_srgb,var(--primary)_5%,transparent)] border-l-2 border-[var(--primary)]"
                         : "hover:bg-[var(--surface-hover)] border-l-2 border-transparent"
                     } ${idx < filtered.length - 1 ? "border-b border-[var(--border)]" : ""}`}
                   >
                     {/* Rank */}
                     <div className="col-span-1">
                       <span
-                        className={`text-sm font-bold ${rank <= 3 ? "text-rose-500" : "text-[var(--text-muted)]"}`}
+                        className={`text-sm font-bold ${rank <= 3 ? "text-[var(--primary)]" : "text-[var(--text-muted)]"}`}
                       >
                         {rank}
                       </span>
@@ -590,7 +594,7 @@ export default function LeaderboardPage() {
 
                     {/* User */}
                     <div className="col-span-3 flex items-center gap-2.5 min-w-0">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
+                      <div className="w-8 h-8 rounded-full bg-[var(--surface-hover)] border border-[var(--border)] flex items-center justify-center flex-shrink-0 overflow-hidden">
                         {entry.avatarUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -599,13 +603,13 @@ export default function LeaderboardPage() {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <span className="text-white font-semibold text-xs">
+                          <span className="text-[var(--text-muted)] font-medium text-xs">
                             {entry.name.charAt(0).toUpperCase()}
                           </span>
                         )}
                       </div>
                       <span
-                        className={`text-sm font-medium truncate ${isMe ? "text-rose-600 dark:text-rose-400" : "text-[var(--foreground)]"}`}
+                        className={`text-sm font-medium truncate ${isMe ? "text-[var(--primary)]" : "text-[var(--foreground)]"}`}
                       >
                         {entry.name}
                         {isMe && (
@@ -630,12 +634,12 @@ export default function LeaderboardPage() {
                           />
                         </div>
                         <span
-                          className={`text-sm font-bold ${
+                          className={`text-sm font-semibold ${
                             entry.avgPercent >= 80
-                              ? "text-green-600 dark:text-green-400"
+                              ? "text-green-400"
                               : entry.avgPercent >= 50
-                                ? "text-yellow-600 dark:text-yellow-400"
-                                : "text-red-600 dark:text-red-400"
+                                ? "text-yellow-400"
+                                : "text-red-400"
                           }`}
                         >
                           {entry.avgPercent}%

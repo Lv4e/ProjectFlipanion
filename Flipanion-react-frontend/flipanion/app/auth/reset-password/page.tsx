@@ -5,7 +5,6 @@ import { supabase } from "../../supabase-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { GradientButton } from "@/components/ui/gradient-button";
 
 export default function ResetPasswordPage() {
   return (
@@ -135,33 +134,32 @@ function ResetPasswordInner() {
 
   if (!sessionReady) {
     return (
-      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-8 relative overflow-hidden">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-6 py-12 relative overflow-hidden">
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-rose-400/10 dark:bg-rose-500/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-pink-400/10 dark:bg-pink-500/5 rounded-full blur-3xl" />
+          <div className="orb orb-primary w-[500px] h-[500px] top-[-20%] right-[-10%]" />
+          <div className="orb orb-accent w-[400px] h-[400px] bottom-[-10%] left-[-10%]" />
         </div>
         <div className="max-w-md w-full relative text-center">
-          <div className="glass-card rounded-2xl p-8">
+          <div className="glass-card-static rounded-2xl p-8">
             {error ? (
               <>
-                <div className="w-14 h-14 bg-red-100 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <p className="text-[var(--foreground)] font-semibold mb-2">Link ungültig oder abgelaufen</p>
                 <p className="text-sm text-[var(--text-muted)] mb-6">{error}</p>
-                <GradientButton asChild className="px-5 py-2.5 text-sm">
-                  <Link
-                    href="/auth?mode=login"
-                  >
-                    Neuen Link anfordern
-                  </Link>
-                </GradientButton>
+                <Link
+                  href="/auth?mode=login"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--foreground)] hover:opacity-90 text-[var(--background)] font-medium rounded-lg transition-all duration-300 text-sm"
+                >
+                  Neuen Link anfordern
+                </Link>
               </>
             ) : (
               <>
-                <div className="w-10 h-10 border-3 border-rose-200 border-t-rose-500 rounded-full animate-spin mx-auto" />
+                <div className="w-10 h-10 border-3 border-[var(--border)] border-t-[var(--text-muted)] rounded-full animate-spin mx-auto" />
                 <p className="mt-4 text-sm text-[var(--text-muted)]">
                   Link wird überprüft ...
                 </p>
@@ -174,43 +172,43 @@ function ResetPasswordInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-6 py-12 relative overflow-hidden">
       {/* Background decorations */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-rose-400/10 dark:bg-rose-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-pink-400/10 dark:bg-pink-500/5 rounded-full blur-3xl" />
+        <div className="orb orb-primary w-[500px] h-[500px] top-[-20%] right-[-10%]" />
+        <div className="orb orb-accent w-[400px] h-[400px] bottom-[-10%] left-[-10%]" />
       </div>
 
       <div className="max-w-md w-full relative">
         {/* Header */}
-        <div className="text-center mb-8 animate-fade-in-up">
+        <div className="text-center mb-10 animate-fade-in-up">
           <Link
             href="/"
             className="inline-flex items-center gap-2 justify-center group"
           >
-            <div className="w-12 h-12 rounded-xl shadow-md group-hover:shadow-rose-500/25 transition-shadow overflow-hidden flex items-center justify-center">
-              <Image src="/logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+            <div className="w-11 h-11 rounded-xl overflow-hidden flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all">
+              <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
             </div>
-            <span className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
+            <span className="text-[1.05rem] font-bold text-[var(--foreground)] tracking-tight">
               Flipanion
             </span>
           </Link>
-          <h2 className="mt-8 text-3xl font-bold text-[var(--foreground)] tracking-tight">
+          <h2 className="mt-8 text-3xl font-bold text-[var(--foreground)] tracking-[-0.03em]">
             Neues Passwort festlegen
           </h2>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
+          <p className="mt-3 text-[var(--text-muted)]">
             Gib dein neues Passwort ein
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="glass-card rounded-2xl p-7 animate-fade-in-up-delay-1 shadow-xl shadow-rose-500/5">
-          <form onSubmit={handleResetPassword} className="space-y-5">
+        <div className="glass-card-static rounded-2xl p-8 animate-fade-in-up-delay-1">
+          <form onSubmit={handleResetPassword} className="space-y-6">
             {/* New Password */}
             <div>
               <label
                 htmlFor="newPassword"
-                className="block text-sm font-semibold text-[var(--foreground)] mb-2"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
               >
                 Neues Passwort
               </label>
@@ -221,7 +219,7 @@ function ResetPasswordInner() {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none pr-12"
+                  className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none pr-12"
                   placeholder="••••••••"
                   minLength={8}
                 />
@@ -293,7 +291,7 @@ function ResetPasswordInner() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-semibold text-[var(--foreground)] mb-2"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
               >
                 Passwort bestätigen
               </label>
@@ -303,7 +301,7 @@ function ResetPasswordInner() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                className="w-full px-4 py-2.5 border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none"
                 placeholder="••••••••"
               />
               {confirmPassword && newPassword !== confirmPassword && (
@@ -320,8 +318,8 @@ function ResetPasswordInner() {
 
             {/* Error message */}
             {error && (
-              <div className="glass-card border border-red-200 dark:border-red-500/20 rounded-xl p-3.5 bg-red-50/50 dark:bg-red-500/8">
-                <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+              <div className="border border-red-500/20 rounded-lg p-3.5 bg-red-500/5">
+                <p className="text-sm text-red-400 font-medium">
                   {error}
                 </p>
               </div>
@@ -329,33 +327,33 @@ function ResetPasswordInner() {
 
             {/* Success message */}
             {message && (
-              <div className="glass-card border border-green-200 dark:border-green-500/20 rounded-xl p-3.5 bg-green-50/50 dark:bg-green-500/8">
-                <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+              <div className="border border-green-500/20 rounded-lg p-3.5 bg-green-500/5">
+                <p className="text-sm text-green-400 font-medium">
                   {message}
                 </p>
               </div>
             )}
 
             {/* Submit button */}
-            <GradientButton
+            <button
               type="submit"
               disabled={loading || newPassword.length < 8 || newPassword !== confirmPassword}
-              className="w-full py-2.5 px-4 flex items-center justify-center mt-6"
+              className="w-full py-3 px-4 bg-[var(--foreground)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-[var(--background)] font-semibold rounded-xl transition-all duration-300 active:scale-[0.97] flex items-center justify-center cursor-pointer mt-6 hover-glow"
             >
               {loading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                  <div className="w-4 h-4 border-2 border-[var(--background)]/30 border-t-[var(--background)] rounded-full animate-spin mr-2" />
                   Passwort wird geändert ...
                 </>
               ) : (
                 "Neues Passwort speichern"
               )}
-            </GradientButton>
+            </button>
           </form>
         </div>
 
         {/* Back to login link */}
-        <div className="mt-6 text-center animate-fade-in-up-delay-2">
+        <div className="mt-8 text-center animate-fade-in-up-delay-2">
           <Link
             href="/auth?mode=login"
             className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"

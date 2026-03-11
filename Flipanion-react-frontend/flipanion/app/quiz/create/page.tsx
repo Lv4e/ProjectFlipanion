@@ -6,9 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
-import { GradientButton } from "@/components/ui/gradient-button";
-import { FluidDropdown } from "@/components/ui/fluid-dropdown";
-import { BookOpen } from "lucide-react";
+import CustomDropdown from "../../../components/CustomDropdown";
 
 interface Subject {
   id: number;
@@ -202,7 +200,7 @@ export default function CreateQuiz() {
     return (
       <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-3 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
+          <div className="w-10 h-10 border-3 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
           <span className="text-sm text-[var(--text-muted)]">Lädt ...</span>
         </div>
       </div>
@@ -214,9 +212,9 @@ export default function CreateQuiz() {
     return (
       <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="max-w-2xl mx-auto px-6 pt-16 pb-12">
-          <div className="glass-card rounded-2xl p-10 text-center animate-fade-in-up">
-            <div className="w-16 h-16 bg-red-50 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+        <main className="max-w-2xl mx-auto px-6 pt-28 pb-12">
+          <div className="glass-card rounded-xl p-10 text-center animate-fade-in-up">
+            <div className="w-16 h-16 bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-5">
               <svg
                 className="w-8 h-8 text-red-400"
                 fill="none"
@@ -231,16 +229,16 @@ export default function CreateQuiz() {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">
+            <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
               Anmeldung erforderlich
             </h2>
             <p className="text-[var(--text-muted)] mb-6">
               Du musst angemeldet sein, um ein Quiz zu erstellen.
             </p>
             <Link href="/auth">
-              <GradientButton className="px-8 py-3">
+              <button className="px-8 py-3 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] cursor-pointer">
                 Jetzt anmelden
-              </GradientButton>
+              </button>
             </Link>
           </div>
         </main>
@@ -254,9 +252,9 @@ export default function CreateQuiz() {
     return (
       <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="max-w-2xl mx-auto px-6 pt-16 pb-12">
-          <div className="glass-card rounded-2xl p-10 text-center animate-fade-in-up">
-            <div className="w-16 h-16 bg-green-50 dark:bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+        <main className="max-w-2xl mx-auto px-6 pt-28 pb-12">
+          <div className="glass-card rounded-xl p-10 text-center animate-fade-in-up">
+            <div className="w-16 h-16 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-5">
               <svg
                 className="w-8 h-8 text-green-500"
                 fill="none"
@@ -271,8 +269,7 @@ export default function CreateQuiz() {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-[var(--foreground)] mb-2">
-              Quiz erstellt! 🎉
+            <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
             </h2>
             <p className="text-[var(--text-muted)]">
               Du wirst gleich weitergeleitet ...
@@ -288,12 +285,12 @@ export default function CreateQuiz() {
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
 
-      <main className="max-w-3xl mx-auto px-6 pt-16 pb-12">
+      <main className="max-w-3xl mx-auto px-8 pt-32 pb-20">
         {/* Page Header */}
-        <div className="mb-8 animate-fade-in-up">
+        <div className="mb-10 animate-fade-in-up">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 mb-4 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] mb-6 transition-colors duration-300"
           >
             <svg
               className="w-4 h-4"
@@ -310,20 +307,20 @@ export default function CreateQuiz() {
             </svg>
             Zurück zum Dashboard
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--foreground)] tracking-tight mb-1">
+          <h1 className="text-3xl md:text-4xl font-bold text-[var(--foreground)] tracking-[-0.03em] mb-2">
             Neues Quiz erstellen
           </h1>
-          <p className="text-[var(--text-muted)]">
+          <p className="text-lg text-[var(--text-muted)]">
             Fülle die Felder aus und füge deine Fragen hinzu.
           </p>
         </div>
 
         {/* Error Banner */}
         {error && (
-          <div className="glass-card border-red-200 dark:border-red-500/20 rounded-2xl p-4 mb-6 animate-fade-in-up">
+          <div className="border border-red-500/20 rounded-lg p-4 mb-6 animate-fade-in-up">
             <div className="flex items-center gap-3">
               <svg
-                className="w-5 h-5 text-red-500 flex-shrink-0"
+                className="w-5 h-5 text-red-400 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -335,7 +332,7 @@ export default function CreateQuiz() {
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+              <p className="text-red-400 text-sm font-medium">
                 {error}
               </p>
             </div>
@@ -343,11 +340,11 @@ export default function CreateQuiz() {
         )}
 
         {/* Quiz Details Card */}
-        <div className="glass-card rounded-2xl p-6 md:p-8 mb-6 animate-fade-in-up-delay-1">
-          <h2 className="text-lg font-bold text-[var(--foreground)] mb-5 flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center">
+        <div className="glass-card rounded-xl p-6 md:p-8 mb-6 animate-fade-in-up-delay-1 relative z-20" style={{ overflow: 'visible' }}>
+          <h2 className="text-lg font-semibold text-[var(--foreground)] mb-5 flex items-center gap-2">
+            <div className="w-8 h-8 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
               <svg
-                className="w-4 h-4 text-white"
+                className="w-4 h-4 text-[var(--primary)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -368,7 +365,7 @@ export default function CreateQuiz() {
             <div>
               <label
                 htmlFor="title"
-                className="block text-sm font-medium text-[var(--foreground)] mb-2"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
               >
                 Titel <span className="text-red-400">*</span>
               </label>
@@ -378,7 +375,7 @@ export default function CreateQuiz() {
                 placeholder="z.B. Mathe Grundlagen Quiz"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none"
+                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none"
               />
             </div>
 
@@ -386,10 +383,10 @@ export default function CreateQuiz() {
             <div>
               <label
                 htmlFor="description"
-                className="block text-sm font-medium text-[var(--foreground)] mb-2"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
               >
                 Beschreibung{" "}
-                <span className="text-[var(--text-muted)] text-xs">
+                <span className="text-[var(--text-subtle)] text-xs">
                   (optional)
                 </span>
               </label>
@@ -399,7 +396,7 @@ export default function CreateQuiz() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none resize-none"
+                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none resize-none"
               />
             </div>
 
@@ -407,33 +404,31 @@ export default function CreateQuiz() {
             <div>
               <label
                 htmlFor="subject"
-                className="block text-sm font-medium text-[var(--foreground)] mb-2"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
               >
                 Fach <span className="text-red-400">*</span>
               </label>
-              <FluidDropdown
-                items={[
-                  { id: '', label: 'Fach auswählen ...', icon: BookOpen, color: '#fb7185' },
-                  ...subjects.map((s) => ({
-                    id: String(s.id),
-                    label: s.name,
-                  })),
-                ]}
-                value={String(subjectId)}
+              <CustomDropdown
+                id="subject"
+                value={subjectId === '' ? '' : String(subjectId)}
                 onChange={(val) => setSubjectId(val ? Number(val) : '')}
                 placeholder="Fach auswählen ..."
+                options={subjects.map((s) => ({
+                  value: String(s.id),
+                  label: s.name,
+                }))}
               />
             </div>
           </div>
         </div>
 
         {/* Questions */}
-        <div className="animate-fade-in-up-delay-2">
+        <div className="animate-fade-in-up-delay-2 relative z-10">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-[var(--foreground)] flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center">
+            <h2 className="text-lg font-semibold text-[var(--foreground)] flex items-center gap-2">
+              <div className="w-8 h-8 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-4 h-4 text-white"
+                  className="w-4 h-4 text-[var(--primary)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -451,7 +446,7 @@ export default function CreateQuiz() {
             <button
               type="button"
               onClick={addQuestion}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 rounded-xl hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--text-muted)] border border-[var(--border)] rounded-lg hover:border-[var(--border-strong)] hover:text-[var(--foreground)] transition-all cursor-pointer"
             >
               <svg
                 className="w-4 h-4"
@@ -472,11 +467,11 @@ export default function CreateQuiz() {
 
           <div className="space-y-5">
             {questions.map((q, idx) => (
-              <div key={idx} className="glass-card rounded-2xl p-6 md:p-7">
+              <div key={idx} className="glass-card rounded-xl p-6 md:p-7">
                 {/* Question Header */}
                 <div className="flex items-center justify-between mb-5">
-                  <span className="inline-flex items-center gap-2 text-sm font-bold text-[var(--foreground)]">
-                    <span className="w-7 h-7 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-[var(--foreground)]">
+                    <span className="w-7 h-7 bg-[var(--surface-hover)] border border-[var(--border)] rounded-md flex items-center justify-center text-[var(--text-muted)] text-xs font-medium">
                       {idx + 1}
                     </span>
                     Frage {idx + 1}
@@ -507,7 +502,7 @@ export default function CreateQuiz() {
 
                 {/* Question Text */}
                 <div className="mb-5">
-                  <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                  <label className="block text-[13px] font-medium text-[var(--text-muted)] mb-2">
                     Fragetext <span className="text-red-400">*</span>
                   </label>
                   <textarea
@@ -517,7 +512,7 @@ export default function CreateQuiz() {
                       updateQuestion(idx, "questionText", e.target.value)
                     }
                     rows={2}
-                    className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none resize-none"
+                    className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none resize-none"
                   />
                 </div>
 
@@ -528,7 +523,7 @@ export default function CreateQuiz() {
                     const isCorrect = q.correctAnswer === String(num);
                     return (
                       <div key={num} className="relative">
-                        <label className="block text-sm font-medium text-[var(--foreground)] mb-1.5">
+                        <label className="block text-[13px] font-medium text-[var(--text-muted)] mb-1.5">
                           Antwort {num} <span className="text-red-400">*</span>
                         </label>
                         <div className="relative">
@@ -539,9 +534,9 @@ export default function CreateQuiz() {
                             onChange={(e) =>
                               updateQuestion(idx, fieldKey, e.target.value)
                             }
-                            className={`w-full px-4 py-2.5 pr-10 bg-[var(--background)] border rounded-xl focus:ring-2 focus:ring-rose-500/30 focus:border-rose-400 text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all outline-none ${
+                            className={`w-full px-4 py-2.5 pr-10 bg-[var(--background)] border rounded-lg focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] text-[var(--foreground)] placeholder:text-[var(--text-subtle)] transition-all outline-none ${
                               isCorrect
-                                ? "border-green-400 dark:border-green-500/50 bg-green-50/50 dark:bg-green-500/5"
+                                ? "border-green-500/30 bg-green-500/5"
                                 : "border-[var(--border)]"
                             }`}
                           />
@@ -557,8 +552,8 @@ export default function CreateQuiz() {
                             }
                             className={`absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer ${
                               isCorrect
-                                ? "bg-green-500 text-white shadow-md shadow-green-500/25"
-                                : "bg-[var(--border)] text-[var(--text-muted)] hover:bg-green-100 dark:hover:bg-green-500/20 hover:text-green-500"
+                                ? "bg-green-500 text-white"
+                                : "bg-[var(--border)] text-[var(--text-muted)] hover:bg-green-500/20 hover:text-green-500"
                             }`}
                           >
                             <svg
@@ -598,7 +593,7 @@ export default function CreateQuiz() {
                   </svg>
                   Richtige Antwort: Antwort {q.correctAnswer}
                   {q[`answerText${q.correctAnswer}` as keyof QuestionForm] && (
-                    <span className="text-green-600 dark:text-green-400 font-medium">
+                    <span className="text-green-400 font-medium">
                       —{" "}
                       {q[`answerText${q.correctAnswer}` as keyof QuestionForm]}
                     </span>
@@ -612,7 +607,7 @@ export default function CreateQuiz() {
           <button
             type="button"
             onClick={addQuestion}
-            className="w-full mt-5 py-4 border-2 border-dashed border-[var(--border)] hover:border-rose-300 dark:hover:border-rose-500/40 rounded-2xl text-[var(--text-muted)] hover:text-rose-500 font-medium transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full mt-5 py-4 border-2 border-dashed border-[var(--border)] hover:border-[var(--border-strong)] rounded-xl text-[var(--text-muted)] hover:text-[var(--foreground)] font-medium transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <svg
               className="w-5 h-5"
@@ -633,15 +628,15 @@ export default function CreateQuiz() {
 
         {/* Save Button */}
         <div className="mt-8 flex flex-col sm:flex-row gap-3 animate-fade-in-up-delay-3">
-          <GradientButton
+          <button
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 py-3.5 px-8 flex items-center justify-center gap-2"
+            className="flex-1 py-3.5 px-8 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
           >
             {saving ? (
               <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-[var(--background)]/30 border-t-[var(--background)] rounded-full animate-spin" />
                 Wird gespeichert ...
               </>
             ) : (
@@ -662,11 +657,11 @@ export default function CreateQuiz() {
                 Quiz erstellen
               </>
             )}
-          </GradientButton>
+          </button>
           <Link href="/" className="flex-shrink-0">
             <button
               type="button"
-              className="w-full sm:w-auto py-3.5 px-8 bg-[var(--surface)] text-[var(--foreground)] font-semibold rounded-xl border border-[var(--border)] hover:bg-[var(--surface-hover)] hover:border-rose-200 dark:hover:border-rose-500/30 transition-all cursor-pointer"
+              className="w-full sm:w-auto py-3.5 px-8 bg-[var(--surface)] text-[var(--foreground)] font-medium rounded-lg border border-[var(--border)] hover:border-[var(--border-strong)] transition-all cursor-pointer"
             >
               Abbrechen
             </button>

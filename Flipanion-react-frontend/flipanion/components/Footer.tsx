@@ -23,26 +23,29 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="border-t border-[var(--border)] bg-[var(--surface)]/60 backdrop-blur-sm mt-auto">
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="mt-auto relative">
+      {/* Gradient separator */}
+      <div className="section-divider" />
+      
+      <div className="max-w-7xl mx-auto px-8 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2 group mb-3">
-              <div className="w-10 h-10 rounded-lg shadow-sm group-hover:shadow-rose-500/25 transition-shadow overflow-hidden flex items-center justify-center">
+            <Link href="/" className="flex items-center gap-3 group mb-5">
+              <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105">
                 <Image
-                  src="/logo.png"
+                  src="/logo_flipanion.png"
                   alt="Flipanion"
                   width={200}
                   height={200}
                   className="scale-[1.6]"
                 />
               </div>
-              <span className="text-lg font-bold text-[var(--foreground)] tracking-tight">
+              <span className="text-[1.05rem] font-bold text-[var(--foreground)] tracking-[-0.03em] opacity-80 group-hover:opacity-100 transition-opacity duration-300">
                 Flipanion
               </span>
             </Link>
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed max-w-xs">
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed max-w-[280px]">
               Deine interaktive Quiz-Plattform zum Lernen, Üben und Wissen
               testen.
             </p>
@@ -50,14 +53,14 @@ export default function Footer() {
 
           {/* Navigation */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">
+            <h3 className="text-sm font-bold text-[var(--foreground)] mb-4 tracking-wide uppercase text-[11px]">
               Plattform
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
                 <Link
                   href="/browse"
-                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
                   Quizze entdecken
                 </Link>
@@ -65,7 +68,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={loggedIn ? "/profile" : "/auth"}
-                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
                   Mein Konto
                 </Link>
@@ -73,7 +76,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={loggedIn ? "/leaderboard" : "/auth"}
-                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
                   Leaderboard
                 </Link>
@@ -84,14 +87,14 @@ export default function Footer() {
 
           {/* Rechtliches */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">
+            <h3 className="text-sm font-bold text-[var(--foreground)] mb-4 tracking-wide uppercase text-[11px]">
               Rechtliches
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
                 <Link
                   href="/impressum"
-                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
                   Impressum
                 </Link>
@@ -99,7 +102,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/agb"
-                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
                   AGB
                 </Link>
@@ -107,7 +110,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/datenschutz"
-                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
                   Datenschutz
                 </Link>
@@ -117,33 +120,30 @@ export default function Footer() {
 
           {/* Kontakt */}
           <div>
-            <h3 className="text-sm font-semibold text-[var(--foreground)] mb-3">
+            <h3 className="text-sm font-bold text-[var(--foreground)] mb-4 tracking-wide uppercase text-[11px]">
               Kontakt
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
                 <a
                   href="mailto:flipanion@spengergasse.at"
-                  className="text-sm text-[var(--text-muted)] hover:text-rose-500 transition-colors"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
                   flipanion@spengergasse.at
                 </a>
               </li>
-              <li className="text-sm text-[var(--text-muted)]">
-                ------------------------------
-              </li>
+              <li className="text-sm text-[var(--text-muted)]">Mo-Fr, 08:00-17:00</li>
             </ul>
           </div>
         </div>
 
         {/* Divider + Copyright */}
-        <div className="mt-10 pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs text-[var(--text-muted)]">
-            &copy; {new Date().getFullYear()} Flipanion. Mit Liebe gebaut.
+        <div className="mt-16 pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-[var(--text-subtle)]">
+            &copy; {new Date().getFullYear()} Flipanion
           </p>
-          <p className="text-xs text-[var(--text-muted)]">
-            Ein Schulprojekt des Teams "Flipanion" der 3AHWII an der
-            Spengergasse.
+          <p className="text-xs text-[var(--text-subtle)]">
+            Ein Schulprojekt der 3AHWII an der Spengergasse.
           </p>
         </div>
       </div>

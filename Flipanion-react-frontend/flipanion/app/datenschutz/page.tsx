@@ -1,18 +1,18 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import type { Metadata } from 'next';
 import Footer from '../../components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Datenschutz – Flipanion',
-  description: 'Datenschutzerklärung von Flipanion.',
+  title: 'Datenschutz â€“ Flipanion',
+  description: 'DatenschutzerklÃ¤rung von Flipanion.',
 };
 
 export default function DatenschutzPage() {
   return (
     <div className="min-h-screen bg-[var(--background)]">
       {/* Header Bar */}
-      <header className="border-b border-[var(--border)] bg-white/80 dark:bg-[#0f0f1a]/80 backdrop-blur-xl">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-3">
+      <header className="border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-2xl">
+        <div className="max-w-4xl mx-auto px-8 py-5 flex items-center gap-3">
           <Link
             href="/"
             className="flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
@@ -20,28 +20,28 @@ export default function DatenschutzPage() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            <span className="text-sm font-medium">Zurück</span>
+            <span className="text-sm font-medium">ZurÃ¼ck</span>
           </Link>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-12">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">Datenschutzerklärung</h1>
+      <main className="max-w-4xl mx-auto px-8 py-16">
+        <h1 className="text-3xl md:text-4xl font-bold text-[var(--foreground)] mb-10 tracking-[-0.03em]">Datenschutzerklärung</h1>
 
-        <div className="space-y-8 text-[var(--foreground)]">
+        <div className="space-y-10 text-[var(--foreground)]">
           {/* Verantwortlicher */}
           <section>
             <h2 className="text-xl font-semibold mb-3">1. Verantwortlicher</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Verantwortlicher für die Datenverarbeitung auf dieser Plattform ist das Team
-                „Flipanion" der 3AHWII an der HTBLuVA Spengergasse.
+                Verantwortlicher fÃ¼r die Datenverarbeitung auf dieser Plattform ist das Team
+                â€žFlipanion" der 3AHWII an der HTBLuVA Spengergasse.
               </p>
               <p className="mt-2">
                 E-Mail:{' '}
                 <a
                   href="mailto:flipanion@spengergasse.at"
-                  className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors"
+                  className="text-[var(--primary)] hover:underline transition-colors"
                 >
                   flipanion@spengergasse.at
                 </a>
@@ -52,16 +52,16 @@ export default function DatenschutzPage() {
           {/* Erhobene Daten */}
           <section>
             <h2 className="text-xl font-semibold mb-3">2. Welche Daten wir erheben</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Im Rahmen der Nutzung unserer Plattform können folgende personenbezogene Daten
+                Im Rahmen der Nutzung unserer Plattform kÃ¶nnen folgende personenbezogene Daten
                 erhoben werden:
               </p>
               <ul className="list-disc list-inside space-y-1 ml-2">
                 <li>E-Mail-Adresse (bei Registrierung)</li>
                 <li>Benutzername</li>
                 <li>Erstellte Quizze und Antworten</li>
-                <li>Statistiken zur Nutzung (z.&thinsp;B. Punktestände)</li>
+                <li>Statistiken zur Nutzung (z.&thinsp;B. PunktestÃ¤nde)</li>
               </ul>
             </div>
           </section>
@@ -69,12 +69,12 @@ export default function DatenschutzPage() {
           {/* Zweck der Verarbeitung */}
           <section>
             <h2 className="text-xl font-semibold mb-3">3. Zweck der Datenverarbeitung</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
-              <p>Wir verarbeiten Ihre Daten ausschließlich zu folgenden Zwecken:</p>
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+              <p>Wir verarbeiten Ihre Daten ausschlieÃŸlich zu folgenden Zwecken:</p>
               <ul className="list-disc list-inside space-y-1 ml-2">
                 <li>Bereitstellung und Betrieb der Plattform</li>
                 <li>Verwaltung von Nutzerkonten</li>
-                <li>Anzeige persönlicher Statistiken und Fortschritte</li>
+                <li>Anzeige persÃ¶nlicher Statistiken und Fortschritte</li>
                 <li>Verbesserung der Plattform</li>
               </ul>
             </div>
@@ -83,10 +83,10 @@ export default function DatenschutzPage() {
           {/* Rechtsgrundlage */}
           <section>
             <h2 className="text-xl font-semibold mb-3">4. Rechtsgrundlage</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
                 Die Verarbeitung Ihrer Daten erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1
-                lit. a DSGVO) sowie zur Erfüllung des Nutzungsvertrags (Art. 6 Abs. 1 lit. b DSGVO).
+                lit. a DSGVO) sowie zur ErfÃ¼llung des Nutzungsvertrags (Art. 6 Abs. 1 lit. b DSGVO).
               </p>
             </div>
           </section>
@@ -94,20 +94,20 @@ export default function DatenschutzPage() {
           {/* Cookies */}
           <section>
             <h2 className="text-xl font-semibold mb-3">5. Cookies</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
                 Unsere Plattform verwendet Cookies. Cookies sind kleine Textdateien, die auf Ihrem
-                Endgerät gespeichert werden und die Nutzung der Plattform erleichtern.
+                EndgerÃ¤t gespeichert werden und die Nutzung der Plattform erleichtern.
               </p>
               <p>
                 <span className="font-semibold text-[var(--foreground)]">Technisch notwendige Cookies:</span>{' '}
-                Diese sind für den Betrieb der Plattform erforderlich (z.&thinsp;B. Authentifizierung,
+                Diese sind fÃ¼r den Betrieb der Plattform erforderlich (z.&thinsp;B. Authentifizierung,
                 Session-Management).
               </p>
               <p>
-                Sie können die Verwendung von Cookies über Ihren Browser steuern. Bitte beachten Sie,
-                dass die Deaktivierung bestimmter Cookies die Funktionalität der Plattform
-                einschränken kann.
+                Sie kÃ¶nnen die Verwendung von Cookies Ã¼ber Ihren Browser steuern. Bitte beachten Sie,
+                dass die Deaktivierung bestimmter Cookies die FunktionalitÃ¤t der Plattform
+                einschrÃ¤nken kann.
               </p>
             </div>
           </section>
@@ -115,10 +115,10 @@ export default function DatenschutzPage() {
           {/* Datenweitergabe */}
           <section>
             <h2 className="text-xl font-semibold mb-3">6. Weitergabe von Daten</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
                 Ihre personenbezogenen Daten werden nicht an Dritte verkauft oder zu Werbezwecken
-                weitergegeben. Eine Weitergabe erfolgt nur, soweit dies für den Betrieb der Plattform
+                weitergegeben. Eine Weitergabe erfolgt nur, soweit dies fÃ¼r den Betrieb der Plattform
                 erforderlich ist (z.&thinsp;B. Hosting-Dienstleister).
               </p>
               <p>
@@ -131,11 +131,11 @@ export default function DatenschutzPage() {
           {/* Speicherdauer */}
           <section>
             <h2 className="text-xl font-semibold mb-3">7. Speicherdauer</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Ihre Daten werden nur so lange gespeichert, wie es für die genannten Zwecke
-                erforderlich ist. Bei Löschung Ihres Kontos werden Ihre personenbezogenen Daten
-                unverzüglich entfernt, sofern keine gesetzlichen Aufbewahrungspflichten
+                Ihre Daten werden nur so lange gespeichert, wie es fÃ¼r die genannten Zwecke
+                erforderlich ist. Bei LÃ¶schung Ihres Kontos werden Ihre personenbezogenen Daten
+                unverzÃ¼glich entfernt, sofern keine gesetzlichen Aufbewahrungspflichten
                 entgegenstehen.
               </p>
             </div>
@@ -144,21 +144,21 @@ export default function DatenschutzPage() {
           {/* Ihre Rechte */}
           <section>
             <h2 className="text-xl font-semibold mb-3">8. Ihre Rechte</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>Sie haben jederzeit das Recht auf:</p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Auskunft über Ihre gespeicherten Daten</li>
+                <li>Auskunft Ã¼ber Ihre gespeicherten Daten</li>
                 <li>Berichtigung unrichtiger Daten</li>
-                <li>Löschung Ihrer Daten</li>
-                <li>Einschränkung der Verarbeitung</li>
-                <li>Datenübertragbarkeit</li>
+                <li>LÃ¶schung Ihrer Daten</li>
+                <li>EinschrÃ¤nkung der Verarbeitung</li>
+                <li>DatenÃ¼bertragbarkeit</li>
                 <li>Widerruf einer erteilten Einwilligung</li>
               </ul>
               <p>
-                Zur Ausübung Ihrer Rechte wenden Sie sich bitte an{' '}
+                Zur AusÃ¼bung Ihrer Rechte wenden Sie sich bitte an{' '}
                 <a
                   href="mailto:flipanion@spengergasse.at"
-                  className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors"
+                  className="text-[var(--primary)] hover:underline transition-colors"
                 >
                   flipanion@spengergasse.at
                 </a>
@@ -170,22 +170,22 @@ export default function DatenschutzPage() {
           {/* Beschwerderecht */}
           <section>
             <h2 className="text-xl font-semibold mb-3">9. Beschwerderecht</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Sie haben das Recht, eine Beschwerde bei der zuständigen Aufsichtsbehörde einzureichen.
-                In Österreich ist dies die Österreichische Datenschutzbehörde (DSB),
-                Barichgasse 40–42, 1030 Wien.
+                Sie haben das Recht, eine Beschwerde bei der zustÃ¤ndigen AufsichtsbehÃ¶rde einzureichen.
+                In Ã–sterreich ist dies die Ã–sterreichische DatenschutzbehÃ¶rde (DSB),
+                Barichgasse 40â€“42, 1030 Wien.
               </p>
             </div>
           </section>
 
-          {/* Änderungen */}
+          {/* Ã„nderungen */}
           <section>
-            <h2 className="text-xl font-semibold mb-3">10. Änderungen dieser Datenschutzerklärung</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <h2 className="text-xl font-semibold mb-3">10. Ã„nderungen dieser DatenschutzerklÃ¤rung</h2>
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, um sie an
-                geänderte Rechtslagen oder Änderungen der Plattform anzupassen. Die jeweils aktuelle
+                Wir behalten uns vor, diese DatenschutzerklÃ¤rung bei Bedarf anzupassen, um sie an
+                geÃ¤nderte Rechtslagen oder Ã„nderungen der Plattform anzupassen. Die jeweils aktuelle
                 Fassung finden Sie stets auf dieser Seite.
               </p>
               <p className="text-xs mt-4">

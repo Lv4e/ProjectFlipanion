@@ -1,18 +1,18 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import type { Metadata } from 'next';
 import Footer from '../../components/Footer';
 
 export const metadata: Metadata = {
-  title: 'AGB – Flipanion',
-  description: 'Allgemeine Geschäftsbedingungen von Flipanion.',
+  title: 'AGB â€“ Flipanion',
+  description: 'Allgemeine GeschÃ¤ftsbedingungen von Flipanion.',
 };
 
 export default function AGBPage() {
   return (
     <div className="min-h-screen bg-[var(--background)]">
       {/* Header Bar */}
-      <header className="border-b border-[var(--border)] bg-white/80 dark:bg-[#0f0f1a]/80 backdrop-blur-xl">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-3">
+      <header className="border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-2xl">
+        <div className="max-w-4xl mx-auto px-8 py-5 flex items-center gap-3">
           <Link
             href="/"
             className="flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors"
@@ -25,18 +25,18 @@ export default function AGBPage() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-12">
-        <h1 className="text-3xl font-bold text-[var(--foreground)] mb-8">Allgemeine Geschäftsbedingungen (AGB)</h1>
+      <main className="max-w-4xl mx-auto px-8 py-16">
+        <h1 className="text-3xl md:text-4xl font-bold text-[var(--foreground)] mb-10 tracking-[-0.03em]">Allgemeine Geschäftsbedingungen (AGB)</h1>
 
-        <div className="space-y-8 text-[var(--foreground)]">
+        <div className="space-y-10 text-[var(--foreground)]">
           {/* Geltungsbereich */}
           <section>
             <h2 className="text-xl font-semibold mb-3">1. Geltungsbereich</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Diese Allgemeinen Geschäftsbedingungen gelten für die Nutzung der Plattform Flipanion
-                (nachfolgend „Plattform" genannt). Mit der Registrierung bzw. Nutzung der Plattform
-                erklärt sich der Nutzer mit diesen AGB einverstanden.
+                Diese Allgemeinen GeschÃ¤ftsbedingungen gelten fÃ¼r die Nutzung der Plattform Flipanion
+                (nachfolgend â€žPlattform" genannt). Mit der Registrierung bzw. Nutzung der Plattform
+                erklÃ¤rt sich der Nutzer mit diesen AGB einverstanden.
               </p>
             </div>
           </section>
@@ -44,10 +44,10 @@ export default function AGBPage() {
           {/* Leistungsbeschreibung */}
           <section>
             <h2 className="text-xl font-semibold mb-3">2. Leistungsbeschreibung</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Flipanion ist eine interaktive Quiz-Plattform, die es Nutzern ermöglicht, Quizze zu
-                erstellen, zu teilen und zu lösen. Die Plattform dient ausschließlich Bildungszwecken
+                Flipanion ist eine interaktive Quiz-Plattform, die es Nutzern ermÃ¶glicht, Quizze zu
+                erstellen, zu teilen und zu lÃ¶sen. Die Plattform dient ausschlieÃŸlich Bildungszwecken
                 und ist ein Schulprojekt des Teams "Flipanion" der 3AHWII an der HTBLuVA Spengergasse.
               </p>
             </div>
@@ -56,15 +56,15 @@ export default function AGBPage() {
           {/* Registrierung und Nutzerkonto */}
           <section>
             <h2 className="text-xl font-semibold mb-3">3. Registrierung und Nutzerkonto</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Für die vollständige Nutzung der Plattform ist eine Registrierung erforderlich. Der
-                Nutzer verpflichtet sich, bei der Registrierung wahrheitsgemäße Angaben zu machen und
+                FÃ¼r die vollstÃ¤ndige Nutzung der Plattform ist eine Registrierung erforderlich. Der
+                Nutzer verpflichtet sich, bei der Registrierung wahrheitsgemÃ¤ÃŸe Angaben zu machen und
                 seine Zugangsdaten vertraulich zu behandeln.
               </p>
               <p>
                 Jeder Nutzer darf nur ein Konto anlegen. Die Weitergabe von Zugangsdaten an Dritte ist
-                nicht gestattet. Der Nutzer haftet für alle Aktivitäten, die über sein Konto erfolgen.
+                nicht gestattet. Der Nutzer haftet fÃ¼r alle AktivitÃ¤ten, die Ã¼ber sein Konto erfolgen.
               </p>
             </div>
           </section>
@@ -72,15 +72,15 @@ export default function AGBPage() {
           {/* Nutzungsrechte und Pflichten */}
           <section>
             <h2 className="text-xl font-semibold mb-3">4. Nutzungsrechte und Pflichten</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Der Nutzer erhält ein nicht übertragbares, widerrufliches Recht zur Nutzung der
+                Der Nutzer erhÃ¤lt ein nicht Ã¼bertragbares, widerrufliches Recht zur Nutzung der
                 Plattform im Rahmen dieser AGB. Es ist untersagt:
               </p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Die Plattform für rechtswidrige Zwecke zu nutzen</li>
-                <li>Inhalte hochzuladen, die beleidigend, diskriminierend oder anderweitig anstößig sind</li>
-                <li>Die Plattform technisch zu manipulieren oder deren Betrieb zu stören</li>
+                <li>Die Plattform fÃ¼r rechtswidrige Zwecke zu nutzen</li>
+                <li>Inhalte hochzuladen, die beleidigend, diskriminierend oder anderweitig anstÃ¶ÃŸig sind</li>
+                <li>Die Plattform technisch zu manipulieren oder deren Betrieb zu stÃ¶ren</li>
                 <li>Automatisierte Zugriffe (Bots, Scraper) ohne Genehmigung einzusetzen</li>
               </ul>
             </div>
@@ -89,33 +89,33 @@ export default function AGBPage() {
           {/* Geistiges Eigentum */}
           <section>
             <h2 className="text-xl font-semibold mb-3">5. Geistiges Eigentum</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
                 Alle Inhalte der Plattform (Design, Texte, Logos, Software) sind urheberrechtlich
-                geschützt. Die vom Nutzer erstellten Quizze und Inhalte verbleiben im Eigentum des
+                geschÃ¼tzt. Die vom Nutzer erstellten Quizze und Inhalte verbleiben im Eigentum des
                 jeweiligen Nutzers.
               </p>
               <p>
-                Mit dem Hochladen von Inhalten räumt der Nutzer der Plattform ein einfaches,
+                Mit dem Hochladen von Inhalten rÃ¤umt der Nutzer der Plattform ein einfaches,
                 unentgeltliches Nutzungsrecht ein, um die Inhalte im Rahmen des Plattformbetriebs
-                anzeigen und verarbeiten zu können.
+                anzeigen und verarbeiten zu kÃ¶nnen.
               </p>
             </div>
           </section>
 
           {/* Haftung */}
           <section>
-            <h2 className="text-xl font-semibold mb-3">6. Haftungsbeschränkung</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <h2 className="text-xl font-semibold mb-3">6. HaftungsbeschrÃ¤nkung</h2>
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Die Plattform wird „wie besehen" bereitgestellt. Es wird keine Gewähr für die
-                ununterbrochene Verfügbarkeit, Fehlerfreiheit oder Eignung für einen bestimmten Zweck
-                übernommen.
+                Die Plattform wird â€žwie besehen" bereitgestellt. Es wird keine GewÃ¤hr fÃ¼r die
+                ununterbrochene VerfÃ¼gbarkeit, Fehlerfreiheit oder Eignung fÃ¼r einen bestimmten Zweck
+                Ã¼bernommen.
               </p>
               <p>
-                Die Betreiber haften nicht für Schäden, die durch die Nutzung oder die
-                Unmöglichkeit der Nutzung der Plattform entstehen, sofern kein vorsätzliches oder grob
-                fahrlässiges Verhalten vorliegt.
+                Die Betreiber haften nicht fÃ¼r SchÃ¤den, die durch die Nutzung oder die
+                UnmÃ¶glichkeit der Nutzung der Plattform entstehen, sofern kein vorsÃ¤tzliches oder grob
+                fahrlÃ¤ssiges Verhalten vorliegt.
               </p>
             </div>
           </section>
@@ -123,13 +123,13 @@ export default function AGBPage() {
           {/* Datenschutz */}
           <section>
             <h2 className="text-xl font-semibold mb-3">7. Datenschutz</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
                 Der Schutz personenbezogener Daten ist uns wichtig. Informationen zur Verarbeitung
-                personenbezogener Daten finden Sie in unserer Datenschutzerklärung im{' '}
+                personenbezogener Daten finden Sie in unserer DatenschutzerklÃ¤rung im{' '}
                 <Link
                   href="/impressum"
-                  className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors"
+                  className="text-[var(--primary)] hover:underline transition-colors"
                 >
                   Impressum
                 </Link>
@@ -138,26 +138,26 @@ export default function AGBPage() {
             </div>
           </section>
 
-          {/* Kündigung */}
+          {/* KÃ¼ndigung */}
           <section>
-            <h2 className="text-xl font-semibold mb-3">8. Kündigung und Kontolöschung</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <h2 className="text-xl font-semibold mb-3">8. KÃ¼ndigung und KontolÃ¶schung</h2>
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Der Nutzer kann sein Konto jederzeit löschen. Die Betreiber behalten sich das Recht
-                vor, Nutzerkonten bei Verstoß gegen diese AGB ohne Vorankündigung zu sperren oder zu
-                löschen.
+                Der Nutzer kann sein Konto jederzeit lÃ¶schen. Die Betreiber behalten sich das Recht
+                vor, Nutzerkonten bei VerstoÃŸ gegen diese AGB ohne VorankÃ¼ndigung zu sperren oder zu
+                lÃ¶schen.
               </p>
             </div>
           </section>
 
-          {/* Änderungen der AGB */}
+          {/* Ã„nderungen der AGB */}
           <section>
-            <h2 className="text-xl font-semibold mb-3">9. Änderungen der AGB</h2>
-            <div className="glass-card rounded-2xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
+            <h2 className="text-xl font-semibold mb-3">9. Ã„nderungen der AGB</h2>
+            <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Die Betreiber behalten sich vor, diese AGB jederzeit zu ändern. Über wesentliche
-                Änderungen werden die Nutzer rechtzeitig informiert. Die weitere Nutzung der Plattform
-                nach Inkrafttreten der Änderungen gilt als Zustimmung zu den geänderten AGB.
+                Die Betreiber behalten sich vor, diese AGB jederzeit zu Ã¤ndern. Ãœber wesentliche
+                Ã„nderungen werden die Nutzer rechtzeitig informiert. Die weitere Nutzung der Plattform
+                nach Inkrafttreten der Ã„nderungen gilt als Zustimmung zu den geÃ¤nderten AGB.
               </p>
             </div>
           </section>
@@ -165,10 +165,10 @@ export default function AGBPage() {
           {/* Schlussbestimmungen */}
           <section>
             <h2 className="text-xl font-semibold mb-3">10. Schlussbestimmungen</h2>
-            <div className="glass-card rounded-2xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
+            <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
-                Es gilt österreichisches Recht. Sollten einzelne Bestimmungen dieser AGB unwirksam sein
-                oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen davon unberührt.
+                Es gilt Ã¶sterreichisches Recht. Sollten einzelne Bestimmungen dieser AGB unwirksam sein
+                oder werden, bleibt die Wirksamkeit der Ã¼brigen Bestimmungen davon unberÃ¼hrt.
               </p>
               <p className="text-xs mt-4">
                 Stand: Februar 2026
