@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { supabase } from "../supabase-client";
-import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 interface LeaderboardEntry {
@@ -277,9 +276,8 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-7xl mx-auto px-8 pt-32 pb-20">
+      <main className="max-w-7xl mx-auto px-8 pt-12 pb-20">
         {/* Page Header */}
         <div className="mb-10 animate-fade-in-up">
           <Link

@@ -3,7 +3,6 @@
 import React from 'react';
 import { supabase } from '../supabase-client';
 import Link from 'next/link';
-import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import CustomDropdown from '../../components/CustomDropdown';
 
@@ -155,9 +154,8 @@ export default function BrowseQuizzes() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-7xl mx-auto px-8 pt-32 pb-20">
+      <main className="max-w-7xl mx-auto px-8 pt-12 pb-20">
         {/* Page Header */}
         <div className="mb-12 animate-fade-in-up">
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] mb-6 transition-colors duration-300">

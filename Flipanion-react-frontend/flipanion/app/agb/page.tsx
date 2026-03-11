@@ -138,7 +138,7 @@ export default function AGBPage() {
             </div>
           </section>
 
-          {/* KÃ¼ndigung */}
+          {/* Kündigung */}
           <section>
             <h2 className="text-xl font-semibold mb-3">8. Kündigung und Kontolöschung</h2>
             <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
@@ -150,7 +150,7 @@ export default function AGBPage() {
             </div>
           </section>
 
-          {/* Ã„nderungen der AGB */}
+          {/* Änderungen der AGB */}
           <section>
             <h2 className="text-xl font-semibold mb-3">9. Änderungen der AGB</h2>
             <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">

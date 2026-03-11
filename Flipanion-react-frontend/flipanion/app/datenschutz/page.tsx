@@ -179,7 +179,7 @@ export default function DatenschutzPage() {
             </div>
           </section>
 
-          {/* Ã„nderungen */}
+          {/* Änderungen */}
           <section>
             <h2 className="text-xl font-semibold mb-3">10. Änderungen dieser Datenschutzerklärung</h2>
             <div className="glass-card rounded-xl p-6 space-y-4 text-sm leading-relaxed text-[var(--text-muted)]">

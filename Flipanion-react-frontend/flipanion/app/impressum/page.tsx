@@ -72,7 +72,7 @@ export default function ImpressumPage() {
                 <p>
                   Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen
                   Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr
-                  Ã¼bernehmen. FÃ¼r die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder
+                  übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder
                   Betreiber der Seiten verantwortlich.
                 </p>
               </div>

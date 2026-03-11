@@ -3,7 +3,6 @@
 import React from "react";
 import { supabase } from "./supabase-client";
 import Link from "next/link";
-import Header from "../components/Header";
 import Footer from "../components/Footer";
 import InteractiveCard from "../components/InteractiveCard";
 import MagneticButton from "../components/MagneticButton";
@@ -209,7 +208,6 @@ export default function Home() {
   if (!user) {
     return (
       <div className="min-h-screen bg-[var(--background)] overflow-hidden">
-        <Header />
 
         {/* Background orbs */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -220,7 +218,7 @@ export default function Home() {
 
         {/* Hero Section */}
         <main className="relative max-w-7xl mx-auto px-8">
-          <div className="pt-40 pb-32 lg:pt-52 lg:pb-40">
+          <div className="pt-20 pb-32 lg:pt-28 lg:pb-40">
             {/* Badge */}
             <ScrollReveal direction="up" delay={0}>
               <div className="flex justify-center mb-10">
@@ -418,9 +416,8 @@ export default function Home() {
   // Dashboard for logged-in users
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-7xl mx-auto px-8 pt-32 pb-20">
+      <main className="max-w-7xl mx-auto px-8 pt-12 pb-20">
         {/* Welcome */}
         <div className="mb-12 animate-fade-in-up">
           <h2 className="text-4xl md:text-5xl font-bold text-[var(--foreground)] mb-2 tracking-[-0.03em]">

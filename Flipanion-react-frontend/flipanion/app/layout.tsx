@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "../components/CookieBanner";
 import CursorTrail from "../components/CursorTrail";
+import { FloatingHeader } from "@/components/ui/floating-header";
 
 
 const inter = Inter({
@@ -51,6 +52,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetBrainsMono.variable} antialiased`}
       >
+        <FloatingHeader />
         {children}
         <CursorTrail />
         <CookieBanner />

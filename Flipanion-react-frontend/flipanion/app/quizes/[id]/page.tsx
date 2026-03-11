@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { User } from "@supabase/supabase-js";
-import Header from "../../../components/Header";
 import { supabase } from "../../supabase-client";
 
 type AnyRow = Record<string, unknown>;
@@ -392,9 +391,8 @@ export default function QuizPage() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-3xl mx-auto px-8 pt-32 pb-16">
+      <main className="max-w-3xl mx-auto px-8 pt-12 pb-16">
         <Link
           href="/browse"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--foreground)] mb-8 transition-colors duration-300"

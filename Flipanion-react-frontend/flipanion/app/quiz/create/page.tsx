@@ -4,7 +4,6 @@ import React from "react";
 import { supabase } from "../../supabase-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import CustomDropdown from "../../../components/CustomDropdown";
 
@@ -211,8 +210,7 @@ export default function CreateQuiz() {
   if (!user) {
     return (
       <div className="min-h-screen bg-[var(--background)]">
-        <Header />
-        <main className="max-w-2xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-2xl mx-auto px-6 pt-10 pb-12">
           <div className="glass-card rounded-xl p-10 text-center animate-fade-in-up">
             <div className="w-16 h-16 bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-5">
               <svg
@@ -251,8 +249,7 @@ export default function CreateQuiz() {
   if (success) {
     return (
       <div className="min-h-screen bg-[var(--background)]">
-        <Header />
-        <main className="max-w-2xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-2xl mx-auto px-6 pt-10 pb-12">
           <div className="glass-card rounded-xl p-10 text-center animate-fade-in-up">
             <div className="w-16 h-16 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-5">
               <svg
@@ -283,9 +280,8 @@ export default function CreateQuiz() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-3xl mx-auto px-8 pt-32 pb-20">
+      <main className="max-w-3xl mx-auto px-8 pt-12 pb-20">
         {/* Page Header */}
         <div className="mb-10 animate-fade-in-up">
           <Link
