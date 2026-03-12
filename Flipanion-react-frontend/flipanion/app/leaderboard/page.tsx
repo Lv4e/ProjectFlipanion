@@ -33,6 +33,10 @@ const sortOptions: { key: SortKey; label: string; suffix: string }[] = [
 ];
 
 export default function LeaderboardPage() {
+  const [user, setUser] = React.useState<
+    import("@supabase/supabase-js").User | null
+  >(null);
+  const [authLoading, setAuthLoading] = React.useState(true);
   const [entries, setEntries] = React.useState<LeaderboardEntry[]>([]);
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -49,20 +53,31 @@ export default function LeaderboardPage() {
   );
 
   React.useEffect(() => {
-    fetchLeaderboard();
+    async function init() {
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
+
+      setUser(currentUser);
+      setAuthLoading(false);
+
+      if (!currentUser) {
+        setLoading(false);
+        return;
+      }
+
+      setCurrentSupabaseId(currentUser.id);
+      fetchLeaderboard(currentUser.id);
+    }
+
+    init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSubject]);
 
-  async function fetchLeaderboard() {
+  async function fetchLeaderboard(currentUserSupabaseId: string) {
     setLoading(true);
 
     try {
-      // Get current user
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) setCurrentSupabaseId(user.id);
-
       // Fetch all subjects
       const { data: subjectsData } = await supabase
         .from("Subject")
@@ -80,10 +95,8 @@ export default function LeaderboardPage() {
       }
 
       // Find current user's db id
-      if (user) {
-        const me = users.find((u) => u.supabaseId === user.id);
-        if (me) setCurrentDbUserId(me.id);
-      }
+      const me = users.find((u) => u.supabaseId === currentUserSupabaseId);
+      if (me) setCurrentDbUserId(me.id);
 
       // Fetch all user answers with question info
       let answersQuery = supabase
@@ -273,6 +286,62 @@ export default function LeaderboardPage() {
   const getRankLabel = (rank: number) => {
     return `#${rank}`;
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
+          <span className="text-sm text-[var(--text-muted)]">Lädt ...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[var(--background)]">
+        <main className="max-w-2xl mx-auto px-6 pt-10 pb-12">
+          <div className="glass-card rounded-xl p-10 text-center animate-fade-in-up">
+            <div className="w-16 h-16 bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-5">
+              <svg
+                className="w-8 h-8 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
+              Anmeldung erforderlich
+            </h2>
+            <p className="text-[var(--text-muted)] mb-6">
+              Du musst angemeldet sein, um das Leaderboard zu sehen.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <Link href="/auth">
+                <button className="w-full sm:w-auto px-8 py-3 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] cursor-pointer">
+                  Jetzt anmelden
+                </button>
+              </Link>
+              <Link href="/auth?mode=register">
+                <button className="w-full sm:w-auto px-8 py-3 border border-[var(--border-strong)] text-[var(--foreground)] font-medium rounded-lg hover:bg-[var(--surface-hover)] transition-all duration-300 active:scale-[0.98] cursor-pointer">
+                  Registrieren
+                </button>
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
