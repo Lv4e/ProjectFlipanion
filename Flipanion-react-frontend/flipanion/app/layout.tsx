@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "../components/CookieBanner";
-import CursorTrail from "../components/CursorTrail";
 import { FloatingHeader } from "@/components/ui/floating-header";
 
 
@@ -54,7 +53,6 @@ export default function RootLayout({
       >
         <FloatingHeader />
         {children}
-        <CursorTrail />
         <CookieBanner />
       </body>
     </html>
