@@ -22,6 +22,7 @@ interface CompletedQuiz {
   score: number;
   total: number;
   date: string;
+  jahrgang: number;
 }
 
 interface MyQuiz {
@@ -31,6 +32,7 @@ interface MyQuiz {
   createdAt: string;
   subjectName: string;
   questionCount: number;
+  jahrgang: number;
 }
 
 export default function Home() {
@@ -78,7 +80,7 @@ export default function Home() {
               const { data: quizzes } = await supabase
                 .from("Quiz")
                 .select(
-                  "id, title, description, createdAt, subjectId, Subject(name), Question(id)",
+                  "id, title, description, createdAt, subjectId, jahrgang, Subject(name), Question(id)",
                 )
                 .eq("creatorId", dbUser.id)
                 .order("createdAt", { ascending: false });
@@ -96,6 +98,7 @@ export default function Home() {
                     questionCount: Array.isArray(q.Question)
                       ? q.Question.length
                       : 0,
+                    jahrgang: (q.jahrgang as number) || 1,
                   })),
                 );
               }
@@ -127,7 +130,7 @@ export default function Home() {
             const { data: userAnswers } = await supabase
               .from("UserAnswer")
               .select(
-                "isCorrect, question:Question(id, quizId, quiz:Quiz(id, title, createdAt))",
+                "isCorrect, question:Question(id, quizId, quiz:Quiz(id, title, createdAt, jahrgang))",
               )
               .eq("userId", dbUser.id);
 
@@ -139,7 +142,7 @@ export default function Home() {
             // Group answers by quiz
             const quizMap = new Map<
               number,
-              { title: string; correct: number; total: number; date: string }
+              { title: string; correct: number; total: number; date: string; jahrgang: number }
             >();
 
             for (const ua of userAnswers as Array<Record<string, unknown>>) {
@@ -159,6 +162,7 @@ export default function Home() {
                   correct: 0,
                   total: 0,
                   date: quiz.createdAt as string,
+                  jahrgang: (quiz.jahrgang as number) || 1,
                 });
               }
               const entry = quizMap.get(qId)!;
@@ -174,6 +178,7 @@ export default function Home() {
                 score: v.correct,
                 total: v.total,
                 date: v.date,
+                jahrgang: v.jahrgang,
               });
             });
 
@@ -578,6 +583,9 @@ export default function Home() {
                       <span className="text-xs text-[var(--text-muted)] bg-[var(--surface-hover)] px-2 py-0.5 rounded-md">
                         {quiz.subjectName}
                       </span>
+                      <span className="text-xs text-[var(--text-muted)] bg-[var(--surface-hover)] px-2 py-0.5 rounded-md">
+                        {quiz.jahrgang}. Jahrgang
+                      </span>
                       <span className="text-xs text-[var(--text-muted)]">
                         {new Date(quiz.createdAt).toLocaleDateString("de-DE", {
                           day: "2-digit",
@@ -686,9 +694,12 @@ export default function Home() {
                     <h4 className="text-base font-bold text-[var(--foreground)] mb-1 group-hover:text-[var(--primary)] transition-colors">
                       {cq.title}
                     </h4>
-                    <p className="text-sm text-[var(--text-muted)] mb-3">
+                    <p className="text-sm text-[var(--text-muted)] mb-1">
                       {cq.score} von {cq.total} richtig
                     </p>
+                    <span className="inline-flex items-center px-2 py-0.5 text-[11px] font-medium border border-[var(--border)] text-[var(--text-muted)] rounded-md mb-3 w-fit">
+                      {cq.jahrgang}. Jahrgang
+                    </span>
                     {/* Mini progress bar */}
                     <div className="w-full bg-[var(--border)] rounded-full h-1.5 overflow-hidden">
                       <div

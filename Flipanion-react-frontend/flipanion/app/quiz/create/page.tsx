@@ -43,6 +43,7 @@ export default function CreateQuiz() {
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [subjectId, setSubjectId] = React.useState<number | "">("");
+  const [jahrgang, setJahrgang] = React.useState<number | "">("")
   const [questions, setQuestions] = React.useState<QuestionForm[]>([
     emptyQuestion(),
   ]);
@@ -144,6 +145,7 @@ export default function CreateQuiz() {
           title: title.trim(),
           description: description.trim() || null,
           subjectId: subjectId as number,
+          jahrgang: jahrgang as number,
           creatorId,
         })
         .select("id")
@@ -420,6 +422,28 @@ export default function CreateQuiz() {
                   value: String(s.id),
                   label: s.name,
                 }))}
+              />
+            </div>
+            {/* Jahrgang */}
+            <div>
+              <label
+                htmlFor="jahrgang"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
+              >
+                Jahrgang <span className="text-red-400">*</span>
+              </label>
+              <CustomDropdown
+                id="jahrgang"
+                value={jahrgang === '' ? '' : String(jahrgang)}
+                onChange={(val) => setJahrgang(val ? Number(val) : '')}
+                placeholder="Jahrgang ausw\u00e4hlen ..."
+                options={[
+                  { value: '1', label: '1. Jahrgang' },
+                  { value: '2', label: '2. Jahrgang' },
+                  { value: '3', label: '3. Jahrgang' },
+                  { value: '4', label: '4. Jahrgang' },
+                  { value: '5', label: '5. Jahrgang' },
+                ]}
               />
             </div>
           </div>

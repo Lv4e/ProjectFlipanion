@@ -31,6 +31,7 @@ export type UserStatisticsAvgAggregateOutputType = {
   userId: number | null
   answeredQuestions: number | null
   correctAnswers: number | null
+  streak: number | null
 }
 
 export type UserStatisticsSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type UserStatisticsSumAggregateOutputType = {
   userId: number | null
   answeredQuestions: number | null
   correctAnswers: number | null
+  streak: number | null
 }
 
 export type UserStatisticsMinAggregateOutputType = {
@@ -45,6 +47,7 @@ export type UserStatisticsMinAggregateOutputType = {
   userId: number | null
   answeredQuestions: number | null
   correctAnswers: number | null
+  streak: number | null
 }
 
 export type UserStatisticsMaxAggregateOutputType = {
@@ -52,6 +55,7 @@ export type UserStatisticsMaxAggregateOutputType = {
   userId: number | null
   answeredQuestions: number | null
   correctAnswers: number | null
+  streak: number | null
 }
 
 export type UserStatisticsCountAggregateOutputType = {
@@ -59,6 +63,7 @@ export type UserStatisticsCountAggregateOutputType = {
   userId: number
   answeredQuestions: number
   correctAnswers: number
+  streak: number
   _all: number
 }
 
@@ -68,6 +73,7 @@ export type UserStatisticsAvgAggregateInputType = {
   userId?: true
   answeredQuestions?: true
   correctAnswers?: true
+  streak?: true
 }
 
 export type UserStatisticsSumAggregateInputType = {
@@ -75,6 +81,7 @@ export type UserStatisticsSumAggregateInputType = {
   userId?: true
   answeredQuestions?: true
   correctAnswers?: true
+  streak?: true
 }
 
 export type UserStatisticsMinAggregateInputType = {
@@ -82,6 +89,7 @@ export type UserStatisticsMinAggregateInputType = {
   userId?: true
   answeredQuestions?: true
   correctAnswers?: true
+  streak?: true
 }
 
 export type UserStatisticsMaxAggregateInputType = {
@@ -89,6 +97,7 @@ export type UserStatisticsMaxAggregateInputType = {
   userId?: true
   answeredQuestions?: true
   correctAnswers?: true
+  streak?: true
 }
 
 export type UserStatisticsCountAggregateInputType = {
@@ -96,6 +105,7 @@ export type UserStatisticsCountAggregateInputType = {
   userId?: true
   answeredQuestions?: true
   correctAnswers?: true
+  streak?: true
   _all?: true
 }
 
@@ -190,6 +200,7 @@ export type UserStatisticsGroupByOutputType = {
   userId: number
   answeredQuestions: number
   correctAnswers: number
+  streak: number
   _count: UserStatisticsCountAggregateOutputType | null
   _avg: UserStatisticsAvgAggregateOutputType | null
   _sum: UserStatisticsSumAggregateOutputType | null
@@ -220,6 +231,7 @@ export type UserStatisticsWhereInput = {
   userId?: Prisma.IntFilter<"UserStatistics"> | number
   answeredQuestions?: Prisma.IntFilter<"UserStatistics"> | number
   correctAnswers?: Prisma.IntFilter<"UserStatistics"> | number
+  streak?: Prisma.IntFilter<"UserStatistics"> | number
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -228,6 +240,7 @@ export type UserStatisticsOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   answeredQuestions?: Prisma.SortOrder
   correctAnswers?: Prisma.SortOrder
+  streak?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -239,6 +252,7 @@ export type UserStatisticsWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserStatisticsWhereInput | Prisma.UserStatisticsWhereInput[]
   answeredQuestions?: Prisma.IntFilter<"UserStatistics"> | number
   correctAnswers?: Prisma.IntFilter<"UserStatistics"> | number
+  streak?: Prisma.IntFilter<"UserStatistics"> | number
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "userId">
 
@@ -247,6 +261,7 @@ export type UserStatisticsOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   answeredQuestions?: Prisma.SortOrder
   correctAnswers?: Prisma.SortOrder
+  streak?: Prisma.SortOrder
   _count?: Prisma.UserStatisticsCountOrderByAggregateInput
   _avg?: Prisma.UserStatisticsAvgOrderByAggregateInput
   _max?: Prisma.UserStatisticsMaxOrderByAggregateInput
@@ -262,11 +277,13 @@ export type UserStatisticsScalarWhereWithAggregatesInput = {
   userId?: Prisma.IntWithAggregatesFilter<"UserStatistics"> | number
   answeredQuestions?: Prisma.IntWithAggregatesFilter<"UserStatistics"> | number
   correctAnswers?: Prisma.IntWithAggregatesFilter<"UserStatistics"> | number
+  streak?: Prisma.IntWithAggregatesFilter<"UserStatistics"> | number
 }
 
 export type UserStatisticsCreateInput = {
   answeredQuestions: number
   correctAnswers: number
+  streak?: number
   user: Prisma.UserCreateNestedOneWithoutUserStatisticsInput
 }
 
@@ -275,11 +292,13 @@ export type UserStatisticsUncheckedCreateInput = {
   userId: number
   answeredQuestions: number
   correctAnswers: number
+  streak?: number
 }
 
 export type UserStatisticsUpdateInput = {
   answeredQuestions?: Prisma.IntFieldUpdateOperationsInput | number
   correctAnswers?: Prisma.IntFieldUpdateOperationsInput | number
+  streak?: Prisma.IntFieldUpdateOperationsInput | number
   user?: Prisma.UserUpdateOneRequiredWithoutUserStatisticsNestedInput
 }
 
@@ -288,6 +307,7 @@ export type UserStatisticsUncheckedUpdateInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   answeredQuestions?: Prisma.IntFieldUpdateOperationsInput | number
   correctAnswers?: Prisma.IntFieldUpdateOperationsInput | number
+  streak?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserStatisticsCreateManyInput = {
@@ -295,11 +315,13 @@ export type UserStatisticsCreateManyInput = {
   userId: number
   answeredQuestions: number
   correctAnswers: number
+  streak?: number
 }
 
 export type UserStatisticsUpdateManyMutationInput = {
   answeredQuestions?: Prisma.IntFieldUpdateOperationsInput | number
   correctAnswers?: Prisma.IntFieldUpdateOperationsInput | number
+  streak?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserStatisticsUncheckedUpdateManyInput = {
@@ -307,6 +329,7 @@ export type UserStatisticsUncheckedUpdateManyInput = {
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   answeredQuestions?: Prisma.IntFieldUpdateOperationsInput | number
   correctAnswers?: Prisma.IntFieldUpdateOperationsInput | number
+  streak?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserStatisticsNullableScalarRelationFilter = {
@@ -319,6 +342,7 @@ export type UserStatisticsCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   answeredQuestions?: Prisma.SortOrder
   correctAnswers?: Prisma.SortOrder
+  streak?: Prisma.SortOrder
 }
 
 export type UserStatisticsAvgOrderByAggregateInput = {
@@ -326,6 +350,7 @@ export type UserStatisticsAvgOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   answeredQuestions?: Prisma.SortOrder
   correctAnswers?: Prisma.SortOrder
+  streak?: Prisma.SortOrder
 }
 
 export type UserStatisticsMaxOrderByAggregateInput = {
@@ -333,6 +358,7 @@ export type UserStatisticsMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   answeredQuestions?: Prisma.SortOrder
   correctAnswers?: Prisma.SortOrder
+  streak?: Prisma.SortOrder
 }
 
 export type UserStatisticsMinOrderByAggregateInput = {
@@ -340,6 +366,7 @@ export type UserStatisticsMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   answeredQuestions?: Prisma.SortOrder
   correctAnswers?: Prisma.SortOrder
+  streak?: Prisma.SortOrder
 }
 
 export type UserStatisticsSumOrderByAggregateInput = {
@@ -347,6 +374,7 @@ export type UserStatisticsSumOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   answeredQuestions?: Prisma.SortOrder
   correctAnswers?: Prisma.SortOrder
+  streak?: Prisma.SortOrder
 }
 
 export type UserStatisticsCreateNestedOneWithoutUserInput = {
@@ -384,12 +412,14 @@ export type UserStatisticsUncheckedUpdateOneWithoutUserNestedInput = {
 export type UserStatisticsCreateWithoutUserInput = {
   answeredQuestions: number
   correctAnswers: number
+  streak?: number
 }
 
 export type UserStatisticsUncheckedCreateWithoutUserInput = {
   id?: number
   answeredQuestions: number
   correctAnswers: number
+  streak?: number
 }
 
 export type UserStatisticsCreateOrConnectWithoutUserInput = {
@@ -411,12 +441,14 @@ export type UserStatisticsUpdateToOneWithWhereWithoutUserInput = {
 export type UserStatisticsUpdateWithoutUserInput = {
   answeredQuestions?: Prisma.IntFieldUpdateOperationsInput | number
   correctAnswers?: Prisma.IntFieldUpdateOperationsInput | number
+  streak?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserStatisticsUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   answeredQuestions?: Prisma.IntFieldUpdateOperationsInput | number
   correctAnswers?: Prisma.IntFieldUpdateOperationsInput | number
+  streak?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -426,6 +458,7 @@ export type UserStatisticsSelect<ExtArgs extends runtime.Types.Extensions.Intern
   userId?: boolean
   answeredQuestions?: boolean
   correctAnswers?: boolean
+  streak?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userStatistics"]>
 
@@ -434,6 +467,7 @@ export type UserStatisticsSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   userId?: boolean
   answeredQuestions?: boolean
   correctAnswers?: boolean
+  streak?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userStatistics"]>
 
@@ -442,6 +476,7 @@ export type UserStatisticsSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   userId?: boolean
   answeredQuestions?: boolean
   correctAnswers?: boolean
+  streak?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userStatistics"]>
 
@@ -450,9 +485,10 @@ export type UserStatisticsSelectScalar = {
   userId?: boolean
   answeredQuestions?: boolean
   correctAnswers?: boolean
+  streak?: boolean
 }
 
-export type UserStatisticsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "answeredQuestions" | "correctAnswers", ExtArgs["result"]["userStatistics"]>
+export type UserStatisticsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "answeredQuestions" | "correctAnswers" | "streak", ExtArgs["result"]["userStatistics"]>
 export type UserStatisticsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -473,6 +509,7 @@ export type $UserStatisticsPayload<ExtArgs extends runtime.Types.Extensions.Inte
     userId: number
     answeredQuestions: number
     correctAnswers: number
+    streak: number
   }, ExtArgs["result"]["userStatistics"]>
   composites: {}
 }
@@ -901,6 +938,7 @@ export interface UserStatisticsFieldRefs {
   readonly userId: Prisma.FieldRef<"UserStatistics", 'Int'>
   readonly answeredQuestions: Prisma.FieldRef<"UserStatistics", 'Int'>
   readonly correctAnswers: Prisma.FieldRef<"UserStatistics", 'Int'>
+  readonly streak: Prisma.FieldRef<"UserStatistics", 'Int'>
 }
     
 

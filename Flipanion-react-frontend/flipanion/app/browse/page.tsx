@@ -12,6 +12,7 @@ interface Quiz {
   title: string;
   description?: string;
   subjectId: number;
+  jahrgang: number;
   subject?: string;
   Subject?: {
     id: number;
@@ -74,6 +75,7 @@ export default function BrowseQuizzes() {
 
   
   const [selectedSubject, setSelectedSubject] = React.useState('all');
+  const [selectedJahrgang, setSelectedJahrgang] = React.useState('all');
   const [visibleCount, setVisibleCount] = React.useState(INITIAL_VISIBLE);
   const [user, setUser] = React.useState<import('@supabase/supabase-js').User | null>(null);
   const [questionsError, setQuestionsError] = React.useState<boolean>(false);
@@ -153,12 +155,13 @@ export default function BrowseQuizzes() {
                          quiz.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const subjectName = quiz.Subject?.name || quiz.subject;
     const matchesSubject = selectedSubject === 'all' || subjectName === selectedSubject;
-    return matchesSearch && matchesSubject;
+    const matchesJahrgang = selectedJahrgang === 'all' || quiz.jahrgang === Number(selectedJahrgang);
+    return matchesSearch && matchesSubject && matchesJahrgang;
   });
 
   React.useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE);
-  }, [searchTerm, selectedSubject]);
+  }, [searchTerm, selectedSubject, selectedJahrgang]);
 
   const visibleQuizzes = filteredQuizzes.slice(0, visibleCount);
 
@@ -191,7 +194,7 @@ export default function BrowseQuizzes() {
 
         {/* Search and Filter Bar */}
         <div className="glass-card-static rounded-2xl p-8 mb-10 animate-fade-in-up-delay-1 relative z-40" style={{ overflow: 'visible' }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Search Input */}
             <div>
               <label htmlFor="search" className="block text-[13px] font-medium text-[var(--text-muted)] mb-2">
@@ -226,6 +229,27 @@ export default function BrowseQuizzes() {
                     value: subject.name,
                     label: subject.name,
                   })),
+                ]}
+              />
+            </div>
+
+            {/* Jahrgang Filter */}
+            <div>
+              <label htmlFor="jahrgang" className="block text-[13px] font-medium text-[var(--text-muted)] mb-2">
+                Nach Jahrgang filtern
+              </label>
+              <CustomDropdown
+                id="jahrgang"
+                value={selectedJahrgang}
+                onChange={(val) => setSelectedJahrgang(val)}
+                placeholder="Alle Jahrgänge"
+                options={[
+                  { value: 'all', label: 'Alle Jahrgänge' },
+                  { value: '1', label: '1. Jahrgang' },
+                  { value: '2', label: '2. Jahrgang' },
+                  { value: '3', label: '3. Jahrgang' },
+                  { value: '4', label: '4. Jahrgang' },
+                  { value: '5', label: '5. Jahrgang' },
                 ]}
               />
             </div>
@@ -279,11 +303,14 @@ export default function BrowseQuizzes() {
                       </p>
 
                       {/* Quiz Meta */}
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2 flex-wrap mb-4">
                         <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-[var(--border)] text-[var(--text-muted)] rounded-md">
                           {quiz.Subject?.name || quiz.subject || 'Allgemein'}
                         </span>
-                        <span className="text-xs text-[var(--text-muted)]">
+                        <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium border border-[var(--border)] text-[var(--text-muted)] rounded-md">
+                          {quiz.jahrgang}. Jahrgang
+                        </span>
+                        <span className="ml-auto text-xs text-[var(--text-muted)]">
                           {!user ? '?' : quiz.questionCount || 0} Fragen
                         </span>
                       </div>
