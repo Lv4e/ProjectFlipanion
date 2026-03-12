@@ -180,7 +180,7 @@ export default function BrowseQuizzes() {
         )}
 
         {/* Search and Filter Bar */}
-        <div className="glass-card-static rounded-2xl p-8 mb-10 animate-fade-in-up-delay-1 relative z-10" style={{ overflow: 'visible' }}>
+        <div className="glass-card-static rounded-2xl p-8 mb-10 animate-fade-in-up-delay-1 relative z-40" style={{ overflow: 'visible' }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Search Input */}
             <div>
@@ -223,7 +223,7 @@ export default function BrowseQuizzes() {
         </div>
 
         {/* Quiz Grid */}
-        <div className="animate-fade-in-up-delay-2 relative z-20">
+        <div className="animate-fade-in-up-delay-2 relative z-0">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-bold text-[var(--foreground)]">
               {filteredQuizzes.length} {filteredQuizzes.length === 1 ? 'Quiz gefunden' : 'Quizze gefunden'}
