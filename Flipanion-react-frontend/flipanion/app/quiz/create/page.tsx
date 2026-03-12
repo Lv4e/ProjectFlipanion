@@ -233,11 +233,18 @@ export default function CreateQuiz() {
             <p className="text-[var(--text-muted)] mb-6">
               Du musst angemeldet sein, um ein Quiz zu erstellen.
             </p>
-            <Link href="/auth">
-              <button className="px-8 py-3 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] cursor-pointer">
-                Jetzt anmelden
-              </button>
-            </Link>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <Link href="/auth">
+                <button className="w-full sm:w-auto px-8 py-3 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] cursor-pointer">
+                  Jetzt anmelden
+                </button>
+              </Link>
+              <Link href="/auth?mode=register">
+                <button className="w-full sm:w-auto px-8 py-3 border border-[var(--border-strong)] text-[var(--foreground)] font-medium rounded-lg hover:bg-[var(--surface-hover)] transition-all duration-300 active:scale-[0.98] cursor-pointer">
+                  Registrieren
+                </button>
+              </Link>
+            </div>
           </div>
         </main>
         <Footer />
