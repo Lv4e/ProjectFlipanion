@@ -80,7 +80,14 @@ export default function Footer() {
                   Leaderboard
                 </Link>
               </li>
-
+              <li>
+                <Link
+                  href="/about"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
+                >
+                  Über uns
+                </Link>
+              </li>
             </ul>
           </div>
 
