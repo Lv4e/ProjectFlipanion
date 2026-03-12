@@ -64,6 +64,9 @@ function SlideInCard({ children, index }: { children: React.ReactNode; index: nu
 }
 
 export default function BrowseQuizzes() {
+  const INITIAL_VISIBLE = 12;
+  const LOAD_MORE_STEP = 6;
+
   const [quizzes, setQuizzes] = React.useState<Quiz[]>([]);
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -71,6 +74,7 @@ export default function BrowseQuizzes() {
 
   
   const [selectedSubject, setSelectedSubject] = React.useState('all');
+  const [visibleCount, setVisibleCount] = React.useState(INITIAL_VISIBLE);
   const [user, setUser] = React.useState<import('@supabase/supabase-js').User | null>(null);
   const [questionsError, setQuestionsError] = React.useState<boolean>(false);
 
@@ -151,6 +155,12 @@ export default function BrowseQuizzes() {
     const matchesSubject = selectedSubject === 'all' || subjectName === selectedSubject;
     return matchesSearch && matchesSubject;
   });
+
+  React.useEffect(() => {
+    setVisibleCount(INITIAL_VISIBLE);
+  }, [searchTerm, selectedSubject]);
+
+  const visibleQuizzes = filteredQuizzes.slice(0, visibleCount);
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
@@ -244,8 +254,9 @@ export default function BrowseQuizzes() {
               <p className="text-sm text-[var(--text-muted)]">Passe deine Suche oder Filter an</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredQuizzes.map((quiz, index) => (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {visibleQuizzes.map((quiz, index) => (
                 <SlideInCard key={quiz.id} index={index}>
                   <div
                     className="glass-card gradient-border relative isolate rounded-2xl overflow-hidden hover:border-[var(--border-strong)] transition-all duration-300 group"
@@ -287,8 +298,21 @@ export default function BrowseQuizzes() {
                     </div>
                   </div>
                 </SlideInCard>
-              ))}
-            </div>
+                ))}
+              </div>
+
+              {visibleQuizzes.length < filteredQuizzes.length && (
+                <div className="mt-8 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_STEP)}
+                    className="px-7 py-3 rounded-lg border border-[var(--border-strong)] text-[var(--foreground)] font-medium hover:bg-[var(--surface-hover)] transition-all duration-300 active:scale-[0.98] cursor-pointer"
+                  >
+                    Mehr anzeigen (+6)
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>

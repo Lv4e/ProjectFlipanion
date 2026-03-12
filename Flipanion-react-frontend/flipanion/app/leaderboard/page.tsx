@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { supabase } from "../supabase-client";
 import Footer from "../../components/Footer";
+import CustomDropdown from "../../components/CustomDropdown";
 
 interface LeaderboardEntry {
   userId: number;
@@ -41,9 +42,7 @@ export default function LeaderboardPage() {
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [sortBy, setSortBy] = React.useState<SortKey>("points");
-  const [selectedSubject, setSelectedSubject] = React.useState<"all" | number>(
-    "all",
-  );
+  const [selectedSubject, setSelectedSubject] = React.useState("all");
   const [searchTerm, setSearchTerm] = React.useState("");
   const [currentSupabaseId, setCurrentSupabaseId] = React.useState<
     string | null
@@ -76,6 +75,8 @@ export default function LeaderboardPage() {
 
   async function fetchLeaderboard(currentUserSupabaseId: string) {
     setLoading(true);
+    const selectedSubjectId =
+      selectedSubject === "all" ? null : Number(selectedSubject);
 
     try {
       // Fetch all subjects
@@ -155,7 +156,7 @@ export default function LeaderboardPage() {
       if (quizzes) {
         for (const q of quizzes) {
           if (!q.creatorId) continue;
-          if (selectedSubject !== "all" && q.subjectId !== selectedSubject)
+          if (selectedSubjectId !== null && q.subjectId !== selectedSubjectId)
             continue;
           const entry = map.get(q.creatorId);
           if (entry) entry.quizzesCreated++;
@@ -183,7 +184,7 @@ export default function LeaderboardPage() {
           const quizId = question.quizId as number;
 
           // Apply subject filter
-          if (selectedSubject !== "all" && subjectId !== selectedSubject)
+          if (selectedSubjectId !== null && subjectId !== selectedSubjectId)
             continue;
 
           const entry = map.get(userId);
@@ -214,7 +215,7 @@ export default function LeaderboardPage() {
             ? quizRelation[0]
             : quizRelation;
           const subjectId = quiz?.subjectId as number | undefined;
-          if (selectedSubject !== "all" && subjectId !== selectedSubject)
+          if (selectedSubjectId !== null && subjectId !== selectedSubjectId)
             continue;
           const entry = map.get(a.userId as number);
           if (entry) entry.points += (a.points as number) || 0;
@@ -457,7 +458,7 @@ export default function LeaderboardPage() {
         )}
 
         {/* Filters */}
-        <div className="glass-card rounded-xl p-5 mb-6 animate-fade-in-up-delay-2">
+        <div className="glass-card rounded-xl p-5 mb-6 animate-fade-in-up-delay-2 relative z-40" style={{ overflow: "visible" }}>
           <div className="flex flex-col md:flex-row gap-3">
             {/* Search */}
             <div className="relative flex-1">
@@ -484,37 +485,35 @@ export default function LeaderboardPage() {
             </div>
 
             {/* Subject filter */}
-            <select
-              value={
-                selectedSubject === "all" ? "all" : String(selectedSubject)
-              }
-              onChange={(e) =>
-                setSelectedSubject(
-                  e.target.value === "all" ? "all" : Number(e.target.value),
-                )
-              }
-              className="px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm text-[var(--foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] transition-all cursor-pointer"
-            >
-              <option value="all">Alle Fächer</option>
-              {subjects.map((s) => (
-                <option key={s.id} value={String(s.id)}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+            <div className="md:w-[220px]">
+              <CustomDropdown
+                id="leaderboard-subject"
+                value={selectedSubject}
+                onChange={(value) => setSelectedSubject(value)}
+                placeholder="Alle Fächer"
+                options={[
+                  { value: "all", label: "Alle Fächer" },
+                  ...subjects.map((s) => ({
+                    value: String(s.id),
+                    label: s.name,
+                  })),
+                ]}
+              />
+            </div>
 
             {/* Sort */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortKey)}
-              className="px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm text-[var(--foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] transition-all cursor-pointer"
-            >
-              {sortOptions.map((o) => (
-                <option key={o.key} value={o.key}>
-                  Top 10: {o.label}
-                </option>
-              ))}
-            </select>
+            <div className="md:w-[220px]">
+              <CustomDropdown
+                id="leaderboard-sort"
+                value={sortBy}
+                onChange={(value) => setSortBy(value as SortKey)}
+                placeholder="Sortierung"
+                options={sortOptions.map((o) => ({
+                  value: o.key,
+                  label: `Top 10: ${o.label}`,
+                }))}
+              />
+            </div>
           </div>
         </div>
 
