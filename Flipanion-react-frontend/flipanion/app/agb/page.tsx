@@ -126,12 +126,12 @@ export default function AGBPage() {
             <div className="glass-card rounded-xl p-6 text-sm leading-relaxed text-[var(--text-muted)]">
               <p>
                 Der Schutz personenbezogener Daten ist uns wichtig. Informationen zur Verarbeitung
-                personenbezogener Daten finden Sie in unserer Datenschutzerklärung im{' '}
+                personenbezogener Daten finden Sie in unserer Datenschutzerklärung unter{' '}
                 <Link
-                  href="/impressum"
+                  href="/datenschutz"
                   className="text-[var(--primary)] hover:underline transition-colors"
                 >
-                  Impressum
+                  Datenschutz
                 </Link>
                 .
               </p>

@@ -230,7 +230,7 @@ export default function Home() {
                 <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-[var(--border-strong)] bg-[color-mix(in_srgb,var(--surface)_50%,transparent)] backdrop-blur-sm hover-glow">
                   <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                   <span className="text-xs font-medium text-[var(--text-muted)] tracking-wider uppercase">
-                    Kostenlos &amp; ohne Werbung
+                    HTL Lernen für HWII · Stoff an einem Ort
                   </span>
                 </div>
               </div>
@@ -252,8 +252,7 @@ export default function Home() {
             {/* Subtitle */}
             <ScrollReveal direction="up" delay={200}>
               <p className="text-center text-lg md:text-xl lg:text-2xl text-[var(--text-muted)] max-w-2xl mx-auto mt-8 mb-14 leading-relaxed">
-                Erstelle interaktive Quizze, lerne mit smarten Karteikarten und
-                verfolge deinen Fortschritt — alles an einem Ort.
+                Alle wichtigen Inhalte aus Wirtschaftsingenieurwesen in einer Plattform. Lerne für Tests, Schularbeiten und PLFs.
               </p>
             </ScrollReveal>
 
@@ -265,7 +264,7 @@ export default function Home() {
                     className="px-10 py-4 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
                     strength={0.25}
                   >
-                    Jetzt kostenlos starten
+                    Beginne mit dem Lernen
                   </MagneticButton>
                 </Link>
                 <Link href="/browse">
@@ -273,7 +272,7 @@ export default function Home() {
                     className="px-10 py-4 text-base font-semibold text-[var(--text-muted)] hover:text-[var(--foreground)] border border-[var(--border-strong)] rounded-xl hover:border-[color-mix(in_srgb,var(--foreground)_20%,transparent)] transition-all duration-300 cursor-pointer"
                     strength={0.25}
                   >
-                    Quizze entdecken
+                    Quizze ansehen
                   </MagneticButton>
                 </Link>
               </div>
@@ -285,10 +284,10 @@ export default function Home() {
             <ScrollReveal direction="up" delay={0}>
               <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--foreground)] tracking-[-0.03em] mb-4">
-                  Alles was du brauchst
+                  Alles für Wirtschaftsingenieur-SchülerInnen
                 </h2>
                 <p className="text-lg text-[var(--text-muted)] max-w-lg mx-auto">
-                  Drei einfache Schritte zu besseren Lernergebnissen.
+                  HTL-relevante Stoffgebiete in einem Hub: lernen, wiederholen und schneller prüfungsfit werden.
                 </p>
               </div>
             </ScrollReveal>
@@ -316,8 +315,7 @@ export default function Home() {
                     Quizze erstellen
                   </h3>
                   <p className="text-[var(--text-muted)] leading-relaxed">
-                    Erstelle individuelle Quizze passend zu deinem Lernstoff und
-                    teile sie mit Freunden.
+                    Sammle Unterrichtsstoff an einem Ort und erstelle Quizze zu Rechnungswesen, BWL, Technik und weiteren Wirtschaftsingenieur-Fächern.
                   </p>
                 </InteractiveCard>
               </ScrollReveal>
@@ -341,11 +339,10 @@ export default function Home() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">
-                    Interaktiv lernen
+                    HTL-Stoff wiederholen
                   </h3>
                   <p className="text-[var(--text-muted)] leading-relaxed">
-                    Lerne mit dynamischen Karteikarten und Quizzen — effektiv,
-                    motivierend und mit Spaß.
+                    Wiederhole Wirtschaftsingenieur-Themen quizbasiert und lerne gezielt für HTL-Tests, Schularbeiten und PLFs.
                   </p>
                 </InteractiveCard>
               </ScrollReveal>
@@ -369,11 +366,10 @@ export default function Home() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">
-                    Fortschritt verfolgen
+                    Fortschritt tracken
                   </h3>
                   <p className="text-[var(--text-muted)] leading-relaxed">
-                    Behalte deinen Lernfortschritt mit detaillierten Statistiken
-                    jederzeit im Blick.
+                    Hol dir den schnellen Überblick über wichtige Wirtschaftsingenieur-Themen und erkenne sofort, wo noch Lücken sind.
                   </p>
                 </InteractiveCard>
               </ScrollReveal>
@@ -394,17 +390,17 @@ export default function Home() {
 
                 <div className="relative">
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--foreground)] mb-5 tracking-[-0.03em]">
-                    Bereit loszulernen?
+                    Bereit für deinen HWII-Lernhub?
                   </h2>
                   <p className="text-lg md:text-xl text-[var(--text-muted)] mb-12 max-w-lg mx-auto">
-                    Starte jetzt und entdecke eine neue Art zu lernen.
+                    Starte jetzt mit dem gesamten HTL-Wirtschaftsingenieur-Stoff an einem Ort.
                   </p>
                   <Link href="/auth">
                     <MagneticButton
                       className="px-12 py-4.5 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
                       strength={0.3}
                     >
-                      Kostenlos starten
+                      Mit dem Lernen starten
                     </MagneticButton>
                   </Link>
                 </div>

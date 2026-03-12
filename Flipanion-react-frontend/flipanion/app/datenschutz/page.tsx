@@ -40,10 +40,10 @@ export default function DatenschutzPage() {
               <p className="mt-2">
                 E-Mail:{' '}
                 <a
-                  href="mailto:flipanion@spengergasse.at"
+                  href="mailto:KRU230104@spengergasse.at"
                   className="text-[var(--primary)] hover:underline transition-colors"
                 >
-                  flipanion@spengergasse.at
+                  KRU230104@spengergasse.at
                 </a>
               </p>
             </div>
@@ -157,10 +157,10 @@ export default function DatenschutzPage() {
               <p>
                 Zur Ausübung Ihrer Rechte wenden Sie sich bitte an{' '}
                 <a
-                  href="mailto:flipanion@spengergasse.at"
+                  href="mailto:KRU230104@spengergasse.at"
                   className="text-[var(--primary)] hover:underline transition-colors"
                 >
-                  flipanion@spengergasse.at
+                  KRU230104@spengergasse.at
                 </a>
                 .
               </p>

@@ -44,10 +44,10 @@ export default function ImpressumPage() {
               <p>
                 <span className="text-[var(--text-muted)]">E-Mail:</span>{' '}
                 <a
-                  href="mailto:flipanion@spengergasse.at"
+                  href="mailto:KRU230104@spengergasse.at"
                   className="text-[var(--primary)] hover:underline transition-colors"
                 >
-                  flipanion@spengergasse.at
+                  KRU230104@spengergasse.at
                 </a>
               </p>
             </div>
