@@ -330,7 +330,7 @@ export default function LeaderboardPage() {
                   Jetzt anmelden
                 </button>
               </Link>
-              <Link href="/auth?mode=register">
+              <Link href="/auth?mode=signup">
                 <button className="w-full sm:w-auto px-8 py-3 border border-[var(--border-strong)] text-[var(--foreground)] font-medium rounded-lg hover:bg-[var(--surface-hover)] transition-all duration-300 active:scale-[0.98] cursor-pointer">
                   Registrieren
                 </button>

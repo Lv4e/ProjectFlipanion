@@ -17,7 +17,8 @@ export default function AuthPage() {
 function AuthPageInner() {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
-  const [isLogin, setIsLogin] = React.useState(mode !== "signup");
+  const isSignupMode = mode === "signup" || mode === "register";
+  const [isLogin, setIsLogin] = React.useState(!isSignupMode);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -35,6 +36,10 @@ function AuthPageInner() {
   const [resetLoading, setResetLoading] = React.useState(false);
   const [resetCooldown, setResetCooldown] = React.useState(0);
   const router = useRouter();
+
+  React.useEffect(() => {
+    setIsLogin(!(mode === "signup" || mode === "register"));
+  }, [mode]);
 
   // Cooldown countdown timer
   React.useEffect(() => {

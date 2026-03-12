@@ -467,9 +467,9 @@ export default function QuizPage() {
 
             {!user ? (
               <div className="glass-card rounded-xl p-10 flex flex-col items-center justify-center text-center animate-fade-in-up">
-                <div className="w-20 h-20 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center mb-6">
+                <div className="w-20 h-20 bg-red-500/10 rounded-xl flex items-center justify-center mb-6">
                   <svg
-                    className="w-10 h-10 text-[var(--text-muted)]"
+                    className="w-10 h-10 text-red-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -489,12 +489,20 @@ export default function QuizPage() {
                   Melde dich an oder erstelle ein Konto, um dieses Quiz zu
                   starten und deinen Lernfortschritt zu verfolgen.
                 </p>
-                <Link
-                  href="/auth"
-                  className="px-6 py-3 rounded-lg bg-[var(--foreground)] text-[var(--background)] font-medium transition-all duration-300 hover:opacity-90 active:scale-[0.98]"
-                >
-                  Jetzt anmelden
-                </Link>
+                <div className="flex flex-col sm:flex-row justify-center gap-3 w-full max-w-md">
+                  <Link
+                    href="/auth"
+                    className="w-full sm:w-auto px-6 py-3 rounded-lg bg-[var(--foreground)] text-[var(--background)] font-medium transition-all duration-300 hover:opacity-90 active:scale-[0.98]"
+                  >
+                    Jetzt anmelden
+                  </Link>
+                  <Link
+                    href="/auth?mode=signup"
+                    className="w-full sm:w-auto px-6 py-3 rounded-lg border border-[var(--border-strong)] text-[var(--foreground)] font-medium transition-all duration-300 hover:bg-[var(--surface-hover)] active:scale-[0.98]"
+                  >
+                    Registrieren
+                  </Link>
+                </div>
               </div>
             ) : questions.length === 0 ? (
               <div className="glass-card rounded-xl p-8 flex flex-col items-center justify-center text-center">
