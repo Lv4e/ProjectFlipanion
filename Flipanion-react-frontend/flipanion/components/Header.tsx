@@ -97,7 +97,7 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center opacity-90 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105">
-            <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+            <Image src="/flipanion_logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
           </div>
           <span className="text-[1.05rem] font-bold text-[var(--foreground)] tracking-[-0.03em] opacity-90 group-hover:opacity-100 transition-opacity duration-300">
             Flipanion

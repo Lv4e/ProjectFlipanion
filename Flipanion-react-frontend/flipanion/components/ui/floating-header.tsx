@@ -112,7 +112,7 @@ export function FloatingHeader() {
 						>
 							<div className="w-8 h-8 rounded-xl overflow-hidden flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105">
 								<Image
-									src="/logo_flipanion.png"
+									src="/flipanion_logo.png"
 									alt="Flipanion"
 									width={32}
 									height={32}

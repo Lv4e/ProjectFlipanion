@@ -237,7 +237,7 @@ function AuthPageInner() {
             className="inline-flex items-center gap-3 justify-center group"
           >
             <div className="w-11 h-11 rounded-xl overflow-hidden flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
-              <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+              <Image src="/flipanion_logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
             </div>
             <span className="text-xl font-bold text-[var(--foreground)] tracking-[-0.02em]">
               Flipanion
