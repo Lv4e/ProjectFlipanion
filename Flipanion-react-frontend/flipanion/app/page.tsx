@@ -395,14 +395,24 @@ export default function Home() {
                   <p className="text-lg md:text-xl text-[var(--text-muted)] mb-12 max-w-lg mx-auto">
                     Starte jetzt mit dem gesamten HTL-Wirtschaftsingenieur-Stoff an einem Ort.
                   </p>
-                  <Link href="/auth">
-                    <MagneticButton
-                      className="px-12 py-4.5 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
-                      strength={0.3}
-                    >
-                      Mit dem Lernen starten
-                    </MagneticButton>
-                  </Link>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <Link href="/auth">
+                      <MagneticButton
+                        className="px-12 py-4.5 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
+                        strength={0.3}
+                      >
+                        Mit dem Lernen starten
+                      </MagneticButton>
+                    </Link>
+                    <Link href="/about">
+                      <MagneticButton
+                        className="px-12 py-4.5 border border-[var(--border-strong)] text-[var(--foreground)] text-base font-semibold rounded-xl hover:bg-[color-mix(in_srgb,var(--foreground)_5%,transparent)] transition-all duration-300 active:scale-[0.97] cursor-pointer"
+                        strength={0.3}
+                      >
+                        Erfahre mehr über uns
+                      </MagneticButton>
+                    </Link>
+                  </div>
                 </div>
               </InteractiveCard>
             </div>
