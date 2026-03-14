@@ -4,7 +4,6 @@ import React from "react";
 import { supabase } from "../../supabase-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import CustomDropdown from "../../../components/CustomDropdown";
 
@@ -44,6 +43,7 @@ export default function CreateQuiz() {
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [subjectId, setSubjectId] = React.useState<number | "">("");
+  const [jahrgang, setJahrgang] = React.useState<number | "">("")
   const [questions, setQuestions] = React.useState<QuestionForm[]>([
     emptyQuestion(),
   ]);
@@ -145,6 +145,7 @@ export default function CreateQuiz() {
           title: title.trim(),
           description: description.trim() || null,
           subjectId: subjectId as number,
+          jahrgang: jahrgang as number,
           creatorId,
         })
         .select("id")
@@ -211,8 +212,7 @@ export default function CreateQuiz() {
   if (!user) {
     return (
       <div className="min-h-screen bg-[var(--background)]">
-        <Header />
-        <main className="max-w-2xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-2xl mx-auto px-6 pt-10 pb-12">
           <div className="glass-card rounded-xl p-10 text-center animate-fade-in-up">
             <div className="w-16 h-16 bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-5">
               <svg
@@ -235,11 +235,18 @@ export default function CreateQuiz() {
             <p className="text-[var(--text-muted)] mb-6">
               Du musst angemeldet sein, um ein Quiz zu erstellen.
             </p>
-            <Link href="/auth">
-              <button className="px-8 py-3 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] cursor-pointer">
-                Jetzt anmelden
-              </button>
-            </Link>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <Link href="/auth">
+                <button className="w-full sm:w-auto px-8 py-3 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] cursor-pointer">
+                  Jetzt anmelden
+                </button>
+              </Link>
+              <Link href="/auth?mode=signup">
+                <button className="w-full sm:w-auto px-8 py-3 border border-[var(--border-strong)] text-[var(--foreground)] font-medium rounded-lg hover:bg-[var(--surface-hover)] transition-all duration-300 active:scale-[0.98] cursor-pointer">
+                  Registrieren
+                </button>
+              </Link>
+            </div>
           </div>
         </main>
         <Footer />
@@ -251,8 +258,7 @@ export default function CreateQuiz() {
   if (success) {
     return (
       <div className="min-h-screen bg-[var(--background)]">
-        <Header />
-        <main className="max-w-2xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-2xl mx-auto px-6 pt-10 pb-12">
           <div className="glass-card rounded-xl p-10 text-center animate-fade-in-up">
             <div className="w-16 h-16 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-5">
               <svg
@@ -283,9 +289,8 @@ export default function CreateQuiz() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-3xl mx-auto px-8 pt-32 pb-20">
+      <main className="max-w-3xl mx-auto px-8 pt-12 pb-20">
         {/* Page Header */}
         <div className="mb-10 animate-fade-in-up">
           <Link
@@ -417,6 +422,28 @@ export default function CreateQuiz() {
                   value: String(s.id),
                   label: s.name,
                 }))}
+              />
+            </div>
+            {/* Jahrgang */}
+            <div>
+              <label
+                htmlFor="jahrgang"
+                className="block text-[13px] font-medium text-[var(--text-muted)] mb-2"
+              >
+                Jahrgang <span className="text-red-400">*</span>
+              </label>
+              <CustomDropdown
+                id="jahrgang"
+                value={jahrgang === '' ? '' : String(jahrgang)}
+                onChange={(val) => setJahrgang(val ? Number(val) : '')}
+                placeholder="Jahrgang ausw\u00e4hlen ..."
+                options={[
+                  { value: '1', label: '1. Jahrgang' },
+                  { value: '2', label: '2. Jahrgang' },
+                  { value: '3', label: '3. Jahrgang' },
+                  { value: '4', label: '4. Jahrgang' },
+                  { value: '5', label: '5. Jahrgang' },
+                ]}
               />
             </div>
           </div>

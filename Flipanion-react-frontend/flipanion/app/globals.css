@@ -37,6 +37,15 @@ html.dark {
   --shadow-glow: 0 0 40px rgba(100, 148, 237, 0.06);
   --shadow-glow-strong: 0 0 80px rgba(100, 148, 237, 0.1);
   --ring: rgba(100, 148, 237, 0.3);
+  --primary-foreground: #ffffff;
+  --secondary: #12121a;
+  --secondary-foreground: #eaeaf0;
+  --muted: #0d0d15;
+  --muted-foreground: #7e7e8c;
+  --accent-foreground: #eaeaf0;
+  --destructive: #f06b6b;
+  --destructive-foreground: #ffffff;
+  --input: rgba(255, 255, 255, 0.1);
   --grain-opacity: 0.03;
   --duration-fast: 150ms;
   --duration-standard: 250ms;
@@ -57,13 +66,23 @@ html.dark {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
   --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-surface: var(--surface);
   --color-surface-soft: var(--surface-soft);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-text-muted: var(--text-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -97,6 +116,15 @@ html.light {
   --shadow-glow: 0 0 40px rgba(51, 102, 224, 0.06);
   --shadow-glow-strong: 0 0 60px rgba(51, 102, 224, 0.08);
   --ring: rgba(51, 102, 224, 0.2);
+  --primary-foreground: #ffffff;
+  --secondary: #edeef3;
+  --secondary-foreground: #0f1017;
+  --muted: #f0f1f5;
+  --muted-foreground: #626272;
+  --accent-foreground: #0f1017;
+  --destructive: #e04e4e;
+  --destructive-foreground: #ffffff;
+  --input: rgba(0, 0, 0, 0.1);
   --grain-opacity: 0.015;
 }
 
@@ -129,6 +157,15 @@ html.light {
     --shadow-glow: 0 0 40px rgba(100, 148, 237, 0.06);
     --shadow-glow-strong: 0 0 80px rgba(100, 148, 237, 0.1);
     --ring: rgba(100, 148, 237, 0.3);
+    --primary-foreground: #ffffff;
+    --secondary: #12121a;
+    --secondary-foreground: #eaeaf0;
+    --muted: #0d0d15;
+    --muted-foreground: #7e7e8c;
+    --accent-foreground: #eaeaf0;
+    --destructive: #f06b6b;
+    --destructive-foreground: #ffffff;
+    --input: rgba(255, 255, 255, 0.1);
     --grain-opacity: 0.03;
   }
 }

@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Header from "../../components/Header";
 import { supabase } from "../supabase-client";
 
 interface User {
@@ -431,8 +430,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--background)]">
-        <Header />
-        <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-4xl mx-auto px-6 pt-10 pb-12">
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-10 h-10 border-3 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
             <p className="mt-4 text-sm text-[var(--text-muted)]">
@@ -447,8 +445,7 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-[var(--background)]">
-        <Header />
-        <main className="max-w-4xl mx-auto px-6 pt-28 pb-12">
+        <main className="max-w-4xl mx-auto px-6 pt-10 pb-12">
           <div className="glass-card rounded-xl py-16 px-8 flex flex-col items-center justify-center text-center">
             <div className="w-16 h-16 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-center mb-4">
               <svg
@@ -498,9 +495,8 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-4xl mx-auto px-8 pt-32 pb-20">
+      <main className="max-w-4xl mx-auto px-8 pt-12 pb-20">
         {/* Back link */}
         <Link
           href="/"

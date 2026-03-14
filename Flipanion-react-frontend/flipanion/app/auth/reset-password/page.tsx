@@ -187,7 +187,7 @@ function ResetPasswordInner() {
             className="inline-flex items-center gap-2 justify-center group"
           >
             <div className="w-11 h-11 rounded-xl overflow-hidden flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all">
-              <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+              <Image src="/flipanion_logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
             </div>
             <span className="text-[1.05rem] font-bold text-[var(--foreground)] tracking-tight">
               Flipanion

@@ -79,3 +79,8 @@ export type UserStatistics = Prisma.UserStatisticsModel
  * 
  */
 export type Quiz = Prisma.QuizModel
+/**
+ * Model QuizAttempt
+ * 
+ */
+export type QuizAttempt = Prisma.QuizAttemptModel

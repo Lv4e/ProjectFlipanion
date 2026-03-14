@@ -33,8 +33,8 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 group mb-5">
               <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105">
-                <Image
-                  src="/logo_flipanion.png"
+                  <Image
+                    src="/flipanion_logo.png"
                   alt="Flipanion"
                   width={200}
                   height={200}
@@ -46,8 +46,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-[var(--text-muted)] leading-relaxed max-w-[280px]">
-              Deine interaktive Quiz-Plattform zum Lernen, Üben und Wissen
-              testen.
+              Die Lern- und Quizplattform für HTL Wirtschaftsingenieur-SchülerInnen: gesamter HWII-Stoff an einem Ort.
             </p>
           </div>
 
@@ -81,7 +80,14 @@ export default function Footer() {
                   Leaderboard
                 </Link>
               </li>
-
+              <li>
+                <Link
+                  href="/about"
+                  className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
+                >
+                  Über uns
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -126,13 +132,13 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="mailto:flipanion@spengergasse.at"
+                  href="mailto:KRU230104@spengergasse.at"
                   className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
-                  flipanion@spengergasse.at
+                  KRU230104@spengergasse.at
                 </a>
               </li>
-              <li className="text-sm text-[var(--text-muted)]">Mo-Fr, 08:00-17:00</li>
+              <li className="text-sm text-[var(--text-muted)]">Mo-Fr, 8:00-16:00</li>
             </ul>
           </div>
         </div>

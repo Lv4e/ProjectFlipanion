@@ -83,6 +83,7 @@ model Quiz {
   createdAt   DateTime   @default(now())
   subjectId   Int
   creatorId   Int?
+  jahrgang    Int        @default(1)
   questions   Question[]
   attempts    QuizAttempt[]
   subject     Subject    @relation(fields: [subjectId], references: [id])

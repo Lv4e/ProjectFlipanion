@@ -55,7 +55,8 @@ export const ModelName = {
   Question: 'Question',
   UserAnswer: 'UserAnswer',
   UserStatistics: 'UserStatistics',
-  Quiz: 'Quiz'
+  Quiz: 'Quiz',
+  QuizAttempt: 'QuizAttempt'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -135,7 +136,8 @@ export const UserStatisticsScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   answeredQuestions: 'answeredQuestions',
-  correctAnswers: 'correctAnswers'
+  correctAnswers: 'correctAnswers',
+  streak: 'streak'
 } as const
 
 export type UserStatisticsScalarFieldEnum = (typeof UserStatisticsScalarFieldEnum)[keyof typeof UserStatisticsScalarFieldEnum]
@@ -147,10 +149,24 @@ export const QuizScalarFieldEnum = {
   description: 'description',
   createdAt: 'createdAt',
   subjectId: 'subjectId',
-  creatorId: 'creatorId'
+  creatorId: 'creatorId',
+  jahrgang: 'jahrgang'
 } as const
 
 export type QuizScalarFieldEnum = (typeof QuizScalarFieldEnum)[keyof typeof QuizScalarFieldEnum]
+
+
+export const QuizAttemptScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  quizId: 'quizId',
+  points: 'points',
+  percentage: 'percentage',
+  pointsAwarded: 'pointsAwarded',
+  createdAt: 'createdAt'
+} as const
+
+export type QuizAttemptScalarFieldEnum = (typeof QuizAttemptScalarFieldEnum)[keyof typeof QuizAttemptScalarFieldEnum]
 
 
 export const SortOrder = {

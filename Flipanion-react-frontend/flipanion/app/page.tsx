@@ -3,7 +3,6 @@
 import React from "react";
 import { supabase } from "./supabase-client";
 import Link from "next/link";
-import Header from "../components/Header";
 import Footer from "../components/Footer";
 import InteractiveCard from "../components/InteractiveCard";
 import MagneticButton from "../components/MagneticButton";
@@ -23,6 +22,7 @@ interface CompletedQuiz {
   score: number;
   total: number;
   date: string;
+  jahrgang: number;
 }
 
 interface MyQuiz {
@@ -32,6 +32,7 @@ interface MyQuiz {
   createdAt: string;
   subjectName: string;
   questionCount: number;
+  jahrgang: number;
 }
 
 export default function Home() {
@@ -79,7 +80,7 @@ export default function Home() {
               const { data: quizzes } = await supabase
                 .from("Quiz")
                 .select(
-                  "id, title, description, createdAt, subjectId, Subject(name), Question(id)",
+                  "id, title, description, createdAt, subjectId, jahrgang, Subject(name), Question(id)",
                 )
                 .eq("creatorId", dbUser.id)
                 .order("createdAt", { ascending: false });
@@ -97,6 +98,7 @@ export default function Home() {
                     questionCount: Array.isArray(q.Question)
                       ? q.Question.length
                       : 0,
+                    jahrgang: (q.jahrgang as number) || 1,
                   })),
                 );
               }
@@ -128,7 +130,7 @@ export default function Home() {
             const { data: userAnswers } = await supabase
               .from("UserAnswer")
               .select(
-                "isCorrect, question:Question(id, quizId, quiz:Quiz(id, title, createdAt))",
+                "isCorrect, question:Question(id, quizId, quiz:Quiz(id, title, createdAt, jahrgang))",
               )
               .eq("userId", dbUser.id);
 
@@ -140,7 +142,7 @@ export default function Home() {
             // Group answers by quiz
             const quizMap = new Map<
               number,
-              { title: string; correct: number; total: number; date: string }
+              { title: string; correct: number; total: number; date: string; jahrgang: number }
             >();
 
             for (const ua of userAnswers as Array<Record<string, unknown>>) {
@@ -160,6 +162,7 @@ export default function Home() {
                   correct: 0,
                   total: 0,
                   date: quiz.createdAt as string,
+                  jahrgang: (quiz.jahrgang as number) || 1,
                 });
               }
               const entry = quizMap.get(qId)!;
@@ -175,6 +178,7 @@ export default function Home() {
                 score: v.correct,
                 total: v.total,
                 date: v.date,
+                jahrgang: v.jahrgang,
               });
             });
 
@@ -209,7 +213,6 @@ export default function Home() {
   if (!user) {
     return (
       <div className="min-h-screen bg-[var(--background)] overflow-hidden">
-        <Header />
 
         {/* Background orbs */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -220,14 +223,14 @@ export default function Home() {
 
         {/* Hero Section */}
         <main className="relative max-w-7xl mx-auto px-8">
-          <div className="pt-40 pb-32 lg:pt-52 lg:pb-40">
+          <div className="pt-20 pb-32 lg:pt-28 lg:pb-40">
             {/* Badge */}
             <ScrollReveal direction="up" delay={0}>
               <div className="flex justify-center mb-10">
                 <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-[var(--border-strong)] bg-[color-mix(in_srgb,var(--surface)_50%,transparent)] backdrop-blur-sm hover-glow">
                   <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                   <span className="text-xs font-medium text-[var(--text-muted)] tracking-wider uppercase">
-                    Kostenlos &amp; ohne Werbung
+                    HTL Lernen für HWII · Stoff an einem Ort
                   </span>
                 </div>
               </div>
@@ -249,8 +252,7 @@ export default function Home() {
             {/* Subtitle */}
             <ScrollReveal direction="up" delay={200}>
               <p className="text-center text-lg md:text-xl lg:text-2xl text-[var(--text-muted)] max-w-2xl mx-auto mt-8 mb-14 leading-relaxed">
-                Erstelle interaktive Quizze, lerne mit smarten Karteikarten und
-                verfolge deinen Fortschritt — alles an einem Ort.
+                Alle wichtigen Inhalte aus Wirtschaftsingenieurwesen in einer Plattform. Lerne für Tests, Schularbeiten und PLFs.
               </p>
             </ScrollReveal>
 
@@ -262,7 +264,7 @@ export default function Home() {
                     className="px-10 py-4 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
                     strength={0.25}
                   >
-                    Jetzt kostenlos starten
+                    Beginne mit dem Lernen
                   </MagneticButton>
                 </Link>
                 <Link href="/browse">
@@ -270,7 +272,7 @@ export default function Home() {
                     className="px-10 py-4 text-base font-semibold text-[var(--text-muted)] hover:text-[var(--foreground)] border border-[var(--border-strong)] rounded-xl hover:border-[color-mix(in_srgb,var(--foreground)_20%,transparent)] transition-all duration-300 cursor-pointer"
                     strength={0.25}
                   >
-                    Quizze entdecken
+                    Quizze ansehen
                   </MagneticButton>
                 </Link>
               </div>
@@ -282,10 +284,10 @@ export default function Home() {
             <ScrollReveal direction="up" delay={0}>
               <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--foreground)] tracking-[-0.03em] mb-4">
-                  Alles was du brauchst
+                  Alles für Wirtschaftsingenieur-SchülerInnen
                 </h2>
                 <p className="text-lg text-[var(--text-muted)] max-w-lg mx-auto">
-                  Drei einfache Schritte zu besseren Lernergebnissen.
+                  HTL-relevante Stoffgebiete in einem Hub: lernen, wiederholen und schneller prüfungsfit werden.
                 </p>
               </div>
             </ScrollReveal>
@@ -313,8 +315,7 @@ export default function Home() {
                     Quizze erstellen
                   </h3>
                   <p className="text-[var(--text-muted)] leading-relaxed">
-                    Erstelle individuelle Quizze passend zu deinem Lernstoff und
-                    teile sie mit Freunden.
+                    Sammle Unterrichtsstoff an einem Ort und erstelle Quizze zu Rechnungswesen, BWL, Technik und weiteren Wirtschaftsingenieur-Fächern.
                   </p>
                 </InteractiveCard>
               </ScrollReveal>
@@ -338,11 +339,10 @@ export default function Home() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">
-                    Interaktiv lernen
+                    HTL-Stoff wiederholen
                   </h3>
                   <p className="text-[var(--text-muted)] leading-relaxed">
-                    Lerne mit dynamischen Karteikarten und Quizzen — effektiv,
-                    motivierend und mit Spaß.
+                    Wiederhole Wirtschaftsingenieur-Themen quizbasiert und lerne gezielt für HTL-Tests, Schularbeiten und PLFs.
                   </p>
                 </InteractiveCard>
               </ScrollReveal>
@@ -366,11 +366,10 @@ export default function Home() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">
-                    Fortschritt verfolgen
+                    Fortschritt tracken
                   </h3>
                   <p className="text-[var(--text-muted)] leading-relaxed">
-                    Behalte deinen Lernfortschritt mit detaillierten Statistiken
-                    jederzeit im Blick.
+                    Hol dir den schnellen Überblick über wichtige Wirtschaftsingenieur-Themen und erkenne sofort, wo noch Lücken sind.
                   </p>
                 </InteractiveCard>
               </ScrollReveal>
@@ -391,19 +390,29 @@ export default function Home() {
 
                 <div className="relative">
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--foreground)] mb-5 tracking-[-0.03em]">
-                    Bereit loszulernen?
+                    Bereit für deinen HWII-Lernhub?
                   </h2>
                   <p className="text-lg md:text-xl text-[var(--text-muted)] mb-12 max-w-lg mx-auto">
-                    Starte jetzt und entdecke eine neue Art zu lernen.
+                    Starte jetzt mit dem gesamten HTL-Wirtschaftsingenieur-Stoff an einem Ort.
                   </p>
-                  <Link href="/auth">
-                    <MagneticButton
-                      className="px-12 py-4.5 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
-                      strength={0.3}
-                    >
-                      Kostenlos starten
-                    </MagneticButton>
-                  </Link>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <Link href="/auth">
+                      <MagneticButton
+                        className="px-12 py-4.5 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
+                        strength={0.3}
+                      >
+                        Mit dem Lernen starten
+                      </MagneticButton>
+                    </Link>
+                    <Link href="/about">
+                      <MagneticButton
+                        className="px-12 py-4.5 border border-[var(--border-strong)] text-[var(--foreground)] text-base font-semibold rounded-xl hover:bg-[color-mix(in_srgb,var(--foreground)_5%,transparent)] transition-all duration-300 active:scale-[0.97] cursor-pointer"
+                        strength={0.3}
+                      >
+                        Erfahre mehr über uns
+                      </MagneticButton>
+                    </Link>
+                  </div>
                 </div>
               </InteractiveCard>
             </div>
@@ -418,9 +427,8 @@ export default function Home() {
   // Dashboard for logged-in users
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-7xl mx-auto px-8 pt-32 pb-20">
+      <main className="max-w-7xl mx-auto px-8 pt-12 pb-20">
         {/* Welcome */}
         <div className="mb-12 animate-fade-in-up">
           <h2 className="text-4xl md:text-5xl font-bold text-[var(--foreground)] mb-2 tracking-[-0.03em]">
@@ -581,6 +589,9 @@ export default function Home() {
                       <span className="text-xs text-[var(--text-muted)] bg-[var(--surface-hover)] px-2 py-0.5 rounded-md">
                         {quiz.subjectName}
                       </span>
+                      <span className="text-xs text-[var(--text-muted)] bg-[var(--surface-hover)] px-2 py-0.5 rounded-md">
+                        {quiz.jahrgang}. Jahrgang
+                      </span>
                       <span className="text-xs text-[var(--text-muted)]">
                         {new Date(quiz.createdAt).toLocaleDateString("de-DE", {
                           day: "2-digit",
@@ -689,9 +700,12 @@ export default function Home() {
                     <h4 className="text-base font-bold text-[var(--foreground)] mb-1 group-hover:text-[var(--primary)] transition-colors">
                       {cq.title}
                     </h4>
-                    <p className="text-sm text-[var(--text-muted)] mb-3">
+                    <p className="text-sm text-[var(--text-muted)] mb-1">
                       {cq.score} von {cq.total} richtig
                     </p>
+                    <span className="inline-flex items-center px-2 py-0.5 text-[11px] font-medium border border-[var(--border)] text-[var(--text-muted)] rounded-md mb-3 w-fit">
+                      {cq.jahrgang}. Jahrgang
+                    </span>
                     {/* Mini progress bar */}
                     <div className="w-full bg-[var(--border)] rounded-full h-1.5 overflow-hidden">
                       <div

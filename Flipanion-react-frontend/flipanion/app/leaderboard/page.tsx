@@ -3,8 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { supabase } from "../supabase-client";
-import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import CustomDropdown from "../../components/CustomDropdown";
 
 interface LeaderboardEntry {
   userId: number;
@@ -34,13 +34,15 @@ const sortOptions: { key: SortKey; label: string; suffix: string }[] = [
 ];
 
 export default function LeaderboardPage() {
+  const [user, setUser] = React.useState<
+    import("@supabase/supabase-js").User | null
+  >(null);
+  const [authLoading, setAuthLoading] = React.useState(true);
   const [entries, setEntries] = React.useState<LeaderboardEntry[]>([]);
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [sortBy, setSortBy] = React.useState<SortKey>("points");
-  const [selectedSubject, setSelectedSubject] = React.useState<"all" | number>(
-    "all",
-  );
+  const [selectedSubject, setSelectedSubject] = React.useState("all");
   const [searchTerm, setSearchTerm] = React.useState("");
   const [currentSupabaseId, setCurrentSupabaseId] = React.useState<
     string | null
@@ -50,20 +52,33 @@ export default function LeaderboardPage() {
   );
 
   React.useEffect(() => {
-    fetchLeaderboard();
+    async function init() {
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
+
+      setUser(currentUser);
+      setAuthLoading(false);
+
+      if (!currentUser) {
+        setLoading(false);
+        return;
+      }
+
+      setCurrentSupabaseId(currentUser.id);
+      fetchLeaderboard(currentUser.id);
+    }
+
+    init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSubject]);
 
-  async function fetchLeaderboard() {
+  async function fetchLeaderboard(currentUserSupabaseId: string) {
     setLoading(true);
+    const selectedSubjectId =
+      selectedSubject === "all" ? null : Number(selectedSubject);
 
     try {
-      // Get current user
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) setCurrentSupabaseId(user.id);
-
       // Fetch all subjects
       const { data: subjectsData } = await supabase
         .from("Subject")
@@ -81,10 +96,8 @@ export default function LeaderboardPage() {
       }
 
       // Find current user's db id
-      if (user) {
-        const me = users.find((u) => u.supabaseId === user.id);
-        if (me) setCurrentDbUserId(me.id);
-      }
+      const me = users.find((u) => u.supabaseId === currentUserSupabaseId);
+      if (me) setCurrentDbUserId(me.id);
 
       // Fetch all user answers with question info
       let answersQuery = supabase
@@ -143,7 +156,7 @@ export default function LeaderboardPage() {
       if (quizzes) {
         for (const q of quizzes) {
           if (!q.creatorId) continue;
-          if (selectedSubject !== "all" && q.subjectId !== selectedSubject)
+          if (selectedSubjectId !== null && q.subjectId !== selectedSubjectId)
             continue;
           const entry = map.get(q.creatorId);
           if (entry) entry.quizzesCreated++;
@@ -171,7 +184,7 @@ export default function LeaderboardPage() {
           const quizId = question.quizId as number;
 
           // Apply subject filter
-          if (selectedSubject !== "all" && subjectId !== selectedSubject)
+          if (selectedSubjectId !== null && subjectId !== selectedSubjectId)
             continue;
 
           const entry = map.get(userId);
@@ -202,7 +215,7 @@ export default function LeaderboardPage() {
             ? quizRelation[0]
             : quizRelation;
           const subjectId = quiz?.subjectId as number | undefined;
-          if (selectedSubject !== "all" && subjectId !== selectedSubject)
+          if (selectedSubjectId !== null && subjectId !== selectedSubjectId)
             continue;
           const entry = map.get(a.userId as number);
           if (entry) entry.points += (a.points as number) || 0;
@@ -275,11 +288,66 @@ export default function LeaderboardPage() {
     return `#${rank}`;
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-[color-mix(in_srgb,var(--primary)_25%,transparent)] border-t-[var(--primary)] rounded-full animate-spin" />
+          <span className="text-sm text-[var(--text-muted)]">Lädt ...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[var(--background)]">
+        <main className="max-w-2xl mx-auto px-6 pt-10 pb-12">
+          <div className="glass-card rounded-xl p-10 text-center animate-fade-in-up">
+            <div className="w-16 h-16 bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-5">
+              <svg
+                className="w-8 h-8 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
+              Anmeldung erforderlich
+            </h2>
+            <p className="text-[var(--text-muted)] mb-6">
+              Du musst angemeldet sein, um das Leaderboard zu sehen.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <Link href="/auth">
+                <button className="w-full sm:w-auto px-8 py-3 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] cursor-pointer">
+                  Jetzt anmelden
+                </button>
+              </Link>
+              <Link href="/auth?mode=signup">
+                <button className="w-full sm:w-auto px-8 py-3 border border-[var(--border-strong)] text-[var(--foreground)] font-medium rounded-lg hover:bg-[var(--surface-hover)] transition-all duration-300 active:scale-[0.98] cursor-pointer">
+                  Registrieren
+                </button>
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <Header />
 
-      <main className="max-w-7xl mx-auto px-8 pt-32 pb-20">
+      <main className="max-w-7xl mx-auto px-8 pt-12 pb-20">
         {/* Page Header */}
         <div className="mb-10 animate-fade-in-up">
           <Link
@@ -390,7 +458,7 @@ export default function LeaderboardPage() {
         )}
 
         {/* Filters */}
-        <div className="glass-card rounded-xl p-5 mb-6 animate-fade-in-up-delay-2">
+        <div className="glass-card rounded-xl p-5 mb-6 animate-fade-in-up-delay-2 relative z-40" style={{ overflow: "visible" }}>
           <div className="flex flex-col md:flex-row gap-3">
             {/* Search */}
             <div className="relative flex-1">
@@ -417,37 +485,35 @@ export default function LeaderboardPage() {
             </div>
 
             {/* Subject filter */}
-            <select
-              value={
-                selectedSubject === "all" ? "all" : String(selectedSubject)
-              }
-              onChange={(e) =>
-                setSelectedSubject(
-                  e.target.value === "all" ? "all" : Number(e.target.value),
-                )
-              }
-              className="px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm text-[var(--foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] transition-all cursor-pointer"
-            >
-              <option value="all">Alle Fächer</option>
-              {subjects.map((s) => (
-                <option key={s.id} value={String(s.id)}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+            <div className="md:w-[220px]">
+              <CustomDropdown
+                id="leaderboard-subject"
+                value={selectedSubject}
+                onChange={(value) => setSelectedSubject(value)}
+                placeholder="Alle Fächer"
+                options={[
+                  { value: "all", label: "Alle Fächer" },
+                  ...subjects.map((s) => ({
+                    value: String(s.id),
+                    label: s.name,
+                  })),
+                ]}
+              />
+            </div>
 
             {/* Sort */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortKey)}
-              className="px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-sm text-[var(--foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--border-strong)] focus:border-[var(--border-strong)] transition-all cursor-pointer"
-            >
-              {sortOptions.map((o) => (
-                <option key={o.key} value={o.key}>
-                  Top 10: {o.label}
-                </option>
-              ))}
-            </select>
+            <div className="md:w-[220px]">
+              <CustomDropdown
+                id="leaderboard-sort"
+                value={sortBy}
+                onChange={(value) => setSortBy(value as SortKey)}
+                placeholder="Sortierung"
+                options={sortOptions.map((o) => ({
+                  value: o.key,
+                  label: `Top 10: ${o.label}`,
+                }))}
+              />
+            </div>
           </div>
         </div>
 

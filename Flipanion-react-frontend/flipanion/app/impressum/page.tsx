@@ -44,10 +44,10 @@ export default function ImpressumPage() {
               <p>
                 <span className="text-[var(--text-muted)]">E-Mail:</span>{' '}
                 <a
-                  href="mailto:flipanion@spengergasse.at"
+                  href="mailto:KRU230104@spengergasse.at"
                   className="text-[var(--primary)] hover:underline transition-colors"
                 >
-                  flipanion@spengergasse.at
+                  KRU230104@spengergasse.at
                 </a>
               </p>
             </div>
@@ -72,7 +72,7 @@ export default function ImpressumPage() {
                 <p>
                   Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen
                   Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr
-                  Ã¼bernehmen. FÃ¼r die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder
+                  übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder
                   Betreiber der Seiten verantwortlich.
                 </p>
               </div>

@@ -17,7 +17,8 @@ export default function AuthPage() {
 function AuthPageInner() {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
-  const [isLogin, setIsLogin] = React.useState(mode !== "signup");
+  const isSignupMode = mode === "signup" || mode === "register";
+  const [isLogin, setIsLogin] = React.useState(!isSignupMode);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -35,6 +36,10 @@ function AuthPageInner() {
   const [resetLoading, setResetLoading] = React.useState(false);
   const [resetCooldown, setResetCooldown] = React.useState(0);
   const router = useRouter();
+
+  React.useEffect(() => {
+    setIsLogin(!(mode === "signup" || mode === "register"));
+  }, [mode]);
 
   // Cooldown countdown timer
   React.useEffect(() => {
@@ -232,7 +237,7 @@ function AuthPageInner() {
             className="inline-flex items-center gap-3 justify-center group"
           >
             <div className="w-11 h-11 rounded-xl overflow-hidden flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
-              <Image src="/logo_flipanion.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
+              <Image src="/flipanion_logo.png" alt="Flipanion" width={200} height={200} className="scale-[1.6]" />
             </div>
             <span className="text-xl font-bold text-[var(--foreground)] tracking-[-0.02em]">
               Flipanion

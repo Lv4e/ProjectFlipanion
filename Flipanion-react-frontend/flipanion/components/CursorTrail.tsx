@@ -2,75 +2,49 @@
 
 import React from 'react';
 
-// ─── Glowing Particle Cursor Trail ───
-// Soft luminous particles follow the cursor with physics-based movement.
-// Particles emit with slight random velocity, fade and shrink over time.
+const SEGMENT_COUNT = 34;
+const SEGMENT_SPACING = 12;
+const HEAD_FOLLOW_EASING = 0.16;
+const TAIL_DAMPING = 0.22;
 
-const MAX_PARTICLES = 50;
-const PARTICLE_LIFE = 55; // frames (~0.9s at 60fps)
-const SPAWN_RATE = 2; // particles per frame while moving
-const SPEED_THRESHOLD = 1.5;
-
-interface Particle {
+interface DragonSegment {
   x: number;
   y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-  size: number;
-}
-
-interface FollowerState {
-  x: number;
-  y: number;
-  targetX: number;
-  targetY: number;
-  scale: number;
-  targetScale: number;
-  isHovering: boolean;
+  angle: number;
 }
 
 export default function CursorTrail() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const particlesRef = React.useRef<Particle[]>([]);
-  const mouseRef = React.useRef({ x: -200, y: -200 });
-  const prevMouseRef = React.useRef({ x: -200, y: -200 });
-  const speedRef = React.useRef(0);
+  const mouseRef = React.useRef({ x: -300, y: -300 });
+  const headRef = React.useRef({ x: -300, y: -300, angle: 0 });
+  const segmentsRef = React.useRef<DragonSegment[]>([]);
   const rafRef = React.useRef<number>(0);
-  const followerRef = React.useRef<FollowerState>({
-    x: -200, y: -200,
-    targetX: -200, targetY: -200,
-    scale: 1, targetScale: 1,
-    isHovering: false,
-  });
-  const primaryColorRef = React.useRef({ r: 100, g: 148, b: 237 });
+  const timeRef = React.useRef(0);
 
   React.useEffect(() => {
     if (typeof window === 'undefined') return;
     if ('ontouchstart' in window && navigator.maxTouchPoints > 0) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    // Read primary color
-    const readColor = () => {
-      const style = getComputedStyle(document.documentElement);
-      const hex = style.getPropertyValue('--primary').trim();
-      if (hex.startsWith('#')) {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-        if (!isNaN(r)) primaryColorRef.current = { r, g, b };
-      }
-    };
-    readColor();
-    const observer = new MutationObserver(readColor);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    const initializeDragon = () => {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      headRef.current = { x: centerX, y: centerY, angle: 0 };
+      mouseRef.current = { x: centerX, y: centerY };
 
-    // Canvas resize
+      segmentsRef.current = Array.from({ length: SEGMENT_COUNT }, (_, i) => ({
+        x: centerX - i * SEGMENT_SPACING,
+        y: centerY,
+        angle: 0,
+      }));
+    };
+    initializeDragon();
+
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = window.innerWidth * dpr;
@@ -82,152 +56,146 @@ export default function CursorTrail() {
     resize();
     window.addEventListener('resize', resize, { passive: true });
 
-    // Mouse tracking
     const onMouseMove = (e: MouseEvent) => {
       mouseRef.current.x = e.clientX;
       mouseRef.current.y = e.clientY;
-      followerRef.current.targetX = e.clientX;
-      followerRef.current.targetY = e.clientY;
     };
     window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-    // Interactive element detection
-    const onMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const interactive = target.closest('a, button, [role="button"], input, select, textarea, label[for], [data-interactive]');
-      followerRef.current.isHovering = !!interactive;
-      followerRef.current.targetScale = interactive ? 2.5 : 1;
-    };
-    document.addEventListener('mouseover', onMouseOver, { passive: true });
-
-    const particles = particlesRef.current;
-
-    // ── Animation loop ──
-    const animate = () => {
+    const drawDragon = (now: number) => {
+      timeRef.current = now * 0.001;
+      const t = timeRef.current;
       const { innerWidth: w, innerHeight: h } = window;
       ctx.clearRect(0, 0, w, h);
 
-      // Calculate speed
-      const dx = mouseRef.current.x - prevMouseRef.current.x;
-      const dy = mouseRef.current.y - prevMouseRef.current.y;
-      const currentSpeed = Math.sqrt(dx * dx + dy * dy);
-      speedRef.current += (currentSpeed - speedRef.current) * 0.15;
-      prevMouseRef.current.x = mouseRef.current.x;
-      prevMouseRef.current.y = mouseRef.current.y;
+      const head = headRef.current;
+      const segments = segmentsRef.current;
 
-      const speed = speedRef.current;
-      const { r, g, b } = primaryColorRef.current;
+      const toMouseX = mouseRef.current.x - head.x;
+      const toMouseY = mouseRef.current.y - head.y;
+      head.x += toMouseX * HEAD_FOLLOW_EASING;
+      head.y += toMouseY * HEAD_FOLLOW_EASING;
+      head.angle = Math.atan2(toMouseY, toMouseX);
 
-      // ── Spawn particles when moving ──
-      if (speed > SPEED_THRESHOLD) {
-        const count = Math.min(Math.floor(speed * 0.15), SPAWN_RATE);
-        for (let i = 0; i < count; i++) {
-          if (particles.length >= MAX_PARTICLES) {
-            // Recycle oldest
-            const oldest = particles.shift()!;
-            oldest.x = mouseRef.current.x + (Math.random() - 0.5) * 4;
-            oldest.y = mouseRef.current.y + (Math.random() - 0.5) * 4;
-            oldest.vx = (Math.random() - 0.5) * 0.6;
-            oldest.vy = (Math.random() - 0.5) * 0.6 - 0.2;
-            oldest.life = 0;
-            oldest.maxLife = PARTICLE_LIFE + Math.random() * 15;
-            oldest.size = 1.5 + Math.random() * 2;
-            particles.push(oldest);
-          } else {
-            particles.push({
-              x: mouseRef.current.x + (Math.random() - 0.5) * 4,
-              y: mouseRef.current.y + (Math.random() - 0.5) * 4,
-              vx: (Math.random() - 0.5) * 0.6,
-              vy: (Math.random() - 0.5) * 0.6 - 0.2,
-              life: 0,
-              maxLife: PARTICLE_LIFE + Math.random() * 15,
-              size: 1.5 + Math.random() * 2,
-            });
-          }
+      segments[0].x += (head.x - segments[0].x) * 0.65;
+      segments[0].y += (head.y - segments[0].y) * 0.65;
+      segments[0].angle = head.angle;
+
+      for (let i = 1; i < segments.length; i++) {
+        const prev = segments[i - 1];
+        const seg = segments[i];
+        const dx = prev.x - seg.x;
+        const dy = prev.y - seg.y;
+        const angle = Math.atan2(dy, dx);
+
+        const tx = prev.x - Math.cos(angle) * SEGMENT_SPACING;
+        const ty = prev.y - Math.sin(angle) * SEGMENT_SPACING;
+
+        seg.x += (tx - seg.x) * TAIL_DAMPING;
+        seg.y += (ty - seg.y) * TAIL_DAMPING;
+        seg.angle = angle;
+      }
+
+      for (let i = segments.length - 1; i > 0; i--) {
+        const seg = segments[i];
+        const widthFactor = 1 - i / segments.length;
+        const radius = 1 + widthFactor * 4;
+        const alpha = 0.05 + widthFactor * 0.28;
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(seg.x, seg.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (i < segments.length - 1) {
+          const next = segments[i + 1];
+          ctx.strokeStyle = `rgba(180, 180, 180, ${alpha * 0.7})`;
+          ctx.lineWidth = Math.max(0.8, radius * 0.5);
+          ctx.beginPath();
+          ctx.moveTo(seg.x, seg.y);
+          ctx.lineTo(next.x, next.y);
+          ctx.stroke();
         }
       }
 
-      // ── Update and draw particles ──
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.life++;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vx *= 0.98;
-        p.vy *= 0.98;
+      for (let i = 2; i < 16; i++) {
+        const seg = segments[i];
+        const spread = 8 + i * 2.1;
+        const wingSway = Math.sin(t * 8 - i * 0.55) * (0.2 + i * 0.03);
 
-        if (p.life >= p.maxLife) {
-          particles.splice(i, 1);
-          continue;
-        }
+        const leftAngle = seg.angle - 1.7 + wingSway;
+        const rightAngle = seg.angle + 1.7 - wingSway;
 
-        const t = p.life / p.maxLife; // 0..1 progress
-        const alpha = (1 - t * t) * 0.35; // quadratic fade
-        const size = p.size * (1 - t * 0.6); // shrink
+        const lx = seg.x + Math.cos(leftAngle) * spread;
+        const ly = seg.y + Math.sin(leftAngle) * spread;
+        const rx = seg.x + Math.cos(rightAngle) * spread;
+        const ry = seg.y + Math.sin(rightAngle) * spread;
 
-        if (alpha < 0.01) continue;
+        const wingAlpha = 0.06 + (1 - i / 16) * 0.4;
+        ctx.strokeStyle = `rgba(90, 90, 90, ${wingAlpha})`;
+        ctx.lineWidth = Math.max(0.9, 2.6 - i * 0.08);
 
-        // Outer glow
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 3);
-        grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alpha * 0.5})`);
-        grad.addColorStop(0.4, `rgba(${r}, ${g}, ${b}, ${alpha * 0.15})`);
-        grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
-        ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, size * 3, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.moveTo(seg.x, seg.y);
+        ctx.quadraticCurveTo(
+          seg.x + Math.cos(seg.angle - 0.8) * (spread * 0.45),
+          seg.y + Math.sin(seg.angle - 0.8) * (spread * 0.45),
+          lx,
+          ly,
+        );
+        ctx.stroke();
 
-        // Core bright center
-        ctx.fillStyle = `rgba(${Math.min(r + 60, 255)}, ${Math.min(g + 60, 255)}, ${Math.min(b + 40, 255)}, ${alpha * 0.8})`;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, size * 0.5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // ── Follower dot ──
-      const f = followerRef.current;
-      f.x += (f.targetX - f.x) * 0.12;
-      f.y += (f.targetY - f.y) * 0.12;
-      f.scale += (f.targetScale - f.scale) * 0.1;
-
-      const dotSize = 3.5 * f.scale;
-      const dotAlpha = f.isHovering ? 0.12 : 0.25;
-
-      // Ring on hover
-      if (f.scale > 1.15) {
-        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(f.scale - 1) * 0.15})`;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, dotSize * 2.2, 0, Math.PI * 2);
+        ctx.moveTo(seg.x, seg.y);
+        ctx.quadraticCurveTo(
+          seg.x + Math.cos(seg.angle + 0.8) * (spread * 0.45),
+          seg.y + Math.sin(seg.angle + 0.8) * (spread * 0.45),
+          rx,
+          ry,
+        );
         ctx.stroke();
       }
 
-      // Dot glow
-      const dotGrad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, dotSize * 2);
-      dotGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${dotAlpha * 0.4})`);
-      dotGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
-      ctx.fillStyle = dotGrad;
+      const headX = segments[0].x;
+      const headY = segments[0].y;
+      const headAngle = segments[0].angle;
+
+      ctx.save();
+      ctx.translate(headX, headY);
+      ctx.rotate(headAngle);
+
+      ctx.fillStyle = 'rgba(10, 10, 10, 0.96)';
       ctx.beginPath();
-      ctx.arc(f.x, f.y, dotSize * 2, 0, Math.PI * 2);
+      ctx.moveTo(16, 0);
+      ctx.quadraticCurveTo(5, -8, -8, -7);
+      ctx.quadraticCurveTo(-11, 0, -8, 7);
+      ctx.quadraticCurveTo(5, 8, 16, 0);
       ctx.fill();
 
-      // Dot core
-      ctx.fillStyle = `rgba(${Math.min(r + 40, 255)}, ${Math.min(g + 40, 255)}, ${Math.min(b + 30, 255)}, ${dotAlpha})`;
+      ctx.fillStyle = 'rgba(240, 240, 240, 0.88)';
       ctx.beginPath();
-      ctx.arc(f.x, f.y, dotSize, 0, Math.PI * 2);
+      ctx.ellipse(4, -2.8, 1.8, 1.3, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      rafRef.current = requestAnimationFrame(animate);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.beginPath();
+      ctx.moveTo(7.5, 0);
+      ctx.lineTo(16, -2.2);
+      ctx.lineTo(16, 2.2);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+
+      rafRef.current = requestAnimationFrame(drawDragon);
     };
 
-    rafRef.current = requestAnimationFrame(animate);
+    rafRef.current = requestAnimationFrame(drawDragon);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseover', onMouseOver);
-      observer.disconnect();
     };
   }, []);
 
