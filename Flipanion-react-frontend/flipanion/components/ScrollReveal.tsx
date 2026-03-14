@@ -68,7 +68,7 @@ export default function ScrollReveal({
         willChange: 'opacity, transform',
       }}
     >
-      {children }
+      {children}
     </div>
   );
 } 
