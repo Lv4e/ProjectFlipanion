@@ -17,6 +17,7 @@ export default function ResetPasswordPage() {
 function ResetPasswordInner() {
   const [newPassword, setNewPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [userEmail, setUserEmail] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const [message, setMessage] = React.useState("");
@@ -35,10 +36,11 @@ function ResetPasswordInner() {
 
     if (code) {
       // PKCE flow — exchange the one-time code for a real session
-      supabase.auth.exchangeCodeForSession(code).then(({ error: exchError }) => {
+      supabase.auth.exchangeCodeForSession(code).then(({ data, error: exchError }) => {
         if (exchError) {
           setError("Dieser Link ist ungültig oder abgelaufen. Bitte fordere einen neuen an.");
         } else {
+          setUserEmail(data.session?.user?.email ?? "");
           setSessionReady(true);
           // Clean the code from the URL so a refresh doesn't try to reuse it
           window.history.replaceState({}, "", "/auth/reset-password");
@@ -50,15 +52,19 @@ function ResetPasswordInner() {
     // Implicit/legacy flow fallback — listen for PASSWORD_RECOVERY event from hash tokens
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY") {
+        setUserEmail(session?.user?.email ?? "");
         setSessionReady(true);
       }
     });
 
     // In case the event already fired before this effect ran
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setSessionReady(true);
+      if (session) {
+        setUserEmail(session.user.email ?? "");
+        setSessionReady(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -203,7 +209,17 @@ function ResetPasswordInner() {
 
         {/* Form Card */}
         <div className="glass-card-static rounded-2xl p-8 animate-fade-in-up-delay-1">
-          <form onSubmit={handleResetPassword} className="space-y-6">
+          <form onSubmit={handleResetPassword} className="space-y-6" autoComplete="on">
+            <input
+              type="email"
+              name="username"
+              autoComplete="username"
+              value={userEmail}
+              readOnly
+              tabIndex={-1}
+              aria-hidden="true"
+              className="sr-only"
+            />
             {/* New Password */}
             <div>
               <label
@@ -215,7 +231,9 @@ function ResetPasswordInner() {
               <div className="relative">
                 <input
                   id="newPassword"
+                  name="new-password"
                   type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -297,7 +315,9 @@ function ResetPasswordInner() {
               </label>
               <input
                 id="confirmPassword"
+                name="confirm-password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
