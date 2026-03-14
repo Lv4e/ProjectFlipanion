@@ -237,7 +237,7 @@ export default function Home() {
                 <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-[var(--border-strong)] bg-[color-mix(in_srgb,var(--surface)_50%,transparent)] backdrop-blur-sm hover-glow">
                   <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                   <span className="text-xs font-medium text-[var(--text-muted)] tracking-wider uppercase">
-                    HTL Lernen für HWII · Stoff an einem Ort
+                    HTL Lernen für HWII · Lernmaterial an einem Ort
                   </span>
                 </div>
               </div>

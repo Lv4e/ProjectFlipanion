@@ -315,7 +315,7 @@ export default function BrowseQuizzes() {
                           {quiz.jahrgang}. Jahrgang
                         </span>
                         <span className="ml-auto text-xs text-[var(--text-muted)]">
-                          {!user ? '?' : quiz.questionCount || 0} Fragen
+                          {quiz.questionCount || 0} Fragen
                         </span>
                       </div>
 
