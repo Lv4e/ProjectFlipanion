@@ -48,6 +48,7 @@ export default function ImpressumPage() {
                   className="text-[var(--primary)] hover:underline transition-colors"
                 >
                   KRU230104@spengergasse.at
+                  KLU230103@spengergasse.at
                 </a>
               </p>
             </div>
