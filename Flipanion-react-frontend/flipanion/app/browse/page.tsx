@@ -29,6 +29,8 @@ interface Subject {
   name: string;
 }
 
+const MIN_VALID_QUIZ_QUESTIONS = 2;
+
 // Slide-in card wrapper with Intersection Observer
 function SlideInCard({ children, index }: { children: React.ReactNode; index: number }) {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -122,10 +124,12 @@ export default function BrowseQuizzes() {
         if (typeof qid === 'number') counts[qid] = (counts[qid] || 0) + 1;
       });
 
-      const quizzesWithCount = (quizzesData || []).map((q: Quiz) => ({
-        ...q,
-        questionCount: counts[q.id] ?? 0,
-      }));
+      const quizzesWithCount = (quizzesData || [])
+        .map((q: Quiz) => ({
+          ...q,
+          questionCount: counts[q.id] ?? 0,
+        }))
+        .filter((q) => (q.questionCount ?? 0) >= MIN_VALID_QUIZ_QUESTIONS);
 
       setQuizzes(quizzesWithCount);
     }

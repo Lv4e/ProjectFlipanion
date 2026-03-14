@@ -35,6 +35,8 @@ interface MyQuiz {
   jahrgang: number;
 }
 
+const MIN_VALID_QUIZ_QUESTIONS = 2;
+
 export default function Home() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -87,19 +89,23 @@ export default function Home() {
 
               if (quizzes) {
                 setMyQuizzes(
-                  quizzes.map((q: Record<string, unknown>) => ({
-                    id: q.id as number,
-                    title: q.title as string,
-                    description: (q.description as string) || null,
-                    createdAt: q.createdAt as string,
-                    subjectName:
-                      ((q.Subject as Record<string, unknown>)
-                        ?.name as string) || "Unbekannt",
-                    questionCount: Array.isArray(q.Question)
-                      ? q.Question.length
-                      : 0,
-                    jahrgang: (q.jahrgang as number) || 1,
-                  })),
+                  quizzes
+                    .map((q: Record<string, unknown>) => ({
+                      id: q.id as number,
+                      title: q.title as string,
+                      description: (q.description as string) || null,
+                      createdAt: q.createdAt as string,
+                      subjectName:
+                        ((q.Subject as Record<string, unknown>)
+                          ?.name as string) || "Unbekannt",
+                      questionCount: Array.isArray(q.Question)
+                        ? q.Question.length
+                        : 0,
+                      jahrgang: (q.jahrgang as number) || 1,
+                    }))
+                    .filter(
+                      (quiz) => quiz.questionCount >= MIN_VALID_QUIZ_QUESTIONS,
+                    ),
                 );
               }
             }
@@ -172,6 +178,7 @@ export default function Home() {
 
             const results: CompletedQuiz[] = [];
             quizMap.forEach((v, quizId) => {
+              if (v.total < MIN_VALID_QUIZ_QUESTIONS) return;
               results.push({
                 quizId,
                 title: v.title,

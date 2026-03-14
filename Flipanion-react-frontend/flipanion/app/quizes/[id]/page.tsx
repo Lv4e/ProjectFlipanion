@@ -102,6 +102,7 @@ function normalizeQuestion(q: AnyRow): NormalizedQuestion {
 export default function QuizPage() {
   const params = useParams<{ id: string }>();
   const quizId = Number(params?.id);
+  const MIN_VISIBLE_QUESTIONS = 2;
 
   const [loading, setLoading] = React.useState(true);
   const [quiz, setQuiz] = React.useState<AnyRow | null>(null);
@@ -161,6 +162,12 @@ export default function QuizPage() {
 
       const normalized = (qData ?? []).map(normalizeQuestion);
 
+      if (normalized.length < MIN_VISIBLE_QUESTIONS) {
+        setError("Dieses Quiz ist nicht mehr verfuegbar.");
+        setLoading(false);
+        return;
+      }
+
       setQuestions(normalized);
       setCurrent(0);
       setAnswers({});
@@ -173,6 +180,11 @@ export default function QuizPage() {
 
   const canScore = React.useMemo(
     () => questions.some((x) => typeof x.correctIndex === "number"),
+    [questions],
+  );
+
+  const scorableQuestionCount = React.useMemo(
+    () => questions.filter((x) => typeof x.correctIndex === "number").length,
     [questions],
   );
 
@@ -191,9 +203,14 @@ export default function QuizPage() {
   }, [answers, questions, canScore]);
 
   const basePointsEarned = React.useMemo(() => {
-    if (!canScore || questions.length === 0) return 0;
-    return parseFloat(((score / questions.length) * 20).toFixed(2));
-  }, [score, questions, canScore]);
+    if (!canScore) return 0;
+    return score;
+  }, [score, canScore]);
+
+  const scorePercentage = React.useMemo(() => {
+    if (!canScore || scorableQuestionCount === 0) return 0;
+    return (score / scorableQuestionCount) * 100;
+  }, [score, scorableQuestionCount, canScore]);
 
   const [streakInfo, setStreakInfo] = React.useState<{
     streak: number;
@@ -253,13 +270,18 @@ export default function QuizPage() {
         await supabase.from("UserAnswer").insert(rows);
 
         const totalAnswered = rows.length;
-        const totalCorrect = rows.filter((r) => r.isCorrect).length;
+        const scorableQuestionIds = new Set(
+          questions
+            .filter((q) => typeof q.correctIndex === "number")
+            .map((q) => Number(q.id)),
+        );
+        const totalCorrect = rows.filter(
+          (r) => scorableQuestionIds.has(r.questionId) && r.isCorrect,
+        ).length;
+        const totalScorable = scorableQuestionIds.size;
         const percentage =
-          totalAnswered > 0 ? (totalCorrect / totalAnswered) * 100 : 0;
-        const basePoints =
-          totalAnswered > 0
-            ? parseFloat(((totalCorrect / totalAnswered) * 20).toFixed(2))
-            : 0;
+          totalScorable > 0 ? (totalCorrect / totalScorable) * 100 : 0;
+        const basePoints = totalCorrect;
 
         // Check if this is the first attempt for this quiz
         const { data: previousAttempts } = await supabase
@@ -387,7 +409,7 @@ export default function QuizPage() {
         // silently ignore DB errors on the results page
       }
     })();
-  }, [finished, user, questions, answers]);
+  }, [finished, user, questions, answers, quizId]);
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
@@ -458,7 +480,9 @@ export default function QuizPage() {
                     <span className="text-sm">
                       {questions.length}{" "}
                       {questions.length === 1 ? "Frage" : "Fragen"}
-                      {canScore ? ` · ${pointsEarned} / 20 Pkt.` : ""}
+                      {canScore
+                        ? ` · ${pointsEarned} / ${scorableQuestionCount} Pkt.`
+                        : ""}
                     </span>
                   </div>
                 </div>
@@ -581,7 +605,7 @@ export default function QuizPage() {
                       {pointsEarned}
                     </span>
                     <span className="text-sm text-[var(--primary)]">
-                      von 20 Punkten
+                      von {scorableQuestionCount} Punkten
                     </span>
                     {streakInfo && streakInfo.multiplier > 1 && (
                       <span className="text-xs font-semibold text-green-400 bg-green-500/10 px-2 py-0.5 rounded-md ml-1">
@@ -663,7 +687,7 @@ export default function QuizPage() {
                   <div className="w-full max-w-xs mx-auto bg-[var(--border)] rounded-full h-2.5 mb-8 overflow-hidden">
                     <div
                       className="bg-[var(--primary)] h-2.5 rounded-full transition-all duration-700"
-                      style={{ width: `${(score / questions.length) * 100}%` }}
+                      style={{ width: `${scorePercentage}%` }}
                     />
                   </div>
                 )}
