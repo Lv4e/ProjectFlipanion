@@ -35,6 +35,8 @@ interface MyQuiz {
   jahrgang: number;
 }
 
+const MIN_VALID_QUIZ_QUESTIONS = 2;
+
 export default function Home() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -87,19 +89,23 @@ export default function Home() {
 
               if (quizzes) {
                 setMyQuizzes(
-                  quizzes.map((q: Record<string, unknown>) => ({
-                    id: q.id as number,
-                    title: q.title as string,
-                    description: (q.description as string) || null,
-                    createdAt: q.createdAt as string,
-                    subjectName:
-                      ((q.Subject as Record<string, unknown>)
-                        ?.name as string) || "Unbekannt",
-                    questionCount: Array.isArray(q.Question)
-                      ? q.Question.length
-                      : 0,
-                    jahrgang: (q.jahrgang as number) || 1,
-                  })),
+                  quizzes
+                    .map((q: Record<string, unknown>) => ({
+                      id: q.id as number,
+                      title: q.title as string,
+                      description: (q.description as string) || null,
+                      createdAt: q.createdAt as string,
+                      subjectName:
+                        ((q.Subject as Record<string, unknown>)
+                          ?.name as string) || "Unbekannt",
+                      questionCount: Array.isArray(q.Question)
+                        ? q.Question.length
+                        : 0,
+                      jahrgang: (q.jahrgang as number) || 1,
+                    }))
+                    .filter(
+                      (quiz) => quiz.questionCount >= MIN_VALID_QUIZ_QUESTIONS,
+                    ),
                 );
               }
             }
@@ -172,6 +178,7 @@ export default function Home() {
 
             const results: CompletedQuiz[] = [];
             quizMap.forEach((v, quizId) => {
+              if (v.total < MIN_VALID_QUIZ_QUESTIONS) return;
               results.push({
                 quizId,
                 title: v.title,
@@ -230,7 +237,7 @@ export default function Home() {
                 <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-[var(--border-strong)] bg-[color-mix(in_srgb,var(--surface)_50%,transparent)] backdrop-blur-sm hover-glow">
                   <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                   <span className="text-xs font-medium text-[var(--text-muted)] tracking-wider uppercase">
-                    HTL Lernen für HWII · Stoff an einem Ort
+                    HTL Lernen für HWII · Lernmaterial an einem Ort
                   </span>
                 </div>
               </div>
@@ -395,14 +402,24 @@ export default function Home() {
                   <p className="text-lg md:text-xl text-[var(--text-muted)] mb-12 max-w-lg mx-auto">
                     Starte jetzt mit dem gesamten HTL-Wirtschaftsingenieur-Stoff an einem Ort.
                   </p>
-                  <Link href="/auth">
-                    <MagneticButton
-                      className="px-12 py-4.5 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
-                      strength={0.3}
-                    >
-                      Mit dem Lernen starten
-                    </MagneticButton>
-                  </Link>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <Link href="/auth">
+                      <MagneticButton
+                        className="px-12 py-4.5 bg-[var(--foreground)] text-[var(--background)] text-base font-semibold rounded-xl hover:opacity-90 transition-all duration-300 active:scale-[0.97] cursor-pointer hover-glow"
+                        strength={0.3}
+                      >
+                        Mit dem Lernen starten
+                      </MagneticButton>
+                    </Link>
+                    <Link href="/about">
+                      <MagneticButton
+                        className="px-12 py-4.5 border border-[var(--border-strong)] text-[var(--foreground)] text-base font-semibold rounded-xl hover:bg-[color-mix(in_srgb,var(--foreground)_5%,transparent)] transition-all duration-300 active:scale-[0.97] cursor-pointer"
+                        strength={0.3}
+                      >
+                        Erfahre mehr über uns
+                      </MagneticButton>
+                    </Link>
+                  </div>
                 </div>
               </InteractiveCard>
             </div>

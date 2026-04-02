@@ -25,6 +25,7 @@ export default function MagneticButton({
   type = 'button',
   disabled,
 }: MagneticButtonProps) {
+  const INTENSITY_FACTOR = 0.5;
   const ref = React.useRef<HTMLElement>(null);
   const [offset, setOffset] = React.useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = React.useState(false);
@@ -36,8 +37,8 @@ export default function MagneticButton({
       const rect = el.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
-      const dx = (e.clientX - cx) * strength;
-      const dy = (e.clientY - cy) * strength;
+      const dx = (e.clientX - cx) * strength * INTENSITY_FACTOR;
+      const dy = (e.clientY - cy) * strength * INTENSITY_FACTOR;
       setOffset({ x: dx, y: dy });
     },
     [strength],

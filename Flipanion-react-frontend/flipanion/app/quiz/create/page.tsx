@@ -21,6 +21,8 @@ interface QuestionForm {
   correctAnswer: string; // '1' | '2' | '3' | '4'
 }
 
+const MIN_QUESTIONS = 5;
+
 const emptyQuestion = (): QuestionForm => ({
   questionText: "",
   answerText1: "",
@@ -32,6 +34,7 @@ const emptyQuestion = (): QuestionForm => ({
 
 export default function CreateQuiz() {
   const router = useRouter();
+  const submitErrorRef = React.useRef<HTMLDivElement | null>(null);
 
   // Auth
   const [user, setUser] = React.useState<
@@ -43,10 +46,10 @@ export default function CreateQuiz() {
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [subjectId, setSubjectId] = React.useState<number | "">("");
-  const [jahrgang, setJahrgang] = React.useState<number | "">("")
-  const [questions, setQuestions] = React.useState<QuestionForm[]>([
-    emptyQuestion(),
-  ]);
+  const [jahrgang, setJahrgang] = React.useState<number | "">("");
+  const [questions, setQuestions] = React.useState<QuestionForm[]>(() =>
+    Array.from({ length: MIN_QUESTIONS }, () => emptyQuestion()),
+  );
 
   // Data
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
@@ -93,7 +96,7 @@ export default function CreateQuiz() {
   };
 
   const removeQuestion = (index: number) => {
-    if (questions.length <= 1) return;
+    if (questions.length <= MIN_QUESTIONS) return;
     setQuestions((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -101,7 +104,8 @@ export default function CreateQuiz() {
   const validate = (): string | null => {
     if (!title.trim()) return "Bitte gib einen Quiz-Titel ein.";
     if (!subjectId) return "Bitte wähle ein Fach aus.";
-    if (questions.length === 0) return "Füge mindestens eine Frage hinzu.";
+    if (questions.length < MIN_QUESTIONS)
+      return `Füge mindestens ${MIN_QUESTIONS} Fragen hinzu.`;
 
     for (let i = 0; i < questions.length; i++) {
       const q = questions[i];
@@ -117,10 +121,20 @@ export default function CreateQuiz() {
 
   // Save to Supabase
   const handleSave = async () => {
+    const revealSubmitError = () => {
+      requestAnimationFrame(() => {
+        submitErrorRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      });
+    };
+
     setError(null);
     const validationError = validate();
     if (validationError) {
       setError(validationError);
+      revealSubmitError();
       return;
     }
 
@@ -191,6 +205,7 @@ export default function CreateQuiz() {
           ? err.message
           : "Ein unbekannter Fehler ist aufgetreten.";
       setError(message);
+      revealSubmitError();
     } finally {
       setSaving(false);
     }
@@ -316,7 +331,7 @@ export default function CreateQuiz() {
             Neues Quiz erstellen
           </h1>
           <p className="text-lg text-[var(--text-muted)]">
-            Fülle die Felder aus und füge deine Fragen hinzu.
+            Fülle die Felder aus und füge mindestens {MIN_QUESTIONS} Fragen hinzu.
           </p>
         </div>
 
@@ -451,25 +466,30 @@ export default function CreateQuiz() {
 
         {/* Questions */}
         <div className="animate-fade-in-up-delay-2 relative z-10">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-semibold text-[var(--foreground)] flex items-center gap-2">
-              <div className="w-8 h-8 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-[var(--primary)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              Fragen ({questions.length})
-            </h2>
+          <div className="flex items-start justify-between gap-4 mb-5">
+            <div>
+              <h2 className="text-lg font-semibold text-[var(--foreground)] flex items-center gap-2">
+                <div className="w-8 h-8 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 text-[var(--primary)]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                Fragen ({questions.length})
+              </h2>
+              <p className="mt-1 text-sm text-[var(--text-muted)]">
+                Mindestens {MIN_QUESTIONS} Fragen pro Quiz
+              </p>
+            </div>
             <button
               type="button"
               onClick={addQuestion}
@@ -503,7 +523,7 @@ export default function CreateQuiz() {
                     </span>
                     Frage {idx + 1}
                   </span>
-                  {questions.length > 1 && (
+                  {questions.length > MIN_QUESTIONS && (
                     <button
                       type="button"
                       onClick={() => removeQuestion(idx)}
@@ -654,7 +674,32 @@ export default function CreateQuiz() {
         </div>
 
         {/* Save Button */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-3 animate-fade-in-up-delay-3">
+        <div className="mt-8 animate-fade-in-up-delay-3">
+          {error && (
+            <div
+              ref={submitErrorRef}
+              className="border border-red-500/20 rounded-lg p-4 mb-4 bg-red-500/5"
+            >
+              <div className="flex items-center gap-3">
+                <svg
+                  className="w-5 h-5 text-red-400 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <p className="text-red-400 text-sm font-medium">{error}</p>
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-3">
           <button
             type="button"
             onClick={handleSave}
@@ -693,6 +738,7 @@ export default function CreateQuiz() {
               Abbrechen
             </button>
           </Link>
+          </div>
         </div>
       </main>
 

@@ -33,6 +33,8 @@ const sortOptions: { key: SortKey; label: string; suffix: string }[] = [
   { key: "quizzesCreated", label: "Quizze erstellt", suffix: "" },
 ];
 
+const MIN_VALID_QUIZ_QUESTIONS = 2;
+
 export default function LeaderboardPage() {
   const [user, setUser] = React.useState<
     import("@supabase/supabase-js").User | null
@@ -44,9 +46,6 @@ export default function LeaderboardPage() {
   const [sortBy, setSortBy] = React.useState<SortKey>("points");
   const [selectedSubject, setSelectedSubject] = React.useState("all");
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [currentSupabaseId, setCurrentSupabaseId] = React.useState<
-    string | null
-  >(null);
   const [currentDbUserId, setCurrentDbUserId] = React.useState<number | null>(
     null,
   );
@@ -65,7 +64,6 @@ export default function LeaderboardPage() {
         return;
       }
 
-      setCurrentSupabaseId(currentUser.id);
       fetchLeaderboard(currentUser.id);
     }
 
@@ -95,12 +93,29 @@ export default function LeaderboardPage() {
         return;
       }
 
+      const { data: questionRows } = await supabase
+        .from("Question")
+        .select("quizId");
+
+      const questionCounts = new Map<number, number>();
+      for (const row of questionRows ?? []) {
+        const quizId = row.quizId as number;
+        questionCounts.set(quizId, (questionCounts.get(quizId) ?? 0) + 1);
+      }
+
+      const validQuizIds = new Set<number>();
+      for (const [quizId, count] of questionCounts.entries()) {
+        if (count >= MIN_VALID_QUIZ_QUESTIONS) {
+          validQuizIds.add(quizId);
+        }
+      }
+
       // Find current user's db id
       const me = users.find((u) => u.supabaseId === currentUserSupabaseId);
       if (me) setCurrentDbUserId(me.id);
 
       // Fetch all user answers with question info
-      let answersQuery = supabase
+      const answersQuery = supabase
         .from("UserAnswer")
         .select(
           "userId, isCorrect, question:Question(quizId, quiz:Quiz(subjectId))",
@@ -109,7 +124,7 @@ export default function LeaderboardPage() {
       const { data: answers } = await answersQuery;
 
       // Fetch quizzes created (with optional subject filter)
-      let quizzesQuery = supabase
+      const quizzesQuery = supabase
         .from("Quiz")
         .select("id, creatorId, subjectId");
 
@@ -156,6 +171,7 @@ export default function LeaderboardPage() {
       if (quizzes) {
         for (const q of quizzes) {
           if (!q.creatorId) continue;
+          if (!validQuizIds.has(q.id)) continue;
           if (selectedSubjectId !== null && q.subjectId !== selectedSubjectId)
             continue;
           const entry = map.get(q.creatorId);
@@ -182,6 +198,7 @@ export default function LeaderboardPage() {
 
           const subjectId = quiz.subjectId as number;
           const quizId = question.quizId as number;
+          if (!validQuizIds.has(quizId)) continue;
 
           // Apply subject filter
           if (selectedSubjectId !== null && subjectId !== selectedSubjectId)
@@ -207,6 +224,8 @@ export default function LeaderboardPage() {
       // Process points from QuizAttempt
       if (attemptsData) {
         for (const a of attemptsData as Array<Record<string, unknown>>) {
+          const quizId = a.quizId as number;
+          if (!validQuizIds.has(quizId)) continue;
           const quizRelation = a.quiz as
             | Record<string, unknown>
             | Array<Record<string, unknown>>

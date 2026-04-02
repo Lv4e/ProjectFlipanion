@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "Flipanion – Die Quiz-Plattform für HTL Wirtschaftsingenieurwesen (HWII)",
   description: "Flipanion bündelt den HTL Wirtschaftsingenieurwesen (HWII)-Stoff an einem Ort. HTL Lernen mit Quizzen zu Rechnungswesen, BWL, Technik und Management für HTL SchülerInnen.",
   icons: {
-    icon: "/logo_flipanion.png",
+    icon: "/flipanion_logo.png",
   },
 };
 

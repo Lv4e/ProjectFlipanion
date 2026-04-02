@@ -33,8 +33,8 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 group mb-5">
               <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105">
-                <Image
-                  src="/logo_flipanion.png"
+                  <Image
+                    src="/flipanion_logo.png"
                   alt="Flipanion"
                   width={200}
                   height={200}
@@ -136,6 +136,7 @@ export default function Footer() {
                   className="text-sm text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-300 inline-block hover-underline"
                 >
                   KRU230104@spengergasse.at
+                  KLU230103@spengergasse.at
                 </a>
               </li>
               <li className="text-sm text-[var(--text-muted)]">Mo-Fr, 8:00-16:00</li>

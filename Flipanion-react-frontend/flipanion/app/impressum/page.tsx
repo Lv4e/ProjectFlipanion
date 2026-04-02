@@ -41,15 +41,21 @@ export default function ImpressumPage() {
           <section>
             <h2 className="text-xl font-semibold mb-3">Kontakt</h2>
             <div className="glass-card rounded-xl p-6 space-y-1 text-sm leading-relaxed">
-              <p>
-                <span className="text-[var(--text-muted)]">E-Mail:</span>{' '}
+              <span className="text-[var(--text-muted)]">E-Mail:</span>
+              <div className="flex flex-col">
                 <a
                   href="mailto:KRU230104@spengergasse.at"
                   className="text-[var(--primary)] hover:underline transition-colors"
                 >
                   KRU230104@spengergasse.at
                 </a>
-              </p>
+                <a
+                  href="mailto:KLU230103@spengergasse.at"
+                  className="text-[var(--primary)] hover:underline transition-colors"
+                >
+                  KLU230103@spengergasse.at
+                </a>
+              </div>
             </div>
           </section>
 
