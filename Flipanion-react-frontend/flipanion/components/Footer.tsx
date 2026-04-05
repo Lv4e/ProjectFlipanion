@@ -139,6 +139,7 @@ export default function Footer() {
                   KLU230103@spengergasse.at
                 </a>
               </li>
+              
               <li className="text-sm text-[var(--text-muted)]">Mo-Fr, 8:00-16:00</li>
             </ul>
           </div>
