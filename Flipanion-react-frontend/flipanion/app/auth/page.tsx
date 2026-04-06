@@ -92,11 +92,11 @@ function AuthPageInner() {
         "1234567",
       ].some((common) => password.toLowerCase().includes(common));
 
-      if (password.length < 8 || isSequential || isRepeating || isCommon) {
-        setPasswordStrength("weak");
+      if (password.length < 6 || isSequential || isRepeating || isCommon) {
+        setPasswordStrength("weak");  
       } else if (
-        (password.length >= 8 && hasNumber && hasLetter) ||
-        (hasSpecial && hasLetter)
+        (password.length >= 6 && hasNumber && hasLetter) ||
+        (hasSpecial && hasLetter) || (hasSpecial && hasNumber) || (password.length >= 9)
       ) {
         setPasswordStrength(hasSpecial && hasNumber ? "strong" : "medium");
       } else {
