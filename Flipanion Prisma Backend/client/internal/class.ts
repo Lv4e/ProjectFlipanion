@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "C:\\Users\\lukas\\Documents\\Coding\\ProjectFlipanion\\Flipanion Prisma Backend\\client",
+      "value": "C:\\Desktop\\Schule\\Spengergasse\\2025-26\\SWP\\ProjectFlipanion\\Flipanion Prisma Backend\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -38,7 +38,7 @@ const config: runtime.GetPrismaClientConfig = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\lukas\\Documents\\Coding\\ProjectFlipanion\\Flipanion Prisma Backend\\schema.prisma",
+    "sourceFilePath": "C:\\Desktop\\Schule\\Spengergasse\\2025-26\\SWP\\ProjectFlipanion\\Flipanion Prisma Backend\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "..",
