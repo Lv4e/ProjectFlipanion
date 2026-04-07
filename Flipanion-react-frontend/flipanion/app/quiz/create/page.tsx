@@ -290,8 +290,7 @@ export default function CreateQuiz() {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
-            </h2>
+            <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2"></h2>
             <p className="text-[var(--text-muted)]">
               Du wirst gleich weitergeleitet ...
             </p>
@@ -304,7 +303,6 @@ export default function CreateQuiz() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-
       <main className="max-w-3xl mx-auto px-8 pt-12 pb-20">
         {/* Page Header */}
         <div className="mb-10 animate-fade-in-up">
@@ -331,7 +329,8 @@ export default function CreateQuiz() {
             Neues Quiz erstellen
           </h1>
           <p className="text-lg text-[var(--text-muted)]">
-            Fülle die Felder aus und füge mindestens {MIN_QUESTIONS} Fragen hinzu.
+            Fülle die Felder aus und füge mindestens {MIN_QUESTIONS} Fragen
+            hinzu.
           </p>
         </div>
 
@@ -352,15 +351,16 @@ export default function CreateQuiz() {
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="text-red-400 text-sm font-medium">
-                {error}
-              </p>
+              <p className="text-red-400 text-sm font-medium">{error}</p>
             </div>
           </div>
         )}
 
         {/* Quiz Details Card */}
-        <div className="glass-card rounded-xl p-6 md:p-8 mb-6 animate-fade-in-up-delay-1 relative z-20" style={{ overflow: 'visible' }}>
+        <div
+          className="glass-card rounded-xl p-6 md:p-8 mb-6 animate-fade-in-up-delay-1 relative z-20"
+          style={{ overflow: "visible" }}
+        >
           <h2 className="text-lg font-semibold text-[var(--foreground)] mb-5 flex items-center gap-2">
             <div className="w-8 h-8 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg flex items-center justify-center">
               <svg
@@ -430,8 +430,8 @@ export default function CreateQuiz() {
               </label>
               <CustomDropdown
                 id="subject"
-                value={subjectId === '' ? '' : String(subjectId)}
-                onChange={(val) => setSubjectId(val ? Number(val) : '')}
+                value={subjectId === "" ? "" : String(subjectId)}
+                onChange={(val) => setSubjectId(val ? Number(val) : "")}
                 placeholder="Fach auswählen ..."
                 options={subjects.map((s) => ({
                   value: String(s.id),
@@ -449,15 +449,15 @@ export default function CreateQuiz() {
               </label>
               <CustomDropdown
                 id="jahrgang"
-                value={jahrgang === '' ? '' : String(jahrgang)}
-                onChange={(val) => setJahrgang(val ? Number(val) : '')}
-                placeholder="Jahrgang ausw\u00e4hlen ..."
+                value={jahrgang === "" ? "" : String(jahrgang)}
+                onChange={(val) => setJahrgang(val ? Number(val) : "")}
+                placeholder="Jahrgang auswählen ..."
                 options={[
-                  { value: '1', label: '1. Jahrgang' },
-                  { value: '2', label: '2. Jahrgang' },
-                  { value: '3', label: '3. Jahrgang' },
-                  { value: '4', label: '4. Jahrgang' },
-                  { value: '5', label: '5. Jahrgang' },
+                  { value: "1", label: "1. Jahrgang" },
+                  { value: "2", label: "2. Jahrgang" },
+                  { value: "3", label: "3. Jahrgang" },
+                  { value: "4", label: "4. Jahrgang" },
+                  { value: "5", label: "5. Jahrgang" },
                 ]}
               />
             </div>
@@ -700,44 +700,44 @@ export default function CreateQuiz() {
           )}
 
           <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="flex-1 py-3.5 px-8 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
-          >
-            {saving ? (
-              <>
-                <div className="w-4 h-4 border-2 border-[var(--background)]/30 border-t-[var(--background)] rounded-full animate-spin" />
-                Wird gespeichert ...
-              </>
-            ) : (
-              <>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Quiz erstellen
-              </>
-            )}
-          </button>
-          <Link href="/" className="flex-shrink-0">
             <button
               type="button"
-              className="w-full sm:w-auto py-3.5 px-8 bg-[var(--surface)] text-[var(--foreground)] font-medium rounded-lg border border-[var(--border)] hover:border-[var(--border-strong)] transition-all cursor-pointer"
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 py-3.5 px-8 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-lg hover:opacity-90 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
             >
-              Abbrechen
+              {saving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-[var(--background)]/30 border-t-[var(--background)] rounded-full animate-spin" />
+                  Wird gespeichert ...
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Quiz erstellen
+                </>
+              )}
             </button>
-          </Link>
+            <Link href="/" className="flex-shrink-0">
+              <button
+                type="button"
+                className="w-full sm:w-auto py-3.5 px-8 bg-[var(--surface)] text-[var(--foreground)] font-medium rounded-lg border border-[var(--border)] hover:border-[var(--border-strong)] transition-all cursor-pointer"
+              >
+                Abbrechen
+              </button>
+            </Link>
           </div>
         </div>
       </main>
