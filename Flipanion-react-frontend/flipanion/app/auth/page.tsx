@@ -94,6 +94,7 @@ function AuthPageInner() {
 
       if (password.length < 6 || isSequential || isRepeating || isCommon) {
         setPasswordStrength("weak");  
+        
       } else if (
         (password.length >= 6 && hasNumber && hasLetter) ||
         (hasSpecial && hasLetter) || (hasSpecial && hasNumber) || (password.length >= 9)
